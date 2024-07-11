@@ -1,0 +1,16 @@
+<?php
+
+namespace Tests\Generated;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Foo extends Model
+{
+    protected $casts = [
+        'guarded_field' => 'string',
+    ];
+
+    protected $guarded = [
+        'guarded_field',
+    ];
+}
