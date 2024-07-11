@@ -184,8 +184,9 @@ class AttributeBlueprint
         return $migration.";";
     }
 
-    public function fillFromDatabaseSchema($params) {
-        $column = $params->getColumns()->filter(function($column) {
+    public function fillFromDatabaseSchema($params)
+    {
+        $column = $params->getColumns()->filter(function ($column) {
             return $column->getName() == $this->name;
         })->first();
 
@@ -193,7 +194,7 @@ class AttributeBlueprint
             throw new \Exception(sprintf("Couldn't find the attribute in the db %s", $this->name));
         }
 
-        $indexes = $params->getIndexes()->filter(function($index) {
+        $indexes = $params->getIndexes()->filter(function ($index) {
             return in_array($this->name, $index->getColumns()) && count($index->getColumns()) > 1;
         });
 
@@ -206,11 +207,11 @@ class AttributeBlueprint
     }
 
     public function guessType($column, $params)
-    {   
+    {
         if ($column->getName() == "id") {
 
             // Check that field is has an idex primary
-            $id = $params->getIndexes()->filter(function($index) {
+            $id = $params->getIndexes()->filter(function ($index) {
                 return in_array($this->name, $index->getColumns()) && count($index->getColumns()) == 1 && $index->getType() == IndexType::PRIMARY;
             })->first();
 

@@ -20,6 +20,8 @@ class Builder
 {
     protected $model;
     protected $table;
+    protected $path;
+    protected $file;
     protected $operation = "update";
     protected SchemaRetrieverInterface $schemaRetriever;
 

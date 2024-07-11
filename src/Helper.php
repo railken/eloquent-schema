@@ -17,6 +17,7 @@ class Helper
 {
     protected $attributes;
     protected $migrations;
+    protected $resolver;
     protected SchemaRetrieverInterface $schemaRetriever;
 
     /**

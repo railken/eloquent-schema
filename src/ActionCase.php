@@ -1,9 +1,10 @@
 <?php
 
-namespace Railken\ELoquentSchema;
+namespace Railken\EloquentSchema;
 
-enum ActionCase {
-	case Create;
-	case Update;
-	case Remove;
+enum ActionCase
+{
+    case Create;
+    case Update;
+    case Remove;
 }

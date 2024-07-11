@@ -19,7 +19,7 @@ class Resolver
         $builders = self::$classes;
 
         if (!isset($builders[$builder])) {
-            throw new \Exception(sprintf("No builder %s found for scope %s. Class: %s", $builder, $scope, $path));
+            throw new \Exception(sprintf("No builder found: %s", $builder));
         }
 
         return new $builders[$builder]($schemaRetriever);

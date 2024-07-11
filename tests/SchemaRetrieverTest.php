@@ -10,7 +10,6 @@ use Railken\Lem\Contracts\EntityContract;
 
 class SchemaRetrieverTest extends BaseCase
 {
-
     public function testGetMigrationGeneratorSchemaByName()
     {
         $attributes = $this->getService()->getSchemaRetriever()->getMigrationGeneratorSchemaByName("bars");

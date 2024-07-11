@@ -10,9 +10,6 @@ use Closure;
 
 class ModelBuilder extends Builder
 {
-    protected string $path;
-    protected \Archetype\PHPFile $file;
-
     protected function initializeByTable(string $table)
     {
         parent::initializeByTable($table);

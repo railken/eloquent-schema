@@ -143,7 +143,7 @@ class DataSchemaExportTest extends BaseCase
         ]);
 
         $this->assertEquals([
-            
+
         ], $model->toArray());
     }
 
@@ -189,7 +189,7 @@ class DataSchemaExportTest extends BaseCase
 
     public function testAddAttributeStringFillableWithMigration()
     {
-        $model = new Foo;
+        $model = new Foo();
 
         $builder = $this->getService()->getModelBuilder()->createAttribute(
             $model->getTable(),
@@ -212,7 +212,7 @@ class DataSchemaExportTest extends BaseCase
 
         $this->assertResourceMigration($builder);
     }
-    
+
     #[Depends("testAddAttributeStringFillableWithMigration")]
     public function testAddAttributeStringFillableWithMigrationGenerated()
     {
@@ -225,7 +225,7 @@ class DataSchemaExportTest extends BaseCase
 
     public function testRemoveAttributeStringFillableWithMigration()
     {
-        $model = new Bar;
+        $model = new Bar();
 
         Bar::create([
             "name" => "Hello"
@@ -261,7 +261,7 @@ class DataSchemaExportTest extends BaseCase
 
     public function testRemoveAttributeStringFillableMultipleWithMigration()
     {
-        $model = new Baz;
+        $model = new Baz();
 
         Baz::create([
             "name" => "Hello",
@@ -302,7 +302,7 @@ class DataSchemaExportTest extends BaseCase
 
     public function testRemoveAttributeIdWithMigration()
     {
-        $model = new Bar;
+        $model = new Bar();
 
         Bar::create([
             "name" => "Hello"
@@ -340,7 +340,7 @@ class DataSchemaExportTest extends BaseCase
 
     public function testCompactAddAttribute()
     {
-        $model = new Foo;
+        $model = new Foo();
 
         [$modelBuilder, $migrationBuilder] = $this->getService()->createAttribute(
             $model->getTable(),
@@ -348,7 +348,7 @@ class DataSchemaExportTest extends BaseCase
                 $attribute->name("fillable_field")->type("string")->fillable(true);
             }
         );
-        
+
         $this->assertResourceModel($modelBuilder);
         $this->assertResourceMigration($migrationBuilder);
     }

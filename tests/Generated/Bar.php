@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Bar extends Model
 {
-	protected $fillable = [
-		'name'
-	];
-	
+    protected $fillable = [
+        'name'
+    ];
+
     protected $casts = [
         'name' => 'string',
     ];

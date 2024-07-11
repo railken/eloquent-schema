@@ -11,7 +11,7 @@ abstract class BaseCase extends \Orchestra\Testbench\TestCase
     {
         parent::setUp();
     }
-    
+
     public function getService()
     {
         return app('eloquent.schema');

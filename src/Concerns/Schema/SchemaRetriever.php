@@ -5,15 +5,18 @@ namespace Railken\EloquentSchema\Concerns\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use function WyriHaximus\listInstantiatableClassesInDirectory;
-use function WyriHaximus\listClassesInDirectories;
-
 use KitLoong\MigrationsGenerator\Schema\MySQLSchema;
 use KitLoong\MigrationsGenerator\Schema\PgSQLSchema;
+
 use KitLoong\MigrationsGenerator\Schema\Schema;
 use KitLoong\MigrationsGenerator\Schema\SQLiteSchema;
 use KitLoong\MigrationsGenerator\Schema\SQLSrvSchema;
 use KitLoong\MigrationsGenerator\Enum\Driver;
+
+use Exception;
+
+use function WyriHaximus\listInstantiatableClassesInDirectory;
+use function WyriHaximus\listClassesInDirectories;
 
 class SchemaRetriever implements SchemaRetrieverInterface
 {
@@ -68,10 +71,10 @@ class SchemaRetriever implements SchemaRetrieverInterface
         }
 
         return match ($driver) {
-            Driver::MARIADB->value, Driver::MYSQL->value => $this->schema = app(MySQLSchema::class),
-            Driver::PGSQL->value => $this->schema                         = app(PgSQLSchema::class),
-            Driver::SQLITE->value => $this->schema                        = app(SQLiteSchema::class),
-            Driver::SQLSRV->value => $this->schema                        = app(SQLSrvSchema::class),
+            Driver::MARIADB->value, Driver::MYSQL->value    => app(MySQLSchema::class),
+            Driver::PGSQL->value                            => app(PgSQLSchema::class),
+            Driver::SQLITE->value                           => app(SQLiteSchema::class),
+            Driver::SQLSRV->value                           => app(SQLSrvSchema::class),
             default => throw new Exception('The database driver in use is not supported.'),
         };
     }
