@@ -4,7 +4,7 @@
     "keywords": ["laravel", "eloquent-schema"],
     "license": "MIT",
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.3",
         "wyrihaximus/list-classes-in-directory": "^1.6",
         "doctrine/dbal": "^4.0",
         "haydenpierce/class-finder": "^0.5.3",
@@ -16,6 +16,16 @@
         "orchestra/testbench": "*",
         "friendsofphp/php-cs-fixer": "^3.52",
         "kitloong/laravel-migrations-generator": "^7.0"
+    },
+    "scripts": {
+        "test:coverage": [
+          "@putenv XDEBUG_MODE=coverage",
+          "phpunit --color=always --coverage-clover=\"output/code-coverage/clover.xml\""
+        ],
+        "test:coverage-html": [
+          "@putenv XDEBUG_MODE=coverage",
+          "phpunit --color=always --coverage-html=\"output/code-coverage\""
+        ]
     },
     "autoload": {
         "psr-4" : {
