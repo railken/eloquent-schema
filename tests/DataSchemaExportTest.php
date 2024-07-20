@@ -338,6 +338,31 @@ class DataSchemaExportTest extends BaseCase
         $this->assertActionMigration($action);
     }
 
+    #[Depends("testRenameAttribute")]
+    public function testRenameAttributeGenerated()
+    {
+        $bar = new Bar();
+        $bar->name = "Hello";
+        $this->assertEquals("Hello", $bar->oldName);
+
+        $bar->oldName = 2;
+        $this->assertEquals(2, $bar->name);
+
+        return;
+
+        $this->assertEquals("There", Baz::where('id', 1)->first()->summary);
+        $this->assertEquals("There", Baz::where('id', 1)->first()->description); // Legacy preserved
+
+        Baz::create([
+            "name" => "Hello",
+            // "description" => "Nice1",
+            "summary" => "Nice1"
+        ]);
+
+        $this->assertEquals("There1", Baz::where('id', 2)->first()->summary);
+        $this->assertEquals("There1", Baz::where('id', 2)->first()->description); // Legacy preserved
+    }
+
     public function testCompactAddAttribute()
     {
         $model = new Foo();

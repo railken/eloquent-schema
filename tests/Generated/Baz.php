@@ -6,12 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Baz extends Model
 {
+    protected $guarded = [
+        'summary',
+    ];
     protected $fillable = [
-        'name', 'description'
+        'name',
     ];
 
     protected $casts = [
         'name' => 'string',
-        'description' => 'string',
+        'summary' => 'string',
     ];
 }

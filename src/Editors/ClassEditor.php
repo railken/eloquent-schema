@@ -4,6 +4,10 @@ namespace Railken\EloquentSchema\Editors;
 
 use Archetype\Facades\PHPFile;
 
+use PhpParser\{Node, NodeTraverser, NodeVisitorAbstract, BuilderFactory};
+use Railken\EloquentSchema\Injectors\Injector;
+use Railken\EloquentSchema\Injectors\MethodInjector;
+
 class ClassEditor
 {
     protected string $path;
@@ -92,5 +96,56 @@ class ClassEditor
         }
 
         return $this;
+    }
+
+    public function addUse(string $class)
+    {
+        $this->file->use($class);
+        return $this;
+    }
+
+    public function updateFile($stmts): void
+    {
+        $query = $this->file->astQuery();
+        $query->resultingAST = $stmts;
+        $query->commit();
+    }
+
+    public function inject(MethodInjector $injector): void
+    {
+        $prettyPrinter = new \PhpParser\PrettyPrinter\Standard;
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor($injector);
+
+        $reflector = new \ReflectionClass(get_class($injector));
+
+
+        $traverser->traverse(PHPFile::load($reflector->getFileName())->ast());
+
+        $stmts = $injector->getStmts();
+
+        $factory = new BuilderFactory;
+        $node = $factory->namespace('Temp')
+            ->addStmt($factory->class('Temp')
+                ->addStmt($stmts[0])
+            )->getNode();
+
+
+        $newCode = $prettyPrinter->prettyPrintFile([$node]);
+
+        // $newCode = $prettyPrinter->prettyPrintFile($stmts);
+
+        $parser = (new \PhpParser\ParserFactory())->createForNewestSupportedVersion();
+
+
+        $stmts = $parser->parse($newCode);
+
+
+        $toSave = $this->file->ast();
+        $toSave[0]->stmts[1]->stmts[] = $stmts[0]->stmts[0]->stmts[0];
+
+
+        $this->updateFile($toSave);
+
     }
 }

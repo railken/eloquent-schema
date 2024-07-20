@@ -1,0 +1,1226 @@
+PHPUnit 11.2.7 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.3.9
+Configuration: /home/echowine/dev/eloquent-schema/phpunit.xml
+
+PhpParser\Node\Stmt\Use_ Object
+(
+    [attributes:protected] => Array
+        (
+        )
+
+    [type] => 1
+    [uses] => Array
+        (
+            [0] => PhpParser\Node\UseItem Object
+                (
+                    [attributes:protected] => Array
+                        (
+                        )
+
+                    [type] => 0
+                    [name] => PhpParser\Node\Name Object
+                        (
+                            [attributes:protected] => Array
+                                (
+                                )
+
+                            [name] => Illuminate\Database\Eloquent\Casts\Attribute
+                        )
+
+                    [alias] => 
+                )
+
+        )
+
+    [stmts] => Array
+        (
+            [0] => PhpParser\Node\Stmt\ClassMethod Object
+                (
+                    [attributes:protected] => Array
+                        (
+                            [startLine] => 7
+                            [startTokenPos] => 13
+                            [startFilePos] => 41
+                            [endLine] => 10
+                            [endTokenPos] => 80
+                            [endFilePos] => 254
+                        )
+
+                    [flags] => 2
+                    [byRef] => 
+                    [name] => PhpParser\Node\Identifier Object
+                        (
+                            [attributes:protected] => Array
+                                (
+                                    [startLine] => 7
+                                    [startTokenPos] => 17
+                                    [startFilePos] => 60
+                                    [endLine] => 7
+                                    [endTokenPos] => 17
+                                    [endFilePos] => 70
+                                )
+
+                            [name] => description
+                        )
+
+                    [params] => Array
+                        (
+                        )
+
+                    [returnType] => PhpParser\Node\Name Object
+                        (
+                            [attributes:protected] => Array
+                                (
+                                    [startLine] => 7
+                                    [startTokenPos] => 22
+                                    [startFilePos] => 75
+                                    [endLine] => 7
+                                    [endTokenPos] => 22
+                                    [endFilePos] => 83
+                                )
+
+                            [name] => Attribute
+                        )
+
+                    [stmts] => Array
+                        (
+                            [0] => PhpParser\Node\Stmt\Return_ Object
+                                (
+                                    [attributes:protected] => Array
+                                        (
+                                            [startLine] => 9
+                                            [startTokenPos] => 26
+                                            [startFilePos] => 99
+                                            [endLine] => 9
+                                            [endTokenPos] => 78
+                                            [endFilePos] => 248
+                                        )
+
+                                    [expr] => PhpParser\Node\Expr\StaticCall Object
+                                        (
+                                            [attributes:protected] => Array
+                                                (
+                                                    [startLine] => 9
+                                                    [startTokenPos] => 28
+                                                    [startFilePos] => 106
+                                                    [endLine] => 9
+                                                    [endTokenPos] => 77
+                                                    [endFilePos] => 247
+                                                )
+
+                                            [class] => PhpParser\Node\Name Object
+                                                (
+                                                    [attributes:protected] => Array
+                                                        (
+                                                            [startLine] => 9
+                                                            [startTokenPos] => 28
+                                                            [startFilePos] => 106
+                                                            [endLine] => 9
+                                                            [endTokenPos] => 28
+                                                            [endFilePos] => 114
+                                                        )
+
+                                                    [name] => Attribute
+                                                )
+
+                                            [name] => PhpParser\Node\Identifier Object
+                                                (
+                                                    [attributes:protected] => Array
+                                                        (
+                                                            [startLine] => 9
+                                                            [startTokenPos] => 30
+                                                            [startFilePos] => 117
+                                                            [endLine] => 9
+                                                            [endTokenPos] => 30
+                                                            [endFilePos] => 120
+                                                        )
+
+                                                    [name] => make
+                                                )
+
+                                            [args] => Array
+                                                (
+                                                    [0] => PhpParser\Node\Arg Object
+                                                        (
+                                                            [attributes:protected] => Array
+                                                                (
+                                                                    [startLine] => 9
+                                                                    [startTokenPos] => 32
+                                                                    [startFilePos] => 122
+                                                                    [endLine] => 9
+                                                                    [endTokenPos] => 51
+                                                                    [endFilePos] => 183
+                                                                )
+
+                                                            [name] => PhpParser\Node\Identifier Object
+                                                                (
+                                                                    [attributes:protected] => Array
+                                                                        (
+                                                                            [startLine] => 9
+                                                                            [startTokenPos] => 32
+                                                                            [startFilePos] => 122
+                                                                            [endLine] => 9
+                                                                            [endTokenPos] => 32
+                                                                            [endFilePos] => 124
+                                                                        )
+
+                                                                    [name] => get
+                                                                )
+
+                                                            [value] => PhpParser\Node\Expr\ArrowFunction Object
+                                                                (
+                                                                    [attributes:protected] => Array
+                                                                        (
+                                                                            [startLine] => 9
+                                                                            [startTokenPos] => 35
+                                                                            [startFilePos] => 127
+                                                                            [endLine] => 9
+                                                                            [endTokenPos] => 51
+                                                                            [endFilePos] => 183
+                                                                        )
+
+                                                                    [static] => 
+                                                                    [byRef] => 
+                                                                    [params] => Array
+                                                                        (
+                                                                            [0] => PhpParser\Node\Param Object
+                                                                                (
+                                                                                    [attributes:protected] => Array
+                                                                                        (
+                                                                                            [startLine] => 9
+                                                                                            [startTokenPos] => 37
+                                                                                            [startFilePos] => 130
+                                                                                            [endLine] => 9
+                                                                                            [endTokenPos] => 40
+                                                                                            [endFilePos] => 143
+                                                                                        )
+
+                                                                                    [type] => PhpParser\Node\NullableType Object
+                                                                                        (
+                                                                                            [attributes:protected] => Array
+                                                                                                (
+                                                                                                    [startLine] => 9
+                                                                                                    [startTokenPos] => 37
+                                                                                                    [startFilePos] => 130
+                                                                                                    [endLine] => 9
+                                                                                                    [endTokenPos] => 38
+                                                                                                    [endFilePos] => 136
+                                                                                                )
+
+                                                                                            [type] => PhpParser\Node\Identifier Object
+                                                                                                (
+                                                                                                    [attributes:protected] => Array
+                                                                                                        (
+                                                                                                            [startLine] => 9
+                                                                                                            [startTokenPos] => 38
+                                                                                                            [startFilePos] => 131
+                                                                                                            [endLine] => 9
+                                                                                                            [endTokenPos] => 38
+                                                                                                            [endFilePos] => 136
+                                                                                                        )
+
+                                                                                                    [name] => string
+                                                                                                )
+
+                                                                                        )
+
+                                                                                    [byRef] => 
+                                                                                    [variadic] => 
+                                                                                    [var] => PhpParser\Node\Expr\Variable Object
+                                                                                        (
+                                                                                            [attributes:protected] => Array
+                                                                                                (
+                                                                                                    [startLine] => 9
+                                                                                                    [startTokenPos] => 40
+                                                                                                    [startFilePos] => 138
+                                                                                                    [endLine] => 9
+                                                                                                    [endTokenPos] => 40
+                                                                                                    [endFilePos] => 143
+                                                                                                )
+
+                                                                                            [name] => value
+                                                                                        )
+
+                                                                                    [default] => 
+                                                                                    [flags] => 0
+                                                                                    [attrGroups] => Array
+                                                                                        (
+                                                                                        )
+
+                                                                                )
+
+                                                                            [1] => PhpParser\Node\Param Object
+                                                                                (
+                                                                                    [attributes:protected] => Array
+                                                                                        (
+                                                                                            [startLine] => 9
+                                                                                            [startTokenPos] => 43
+                                                                                            [startFilePos] => 146
+                                                                                            [endLine] => 9
+                                                                                            [endTokenPos] => 43
+                                                                                            [endFilePos] => 156
+                                                                                        )
+
+                                                                                    [type] => 
+                                                                                    [byRef] => 
+                                                                                    [variadic] => 
+                                                                                    [var] => PhpParser\Node\Expr\Variable Object
+                                                                                        (
+                                                                                            [attributes:protected] => Array
+                                                                                                (
+                                                                                                    [startLine] => 9
+                                                                                                    [startTokenPos] => 43
+                                                                                                    [startFilePos] => 146
+                                                                                                    [endLine] => 9
+                                                                                                    [endTokenPos] => 43
+                                                                                                    [endFilePos] => 156
+                                                                                                )
+
+                                                                                            [name] => attributes
+                                                                                        )
+
+                                                                                    [default] => 
+                                                                                    [flags] => 0
+                                                                                    [attrGroups] => Array
+                                                                                        (
+                                                                                        )
+
+                                                                                )
+
+                                                                        )
+
+                                                                    [returnType] => 
+                                                                    [expr] => PhpParser\Node\Expr\ArrayDimFetch Object
+                                                                        (
+                                                                            [attributes:protected] => Array
+                                                                                (
+                                                                                    [startLine] => 9
+                                                                                    [startTokenPos] => 48
+                                                                                    [startFilePos] => 162
+                                                                                    [endLine] => 9
+                                                                                    [endTokenPos] => 51
+                                                                                    [endFilePos] => 183
+                                                                                )
+
+                                                                            [var] => PhpParser\Node\Expr\Variable Object
+                                                                                (
+                                                                                    [attributes:protected] => Array
+                                                                                        (
+                                                                                            [startLine] => 9
+                                                                                            [startTokenPos] => 48
+                                                                                            [startFilePos] => 162
+                                                                                            [endLine] => 9
+                                                                                            [endTokenPos] => 48
+                                                                                            [endFilePos] => 172
+                                                                                        )
+
+                                                                                    [name] => attributes
+                                                                                )
+
+                                                                            [dim] => PhpParser\Node\Scalar\String_ Object
+                                                                                (
+                                                                                    [attributes:protected] => Array
+                                                                                        (
+                                                                                            [startLine] => 9
+                                                                                            [startTokenPos] => 50
+                                                                                            [startFilePos] => 174
+                                                                                            [endLine] => 9
+                                                                                            [endTokenPos] => 50
+                                                                                            [endFilePos] => 182
+                                                                                            [kind] => 2
+                                                                                            [rawValue] => "summary"
+                                                                                        )
+
+                                                                                    [value] => summary
+                                                                                )
+
+                                                                        )
+
+                                                                    [attrGroups] => Array
+                                                                        (
+                                                                        )
+
+                                                                )
+
+                                                            [byRef] => 
+                                                            [unpack] => 
+                                                        )
+
+                                                    [1] => PhpParser\Node\Arg Object
+                                                        (
+                                                            [attributes:protected] => Array
+                                                                (
+                                                                    [startLine] => 9
+                                                                    [startTokenPos] => 54
+                                                                    [startFilePos] => 186
+                                                                    [endLine] => 9
+                                                                    [endTokenPos] => 76
+                                                                    [endFilePos] => 246
+                                                                )
+
+                                                            [name] => PhpParser\Node\Identifier Object
+                                                                (
+                                                                    [attributes:protected] => Array
+                                                                        (
+                                                                            [startLine] => 9
+                                                                            [startTokenPos] => 54
+                                                                            [startFilePos] => 186
+                                                                            [endLine] => 9
+                                                                            [endTokenPos] => 54
+                                                                            [endFilePos] => 188
+                                                                        )
+
+                                                                    [name] => set
+                                                                )
+
+                                                            [value] => PhpParser\Node\Expr\ArrowFunction Object
+                                                                (
+                                                                    [attributes:protected] => Array
+                                                                        (
+                                                                            [startLine] => 9
+                                                                            [startTokenPos] => 57
+                                                                            [startFilePos] => 191
+                                                                            [endLine] => 9
+                                                                            [endTokenPos] => 76
+                                                                            [endFilePos] => 246
+                                                                        )
+
+                                                                    [static] => 
+                                                                    [byRef] => 
+                                                                    [params] => Array
+                                                                        (
+                                                                            [0] => PhpParser\Node\Param Object
+                                                                                (
+                                                                                    [attributes:protected] => Array
+                                                                                        (
+                                                                                            [startLine] => 9
+                                                                                            [startTokenPos] => 59
+                                                                                            [startFilePos] => 194
+                                                                                            [endLine] => 9
+                                                                                            [endTokenPos] => 62
+                                                                                            [endFilePos] => 207
+                                                                                        )
+
+                                                                                    [type] => PhpParser\Node\NullableType Object
+                                                                                        (
+                                                                                            [attributes:protected] => Array
+                                                                                                (
+                                                                                                    [startLine] => 9
+                                                                                                    [startTokenPos] => 59
+                                                                                                    [startFilePos] => 194
+                                                                                                    [endLine] => 9
+                                                                                                    [endTokenPos] => 60
+                                                                                                    [endFilePos] => 200
+                                                                                                )
+
+                                                                                            [type] => PhpParser\Node\Identifier Object
+                                                                                                (
+                                                                                                    [attributes:protected] => Array
+                                                                                                        (
+                                                                                                            [startLine] => 9
+                                                                                                            [startTokenPos] => 60
+                                                                                                            [startFilePos] => 195
+                                                                                                            [endLine] => 9
+                                                                                                            [endTokenPos] => 60
+                                                                                                            [endFilePos] => 200
+                                                                                                        )
+
+                                                                                                    [name] => string
+                                                                                                )
+
+                                                                                        )
+
+                                                                                    [byRef] => 
+                                                                                    [variadic] => 
+                                                                                    [var] => PhpParser\Node\Expr\Variable Object
+                                                                                        (
+                                                                                            [attributes:protected] => Array
+                                                                                                (
+                                                                                                    [startLine] => 9
+                                                                                                    [startTokenPos] => 62
+                                                                                                    [startFilePos] => 202
+                                                                                                    [endLine] => 9
+                                                                                                    [endTokenPos] => 62
+                                                                                                    [endFilePos] => 207
+                                                                                                )
+
+                                                                                            [name] => value
+                                                                                        )
+
+                                                                                    [default] => 
+                                                                                    [flags] => 0
+                                                                                    [attrGroups] => Array
+                                                                                        (
+                                                                                        )
+
+                                                                                )
+
+                                                                            [1] => PhpParser\Node\Param Object
+                                                                                (
+                                                                                    [attributes:protected] => Array
+                                                                                        (
+                                                                                            [startLine] => 9
+                                                                                            [startTokenPos] => 65
+                                                                                            [startFilePos] => 210
+                                                                                            [endLine] => 9
+                                                                                            [endTokenPos] => 65
+                                                                                            [endFilePos] => 220
+                                                                                        )
+
+                                                                                    [type] => 
+                                                                                    [byRef] => 
+                                                                                    [variadic] => 
+                                                                                    [var] => PhpParser\Node\Expr\Variable Object
+                                                                                        (
+                                                                                            [attributes:protected] => Array
+                                                                                                (
+                                                                                                    [startLine] => 9
+                                                                                                    [startTokenPos] => 65
+                                                                                                    [startFilePos] => 210
+                                                                                                    [endLine] => 9
+                                                                                                    [endTokenPos] => 65
+                                                                                                    [endFilePos] => 220
+                                                                                                )
+
+                                                                                            [name] => attributes
+                                                                                        )
+
+                                                                                    [default] => 
+                                                                                    [flags] => 0
+                                                                                    [attrGroups] => Array
+                                                                                        (
+                                                                                        )
+
+                                                                                )
+
+                                                                        )
+
+                                                                    [returnType] => 
+                                                                    [expr] => PhpParser\Node\Expr\Array_ Object
+                                                                        (
+                                                                            [attributes:protected] => Array
+                                                                                (
+                                                                                    [startLine] => 9
+                                                                                    [startTokenPos] => 70
+                                                                                    [startFilePos] => 226
+                                                                                    [endLine] => 9
+                                                                                    [endTokenPos] => 76
+                                                                                    [endFilePos] => 246
+                                                                                    [kind] => 2
+                                                                                )
+
+                                                                            [items] => Array
+                                                                                (
+                                                                                    [0] => PhpParser\Node\ArrayItem Object
+                                                                                        (
+                                                                                            [attributes:protected] => Array
+                                                                                                (
+                                                                                                    [startLine] => 9
+                                                                                                    [startTokenPos] => 71
+                                                                                                    [startFilePos] => 227
+                                                                                                    [endLine] => 9
+                                                                                                    [endTokenPos] => 75
+                                                                                                    [endFilePos] => 245
+                                                                                                )
+
+                                                                                            [key] => PhpParser\Node\Scalar\String_ Object
+                                                                                                (
+                                                                                                    [attributes:protected] => Array
+                                                                                                        (
+                                                                                                            [startLine] => 9
+                                                                                                            [startTokenPos] => 71
+                                                                                                            [startFilePos] => 227
+                                                                                                            [endLine] => 9
+                                                                                                            [endTokenPos] => 71
+                                                                                                            [endFilePos] => 235
+                                                                                                            [kind] => 2
+                                                                                                            [rawValue] => "summary"
+                                                                                                        )
+
+                                                                                                    [value] => summary
+                                                                                                )
+
+                                                                                            [value] => PhpParser\Node\Expr\Variable Object
+                                                                                                (
+                                                                                                    [attributes:protected] => Array
+                                                                                                        (
+                                                                                                            [startLine] => 9
+                                                                                                            [startTokenPos] => 75
+                                                                                                            [startFilePos] => 240
+                                                                                                            [endLine] => 9
+                                                                                                            [endTokenPos] => 75
+                                                                                                            [endFilePos] => 245
+                                                                                                        )
+
+                                                                                                    [name] => value
+                                                                                                )
+
+                                                                                            [byRef] => 
+                                                                                            [unpack] => 
+                                                                                        )
+
+                                                                                )
+
+                                                                        )
+
+                                                                    [attrGroups] => Array
+                                                                        (
+                                                                        )
+
+                                                                )
+
+                                                            [byRef] => 
+                                                            [unpack] => 
+                                                        )
+
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                    [attrGroups] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+)
+<?php
+
+namespace Tests\Generated;
+
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
+class Baz extends Model
+{
+    protected $guarded = [
+        'summary',
+    ];
+    protected $fillable = [
+        'name',
+    ];
+
+    protected $casts = [
+        'name' => 'string',
+        'summary' => 'string',
+    ];
+}
+.PhpParser\Node\Stmt\Use_ Object
+(
+    [attributes:protected] => Array
+        (
+        )
+
+    [type] => 1
+    [uses] => Array
+        (
+            [0] => PhpParser\Node\UseItem Object
+                (
+                    [attributes:protected] => Array
+                        (
+                        )
+
+                    [type] => 0
+                    [name] => PhpParser\Node\Name Object
+                        (
+                            [attributes:protected] => Array
+                                (
+                                )
+
+                            [name] => Illuminate\Database\Eloquent\Casts\Attribute
+                        )
+
+                    [alias] => 
+                )
+
+        )
+
+    [stmts] => Array
+        (
+            [0] => PhpParser\Node\Stmt\ClassMethod Object
+                (
+                    [attributes:protected] => Array
+                        (
+                            [startLine] => 7
+                            [startTokenPos] => 13
+                            [startFilePos] => 41
+                            [endLine] => 10
+                            [endTokenPos] => 80
+                            [endFilePos] => 254
+                        )
+
+                    [flags] => 2
+                    [byRef] => 
+                    [name] => PhpParser\Node\Identifier Object
+                        (
+                            [attributes:protected] => Array
+                                (
+                                    [startLine] => 7
+                                    [startTokenPos] => 17
+                                    [startFilePos] => 60
+                                    [endLine] => 7
+                                    [endTokenPos] => 17
+                                    [endFilePos] => 70
+                                )
+
+                            [name] => description
+                        )
+
+                    [params] => Array
+                        (
+                        )
+
+                    [returnType] => PhpParser\Node\Name Object
+                        (
+                            [attributes:protected] => Array
+                                (
+                                    [startLine] => 7
+                                    [startTokenPos] => 22
+                                    [startFilePos] => 75
+                                    [endLine] => 7
+                                    [endTokenPos] => 22
+                                    [endFilePos] => 83
+                                )
+
+                            [name] => Attribute
+                        )
+
+                    [stmts] => Array
+                        (
+                            [0] => PhpParser\Node\Stmt\Return_ Object
+                                (
+                                    [attributes:protected] => Array
+                                        (
+                                            [startLine] => 9
+                                            [startTokenPos] => 26
+                                            [startFilePos] => 99
+                                            [endLine] => 9
+                                            [endTokenPos] => 78
+                                            [endFilePos] => 248
+                                        )
+
+                                    [expr] => PhpParser\Node\Expr\StaticCall Object
+                                        (
+                                            [attributes:protected] => Array
+                                                (
+                                                    [startLine] => 9
+                                                    [startTokenPos] => 28
+                                                    [startFilePos] => 106
+                                                    [endLine] => 9
+                                                    [endTokenPos] => 77
+                                                    [endFilePos] => 247
+                                                )
+
+                                            [class] => PhpParser\Node\Name Object
+                                                (
+                                                    [attributes:protected] => Array
+                                                        (
+                                                            [startLine] => 9
+                                                            [startTokenPos] => 28
+                                                            [startFilePos] => 106
+                                                            [endLine] => 9
+                                                            [endTokenPos] => 28
+                                                            [endFilePos] => 114
+                                                        )
+
+                                                    [name] => Attribute
+                                                )
+
+                                            [name] => PhpParser\Node\Identifier Object
+                                                (
+                                                    [attributes:protected] => Array
+                                                        (
+                                                            [startLine] => 9
+                                                            [startTokenPos] => 30
+                                                            [startFilePos] => 117
+                                                            [endLine] => 9
+                                                            [endTokenPos] => 30
+                                                            [endFilePos] => 120
+                                                        )
+
+                                                    [name] => make
+                                                )
+
+                                            [args] => Array
+                                                (
+                                                    [0] => PhpParser\Node\Arg Object
+                                                        (
+                                                            [attributes:protected] => Array
+                                                                (
+                                                                    [startLine] => 9
+                                                                    [startTokenPos] => 32
+                                                                    [startFilePos] => 122
+                                                                    [endLine] => 9
+                                                                    [endTokenPos] => 51
+                                                                    [endFilePos] => 183
+                                                                )
+
+                                                            [name] => PhpParser\Node\Identifier Object
+                                                                (
+                                                                    [attributes:protected] => Array
+                                                                        (
+                                                                            [startLine] => 9
+                                                                            [startTokenPos] => 32
+                                                                            [startFilePos] => 122
+                                                                            [endLine] => 9
+                                                                            [endTokenPos] => 32
+                                                                            [endFilePos] => 124
+                                                                        )
+
+                                                                    [name] => get
+                                                                )
+
+                                                            [value] => PhpParser\Node\Expr\ArrowFunction Object
+                                                                (
+                                                                    [attributes:protected] => Array
+                                                                        (
+                                                                            [startLine] => 9
+                                                                            [startTokenPos] => 35
+                                                                            [startFilePos] => 127
+                                                                            [endLine] => 9
+                                                                            [endTokenPos] => 51
+                                                                            [endFilePos] => 183
+                                                                        )
+
+                                                                    [static] => 
+                                                                    [byRef] => 
+                                                                    [params] => Array
+                                                                        (
+                                                                            [0] => PhpParser\Node\Param Object
+                                                                                (
+                                                                                    [attributes:protected] => Array
+                                                                                        (
+                                                                                            [startLine] => 9
+                                                                                            [startTokenPos] => 37
+                                                                                            [startFilePos] => 130
+                                                                                            [endLine] => 9
+                                                                                            [endTokenPos] => 40
+                                                                                            [endFilePos] => 143
+                                                                                        )
+
+                                                                                    [type] => PhpParser\Node\NullableType Object
+                                                                                        (
+                                                                                            [attributes:protected] => Array
+                                                                                                (
+                                                                                                    [startLine] => 9
+                                                                                                    [startTokenPos] => 37
+                                                                                                    [startFilePos] => 130
+                                                                                                    [endLine] => 9
+                                                                                                    [endTokenPos] => 38
+                                                                                                    [endFilePos] => 136
+                                                                                                )
+
+                                                                                            [type] => PhpParser\Node\Identifier Object
+                                                                                                (
+                                                                                                    [attributes:protected] => Array
+                                                                                                        (
+                                                                                                            [startLine] => 9
+                                                                                                            [startTokenPos] => 38
+                                                                                                            [startFilePos] => 131
+                                                                                                            [endLine] => 9
+                                                                                                            [endTokenPos] => 38
+                                                                                                            [endFilePos] => 136
+                                                                                                        )
+
+                                                                                                    [name] => string
+                                                                                                )
+
+                                                                                        )
+
+                                                                                    [byRef] => 
+                                                                                    [variadic] => 
+                                                                                    [var] => PhpParser\Node\Expr\Variable Object
+                                                                                        (
+                                                                                            [attributes:protected] => Array
+                                                                                                (
+                                                                                                    [startLine] => 9
+                                                                                                    [startTokenPos] => 40
+                                                                                                    [startFilePos] => 138
+                                                                                                    [endLine] => 9
+                                                                                                    [endTokenPos] => 40
+                                                                                                    [endFilePos] => 143
+                                                                                                )
+
+                                                                                            [name] => value
+                                                                                        )
+
+                                                                                    [default] => 
+                                                                                    [flags] => 0
+                                                                                    [attrGroups] => Array
+                                                                                        (
+                                                                                        )
+
+                                                                                )
+
+                                                                            [1] => PhpParser\Node\Param Object
+                                                                                (
+                                                                                    [attributes:protected] => Array
+                                                                                        (
+                                                                                            [startLine] => 9
+                                                                                            [startTokenPos] => 43
+                                                                                            [startFilePos] => 146
+                                                                                            [endLine] => 9
+                                                                                            [endTokenPos] => 43
+                                                                                            [endFilePos] => 156
+                                                                                        )
+
+                                                                                    [type] => 
+                                                                                    [byRef] => 
+                                                                                    [variadic] => 
+                                                                                    [var] => PhpParser\Node\Expr\Variable Object
+                                                                                        (
+                                                                                            [attributes:protected] => Array
+                                                                                                (
+                                                                                                    [startLine] => 9
+                                                                                                    [startTokenPos] => 43
+                                                                                                    [startFilePos] => 146
+                                                                                                    [endLine] => 9
+                                                                                                    [endTokenPos] => 43
+                                                                                                    [endFilePos] => 156
+                                                                                                )
+
+                                                                                            [name] => attributes
+                                                                                        )
+
+                                                                                    [default] => 
+                                                                                    [flags] => 0
+                                                                                    [attrGroups] => Array
+                                                                                        (
+                                                                                        )
+
+                                                                                )
+
+                                                                        )
+
+                                                                    [returnType] => 
+                                                                    [expr] => PhpParser\Node\Expr\ArrayDimFetch Object
+                                                                        (
+                                                                            [attributes:protected] => Array
+                                                                                (
+                                                                                    [startLine] => 9
+                                                                                    [startTokenPos] => 48
+                                                                                    [startFilePos] => 162
+                                                                                    [endLine] => 9
+                                                                                    [endTokenPos] => 51
+                                                                                    [endFilePos] => 183
+                                                                                )
+
+                                                                            [var] => PhpParser\Node\Expr\Variable Object
+                                                                                (
+                                                                                    [attributes:protected] => Array
+                                                                                        (
+                                                                                            [startLine] => 9
+                                                                                            [startTokenPos] => 48
+                                                                                            [startFilePos] => 162
+                                                                                            [endLine] => 9
+                                                                                            [endTokenPos] => 48
+                                                                                            [endFilePos] => 172
+                                                                                        )
+
+                                                                                    [name] => attributes
+                                                                                )
+
+                                                                            [dim] => PhpParser\Node\Scalar\String_ Object
+                                                                                (
+                                                                                    [attributes:protected] => Array
+                                                                                        (
+                                                                                            [startLine] => 9
+                                                                                            [startTokenPos] => 50
+                                                                                            [startFilePos] => 174
+                                                                                            [endLine] => 9
+                                                                                            [endTokenPos] => 50
+                                                                                            [endFilePos] => 182
+                                                                                            [kind] => 2
+                                                                                            [rawValue] => "summary"
+                                                                                        )
+
+                                                                                    [value] => summary
+                                                                                )
+
+                                                                        )
+
+                                                                    [attrGroups] => Array
+                                                                        (
+                                                                        )
+
+                                                                )
+
+                                                            [byRef] => 
+                                                            [unpack] => 
+                                                        )
+
+                                                    [1] => PhpParser\Node\Arg Object
+                                                        (
+                                                            [attributes:protected] => Array
+                                                                (
+                                                                    [startLine] => 9
+                                                                    [startTokenPos] => 54
+                                                                    [startFilePos] => 186
+                                                                    [endLine] => 9
+                                                                    [endTokenPos] => 76
+                                                                    [endFilePos] => 246
+                                                                )
+
+                                                            [name] => PhpParser\Node\Identifier Object
+                                                                (
+                                                                    [attributes:protected] => Array
+                                                                        (
+                                                                            [startLine] => 9
+                                                                            [startTokenPos] => 54
+                                                                            [startFilePos] => 186
+                                                                            [endLine] => 9
+                                                                            [endTokenPos] => 54
+                                                                            [endFilePos] => 188
+                                                                        )
+
+                                                                    [name] => set
+                                                                )
+
+                                                            [value] => PhpParser\Node\Expr\ArrowFunction Object
+                                                                (
+                                                                    [attributes:protected] => Array
+                                                                        (
+                                                                            [startLine] => 9
+                                                                            [startTokenPos] => 57
+                                                                            [startFilePos] => 191
+                                                                            [endLine] => 9
+                                                                            [endTokenPos] => 76
+                                                                            [endFilePos] => 246
+                                                                        )
+
+                                                                    [static] => 
+                                                                    [byRef] => 
+                                                                    [params] => Array
+                                                                        (
+                                                                            [0] => PhpParser\Node\Param Object
+                                                                                (
+                                                                                    [attributes:protected] => Array
+                                                                                        (
+                                                                                            [startLine] => 9
+                                                                                            [startTokenPos] => 59
+                                                                                            [startFilePos] => 194
+                                                                                            [endLine] => 9
+                                                                                            [endTokenPos] => 62
+                                                                                            [endFilePos] => 207
+                                                                                        )
+
+                                                                                    [type] => PhpParser\Node\NullableType Object
+                                                                                        (
+                                                                                            [attributes:protected] => Array
+                                                                                                (
+                                                                                                    [startLine] => 9
+                                                                                                    [startTokenPos] => 59
+                                                                                                    [startFilePos] => 194
+                                                                                                    [endLine] => 9
+                                                                                                    [endTokenPos] => 60
+                                                                                                    [endFilePos] => 200
+                                                                                                )
+
+                                                                                            [type] => PhpParser\Node\Identifier Object
+                                                                                                (
+                                                                                                    [attributes:protected] => Array
+                                                                                                        (
+                                                                                                            [startLine] => 9
+                                                                                                            [startTokenPos] => 60
+                                                                                                            [startFilePos] => 195
+                                                                                                            [endLine] => 9
+                                                                                                            [endTokenPos] => 60
+                                                                                                            [endFilePos] => 200
+                                                                                                        )
+
+                                                                                                    [name] => string
+                                                                                                )
+
+                                                                                        )
+
+                                                                                    [byRef] => 
+                                                                                    [variadic] => 
+                                                                                    [var] => PhpParser\Node\Expr\Variable Object
+                                                                                        (
+                                                                                            [attributes:protected] => Array
+                                                                                                (
+                                                                                                    [startLine] => 9
+                                                                                                    [startTokenPos] => 62
+                                                                                                    [startFilePos] => 202
+                                                                                                    [endLine] => 9
+                                                                                                    [endTokenPos] => 62
+                                                                                                    [endFilePos] => 207
+                                                                                                )
+
+                                                                                            [name] => value
+                                                                                        )
+
+                                                                                    [default] => 
+                                                                                    [flags] => 0
+                                                                                    [attrGroups] => Array
+                                                                                        (
+                                                                                        )
+
+                                                                                )
+
+                                                                            [1] => PhpParser\Node\Param Object
+                                                                                (
+                                                                                    [attributes:protected] => Array
+                                                                                        (
+                                                                                            [startLine] => 9
+                                                                                            [startTokenPos] => 65
+                                                                                            [startFilePos] => 210
+                                                                                            [endLine] => 9
+                                                                                            [endTokenPos] => 65
+                                                                                            [endFilePos] => 220
+                                                                                        )
+
+                                                                                    [type] => 
+                                                                                    [byRef] => 
+                                                                                    [variadic] => 
+                                                                                    [var] => PhpParser\Node\Expr\Variable Object
+                                                                                        (
+                                                                                            [attributes:protected] => Array
+                                                                                                (
+                                                                                                    [startLine] => 9
+                                                                                                    [startTokenPos] => 65
+                                                                                                    [startFilePos] => 210
+                                                                                                    [endLine] => 9
+                                                                                                    [endTokenPos] => 65
+                                                                                                    [endFilePos] => 220
+                                                                                                )
+
+                                                                                            [name] => attributes
+                                                                                        )
+
+                                                                                    [default] => 
+                                                                                    [flags] => 0
+                                                                                    [attrGroups] => Array
+                                                                                        (
+                                                                                        )
+
+                                                                                )
+
+                                                                        )
+
+                                                                    [returnType] => 
+                                                                    [expr] => PhpParser\Node\Expr\Array_ Object
+                                                                        (
+                                                                            [attributes:protected] => Array
+                                                                                (
+                                                                                    [startLine] => 9
+                                                                                    [startTokenPos] => 70
+                                                                                    [startFilePos] => 226
+                                                                                    [endLine] => 9
+                                                                                    [endTokenPos] => 76
+                                                                                    [endFilePos] => 246
+                                                                                    [kind] => 2
+                                                                                )
+
+                                                                            [items] => Array
+                                                                                (
+                                                                                    [0] => PhpParser\Node\ArrayItem Object
+                                                                                        (
+                                                                                            [attributes:protected] => Array
+                                                                                                (
+                                                                                                    [startLine] => 9
+                                                                                                    [startTokenPos] => 71
+                                                                                                    [startFilePos] => 227
+                                                                                                    [endLine] => 9
+                                                                                                    [endTokenPos] => 75
+                                                                                                    [endFilePos] => 245
+                                                                                                )
+
+                                                                                            [key] => PhpParser\Node\Scalar\String_ Object
+                                                                                                (
+                                                                                                    [attributes:protected] => Array
+                                                                                                        (
+                                                                                                            [startLine] => 9
+                                                                                                            [startTokenPos] => 71
+                                                                                                            [startFilePos] => 227
+                                                                                                            [endLine] => 9
+                                                                                                            [endTokenPos] => 71
+                                                                                                            [endFilePos] => 235
+                                                                                                            [kind] => 2
+                                                                                                            [rawValue] => "summary"
+                                                                                                        )
+
+                                                                                                    [value] => summary
+                                                                                                )
+
+                                                                                            [value] => PhpParser\Node\Expr\Variable Object
+                                                                                                (
+                                                                                                    [attributes:protected] => Array
+                                                                                                        (
+                                                                                                            [startLine] => 9
+                                                                                                            [startTokenPos] => 75
+                                                                                                            [startFilePos] => 240
+                                                                                                            [endLine] => 9
+                                                                                                            [endTokenPos] => 75
+                                                                                                            [endFilePos] => 245
+                                                                                                        )
+
+                                                                                                    [name] => value
+                                                                                                )
+
+                                                                                            [byRef] => 
+                                                                                            [unpack] => 
+                                                                                        )
+
+                                                                                )
+
+                                                                        )
+
+                                                                    [attrGroups] => Array
+                                                                        (
+                                                                        )
+
+                                                                )
+
+                                                            [byRef] => 
+                                                            [unpack] => 
+                                                        )
+
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                    [attrGroups] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+)
+<?php
+
+namespace Tests\Generated;
+
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
+class Baz extends Model
+{
+    protected $guarded = [
+        'summary',
+    ];
+    protected $fillable = [
+        'name',
+    ];
+
+    protected $casts = [
+        'name' => 'string',
+        'summary' => 'string',
+    ];
+}
+.                                                                  2 / 2 (100%)
+
+Time: 00:01.408, Memory: 14.00 MB
+
+OK (2 tests, 5 assertions)
