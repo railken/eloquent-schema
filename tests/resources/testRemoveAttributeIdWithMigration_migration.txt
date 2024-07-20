@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bars', function (Blueprint $table) {
-        	$table->dropPrimary();
             $table->dropColumn('id');
         });
     }

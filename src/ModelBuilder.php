@@ -10,34 +10,32 @@ use Closure;
 
 class ModelBuilder extends Builder
 {
-    protected function initializeByTable(string $table)
+    protected function initializeByTable(string $table): void
     {
         parent::initializeByTable($table);
 
         $reflector = new \ReflectionClass(get_class($this->model));
         $path = $reflector->getFileName();
 
-        $this->path = $path;
-        $this->file = PHPFile::load($path);
+        $this->classEditor = new ClassEditor($path);
     }
 
-    public function createAttribute(string $table, Closure $closure)
+    public function createAttribute(string $table, Closure $closure): ModelBuilder
     {
         $this->initializeByTable($table);
 
         $attribute = new AttributeBlueprint(ActionCase::Create);
         $closure($attribute);
 
-        $file = $this->file;
 
-        $attribute->convert()->modelUp($file);
+        $attribute->convert()->modelUp($this->classEditor);
 
         // Required only with validation
 
         return $this;
     }
 
-    public function removeAttribute(string $table, string $attributeName)
+    public function removeAttribute(string $table, string $attributeName): ModelBuilder
     {
         $this->initializeByTable($table);
 
@@ -45,8 +43,7 @@ class ModelBuilder extends Builder
         $attribute->name($attributeName);
         $attribute->fillFromDatabaseSchema($this->schemaRetriever->getMigrationGeneratorSchemaByName($table));
 
-        $file = $this->file;
-        $attribute->convert()->modelDown($file);
+        $attribute->convert()->modelDown($this->classEditor);
 
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace Railken\EloquentSchema;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Archetype\Facades\PHPFile;
 use ReflectionClass;
@@ -50,7 +51,7 @@ class AttributeBlueprint
     public function type(string $type)
     {
         if (!in_array($type, array_keys($this->types))) {
-            throw new \Exception(sprintf("Invalid type: %s", $type));
+            throw new Exception(sprintf("Invalid type: %s", $type));
         }
 
         $this->type = $type;
@@ -90,12 +91,24 @@ class AttributeBlueprint
         return $this;
     }
 
+    /**
+     * @throws Exception
+     */
     public function createOpposite(): AttributeBlueprint
     {
+        if (empty($this->action)) {
+            throw new Exception("Need to define an action");
+        }
+
         if ($this->action == ActionCase::Create) {
             $attribute = new self(ActionCase::Remove);
             $attribute->name($this->name);
             $attribute->type($this->type);
+        }
+
+        if ($this->action == ActionCase::Update) {
+            //$attribute = new self(ActionCase::Update);
+            //handling renaming
         }
 
         if ($this->action == ActionCase::Remove) {
@@ -106,42 +119,30 @@ class AttributeBlueprint
         return $attribute;
     }
 
-    public function modelUp($file)
+    public function modelUp(ClassEditor $classEditor): void
     {
         // Only add fillable in the case fillable is already present
         if ($this->fillable) {
-            $file->add($this->name)->to()->protected()->property('fillable');
+            $classEditor->addProtectedAttribute('fillable', $this->name);
         }
 
         // If it's not fillable, add to the guarded
         if (!$this->fillable) {
-            $file->add($this->name)->to()->protected()->property('guarded');
+            $classEditor->addProtectedAttribute('guarded', $this->name);
         }
 
-        if ($this->type !== null) {
-            $file->add([$this->name => $this->type])->to()->protected()->property("casts");
-        }
+        $classEditor->addProtectedAttribute('casts', [$this->name => $this->type]);
+
     }
 
-    public function modelDown($file)
+    public function modelDown(ClassEditor $classEditor): void
     {
-        if (is_array($file->property('fillable'))) {
-            $file->protected()->property('fillable', array_diff($file->property('fillable'), [$this->name]));
-        }
-
-        if (is_array($file->property('guarded'))) {
-            $file->protected()->property('guarded', array_diff($file->property('guarded'), [$this->name]));
-        }
-
-        if (is_array($file->property('casts'))) {
-            $casts = $file->property('casts');
-            unset($casts[$this->name]);
-
-            $file->protected()->property('casts', $casts);
-        }
+        $classEditor->removeAttributeValue('fillable', $this->name);
+        $classEditor->removeAttributeValue('guarded', $this->name);
+        $classEditor->removeAttributeValueByIndex('casts', $this->name);
     }
 
-    public function migrateDrop()
+    public function migrateDrop(): string
     {
         return "->dropColumn('{$this->name}')";
     }
@@ -191,7 +192,7 @@ class AttributeBlueprint
         })->first();
 
         if (empty($column)) {
-            throw new \Exception(sprintf("Couldn't find the attribute in the db %s", $this->name));
+            throw new Exception(sprintf("Couldn't find the attribute in the db %s", $this->name));
         }
 
         $indexes = $params->getIndexes()->filter(function ($index) {
@@ -199,7 +200,7 @@ class AttributeBlueprint
         });
 
         if (count($indexes) > 0) {
-            throw new \Exception(sprintf("Please change your index before removing the attribute"));
+            throw new Exception(sprintf("Please change your index before removing the attribute"));
         }
 
         $this->guessType($column, $params);

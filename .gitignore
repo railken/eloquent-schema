@@ -11,3 +11,4 @@ phpunit.xml
 /.idea
 output/
 .phpunit.cache/
+qodana.yaml

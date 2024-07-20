@@ -2,18 +2,7 @@
 
 namespace Railken\EloquentSchema;
 
-use Illuminate\Database\Eloquent\Model;
-use Archetype\Facades\PHPFile;
-use ReflectionClass;
 use Illuminate\Support\Collection;
-use PhpParser\PrettyPrinter;
-use PhpParser\NodeFinder;
-use PhpParser\NodeDumper;
-use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitorAbstract;
-use PhpParser\Node;
-use PhpParser\Node\Stmt\ClassMethod;
-use Railken\Template\Generators;
 
 class ModelBlueprint
 {
@@ -26,21 +15,25 @@ class ModelBlueprint
         $this->action($action);
     }
 
-    public function action(ActionCase $action)
+    public function action(ActionCase $action): ModelBlueprint
     {
         $this->action = $action;
+
+        return $this;
     }
 
-    public function table(string $table)
+    public function table(string $table): ModelBlueprint
     {
         $this->table = $table;
 
         return $this;
     }
 
-    public function addAttribute(AttributeBlueprint $attribute)
+    public function addAttribute(AttributeBlueprint $attribute): ModelBlueprint
     {
         $this->attributes[$attribute->name] = $attribute;
+
+        return $this;
     }
 
 }

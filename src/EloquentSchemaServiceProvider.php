@@ -3,8 +3,6 @@
 namespace Railken\EloquentSchema;
 
 use Illuminate\Support\ServiceProvider;
-use Railken\EloquentSchema\Console\Commands\Mapper;
-use Illuminate\Support\Facades\Event;
 
 class EloquentSchemaServiceProvider extends ServiceProvider
 {

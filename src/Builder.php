@@ -3,7 +3,6 @@
 namespace Railken\EloquentSchema;
 
 use Illuminate\Database\Eloquent\Model;
-use Archetype\Facades\PHPFile;
 use ReflectionClass;
 use Illuminate\Support\Collection;
 use PhpParser\PrettyPrinter;
@@ -20,8 +19,7 @@ class Builder
 {
     protected $model;
     protected $table;
-    protected $path;
-    protected $file;
+    protected $classEditor;
     protected $operation = "update";
     protected SchemaRetrieverInterface $schemaRetriever;
 
@@ -37,6 +35,11 @@ class Builder
         return new $class();
     }
 
+    protected function getClassEditor(): ClassEditor
+    {
+        return $this->classEditor;
+    }
+
     protected function initializeByTable(string $table)
     {
         $this->table = $table;
@@ -47,19 +50,18 @@ class Builder
         $reflector = new \ReflectionClass(get_class($model));
         $path = $reflector->getFileName();
 
-        $this->path = $path;
-        $this->file = PHPFile::load($path);
+        $this->classEditor = new ClassEditor($path);
     }
 
     public function save()
     {
-        file_put_contents($this->path, $this->render());
+        $this->getClassEditor()->save();
 
         return $this;
     }
 
     public function render()
     {
-        return $this->file->render();
+        return $this->getClassEditor()->render();
     }
 }
