@@ -8,3 +8,4 @@ build/
 .phpunit.cache/test-results
 phpunit.xml
 .php-cs-fixer.cache
+/.idea
