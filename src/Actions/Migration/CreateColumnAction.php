@@ -31,11 +31,11 @@ class CreateColumnAction extends Column
 
     public function migrateUp(): string
     {
-        return $this->attribute->migrate(ActionCase::Create);
+        return $this->migrate($this->attribute, ActionCase::Create);
     }
 
     public function migrateDown(): string
     {
-        return $this->attribute->migrate(ActionCase::Remove);
+        return $this->dropColumn($this->attribute);
     }
 }

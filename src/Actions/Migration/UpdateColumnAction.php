@@ -28,12 +28,11 @@ class UpdateColumnAction extends Column
 
     public function migrateUp(): string
     {
-        // Handling renaming...
-        return $this->newAttribute->migrate(ActionCase::Update);
+        return $this->migrate($this->newAttribute, ActionCase::Update);
     }
 
     public function migrateDown(): string
     {
-        return $this->oldAttribute->migrate(ActionCase::Update);
+        return $this->migrate($this->oldAttribute, ActionCase::Update);
     }
 }

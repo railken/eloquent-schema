@@ -3,7 +3,9 @@
 namespace Railken\EloquentSchema\Actions\Migration;
 
 use Exception;
+use Railken\EloquentSchema\ActionCase;
 use Railken\EloquentSchema\Actions\Action;
+use Railken\EloquentSchema\Actions\Global\Attribute;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Editors\ClassEditor;
@@ -11,6 +13,8 @@ use Railken\Template\Generators;
 
 abstract class Column extends Action
 {
+    protected static string $VarTable = "\$table";
+
     protected ClassEditor $classEditor;
 
     protected string $table;
@@ -101,5 +105,49 @@ abstract class Column extends Action
 
     abstract protected function migrateDown(): string;
     abstract protected function migrateUp(): string;
+
+    public function migrateChange(): string
+    {
+        return "->change()";
+    }
+
+    public function migrateNullable(): string
+    {
+        return "->nullable()";
+    }
+
+    public function migrate(AttributeBlueprint $attribute, ActionCase $action): string
+    {
+        $migration = Column::$VarTable;
+
+        if (in_array($action, [ActionCase::Create, ActionCase::Update])) {
+            $migration .= $this->migrateColumn($attribute);
+
+            if ($attribute->required === false) {
+                $migration .= $this->migrateNullable();
+            }
+        }
+
+        if (in_array($action, [ActionCase::Update])) {
+            $migration .= $this->migrateChange();
+        }
+
+        return $migration.";";
+    }
+
+    public function migrateColumn(AttributeBlueprint $attribute): string
+    {
+        return "->".$attribute->db.($attribute->dbNeedsName ? "('{$attribute->name}')" : "()");
+    }
+
+    public function dropColumn(AttributeBlueprint $attribute): string
+    {
+        return Column::$VarTable."->dropColumn('{$attribute->name}');";
+    }
+
+    public function renameColumn(AttributeBlueprint $oldAttribute, AttributeBlueprint $newAttribute): string
+    {
+        return Column::$VarTable."->renameColumn('{$oldAttribute->name}', '{$newAttribute->name}');";
+    }
 
 }

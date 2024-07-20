@@ -8,16 +8,12 @@ class RenameColumnAction extends UpdateColumnAction
 {
     public function migrateUp(): string
     {
-        return $this->renameColumn($this->oldAttribute->name, $this->newAttribute->name);
+        return $this->renameColumn($this->oldAttribute, $this->newAttribute);
     }
 
     public function migrateDown(): string
     {
-        return $this->renameColumn($this->newAttribute->name, $this->oldAttribute->name);
+        return $this->renameColumn($this->newAttribute, $this->oldAttribute);
     }
 
-    public function renameColumn(string $old, string $new): string
-    {
-        return "\$table->renameColumn('{$old}', '{$new}')";
-    }
 }
