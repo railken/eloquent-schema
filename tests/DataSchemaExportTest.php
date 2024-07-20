@@ -2,14 +2,16 @@
 
 namespace Tests;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
-use Tests\Generated\Foo;
+use PHPUnit\Framework\Attributes\Depends;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Railken\EloquentSchema\Actions\Action;
+use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
+use Railken\EloquentSchema\Blueprints\Attributes\StringAttribute;
 use Tests\Generated\Bar;
 use Tests\Generated\Baz;
-use Illuminate\Database\Eloquent\Model;
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
-use PHPUnit\Framework\Attributes\Depends;
-use Railken\EloquentSchema\AttributeBlueprint;
+use Tests\Generated\Foo;
 
 #[RunTestsInSeparateProcesses]
 class DataSchemaExportTest extends BaseCase
@@ -46,31 +48,31 @@ class DataSchemaExportTest extends BaseCase
 
     }
 
-    public function assertResourceModel($builder)
+    public function assertActionModel(Action $action, string $filename = null)
     {
-        $filename = __DIR__."/resources/".$this->name().".txt";
+        $action->run();
 
-        if (!file_exists($filename)) {
-            throw new \Exception(sprintf("Missing file for test %s. Generated: \n%s", $filename, $builder->render()));
+        if ($filename == null) {
+            // @todo: handle multiple results resources
+            $filename = __DIR__ . "/resources/" . $this->name() . ".txt";
         }
-        $this->assertEquals(
-            trim(str_replace(["\r","\n","\t", " "], "", file_get_contents($filename))),
-            trim(str_replace(["\r","\n","\t", " "], "", $builder->render()))
-        );
+
+
+        foreach ($action->getResult() as $filepath => $content) {
+
+            if (!file_exists($filename)) {
+                throw new \Exception(sprintf("Missing file for test %s. Generated: \n%s", $filename, $content));
+            }
+
+            $this->assertEquals(
+                trim(str_replace(["\r", "\n", "\t", " "], "", file_get_contents($filename))),
+                trim(str_replace(["\r", "\n", "\t", " "], "", $content))
+            );
+        }
     }
-
-    public function assertResourceMigration($builder)
+    public function assertActionMigration($action)
     {
-        $filename = __DIR__."/resources/".$this->name()."_migration.txt";
-
-        if (!file_exists($filename)) {
-            throw new \Exception(sprintf("Missing file for test %s. Generated: \n%s", $filename, $builder->render()));
-        }
-
-        $this->assertEquals(
-            trim(str_replace(["\r","\n","\t", " "], "", file_get_contents($filename))),
-            trim(str_replace(["\r","\n","\t", " "], "", $builder->render()))
-        );
+        $this->assertActionModel($action, __DIR__."/resources/".$this->name()."_migration.txt");
     }
 
     public function testBasic()
@@ -92,16 +94,12 @@ class DataSchemaExportTest extends BaseCase
     {
         $model = new Foo();
 
-        $builder = $this->getService()->getModelBuilder()->createAttribute(
+        $action = $this->getService()->getModelBuilder()->createAttribute(
             $model->getTable(),
-            function (AttributeBlueprint $attribute) {
-                $attribute->name("fillable_field")->type("string")->fillable(true);
-            }
+            StringAttribute::make("fillable_field")->fillable(true)
         );
 
-        $builder->save();
-
-        $this->assertResourceModel($builder);
+        $this->assertActionModel($action);
     }
 
     #[Depends("testAddAttributeStringFillable")]
@@ -121,16 +119,12 @@ class DataSchemaExportTest extends BaseCase
     {
         $model = new Foo();
 
-        $builder = $this->getService()->getModelBuilder()->createAttribute(
+        $action = $this->getService()->getModelBuilder()->createAttribute(
             $model->getTable(),
-            function (AttributeBlueprint $attribute) {
-                $attribute->name("guarded_field")->type("string")->fillable(false);
-            }
+            StringAttribute::make("guarded_field")->fillable(false)
         );
 
-        $builder->save();
-
-        $this->assertResourceModel($builder);
+        $this->assertActionModel($action);
     }
 
     #[Depends("testAddAttributeStringNotFillable")]
@@ -151,25 +145,19 @@ class DataSchemaExportTest extends BaseCase
     {
         $model = new Foo();
 
-        $builder = $this->getService()->getModelBuilder()->createAttribute(
+        $action = $this->getService()->getModelBuilder()->createAttribute(
             $model->getTable(),
-            function (AttributeBlueprint $attribute) {
-                $attribute->name("fillable_field")->type("string")->fillable(true);
-            }
+            StringAttribute::make("fillable_field")->fillable(true)
         );
 
-        $builder->save();
+        $action->run(); // Skip check, just run
 
-        $builder = $this->getService()->getModelBuilder()->createAttribute(
+        $action = $this->getService()->getModelBuilder()->createAttribute(
             $model->getTable(),
-            function (AttributeBlueprint $attribute) {
-                $attribute->name("guarded_field")->type("string")->fillable(false);
-            }
+            StringAttribute::make("guarded_field")->fillable(false)
         );
 
-        $builder->save();
-
-        $this->assertResourceModel($builder);
+        $this->assertActionModel($action);
     }
 
     #[Depends("testAddAttributeStringFillableAndNot")]
@@ -191,26 +179,19 @@ class DataSchemaExportTest extends BaseCase
     {
         $model = new Foo();
 
-        $builder = $this->getService()->getModelBuilder()->createAttribute(
+        $action = $this->getService()->getModelBuilder()->createAttribute(
             $model->getTable(),
-            function (AttributeBlueprint $attribute) {
-                $attribute->name("fillable_field")->type("string")->fillable(true);
-            }
+            StringAttribute::make("fillable_field")->fillable(true)
         );
 
-        $builder->save();
+        $this->assertActionModel($action);
 
-        $this->assertResourceModel($builder);
-
-        $builder = $this->getService()->getMigrationBuilder()->createAttribute(
+        $action = $this->getService()->getMigrationBuilder()->createAttribute(
             $model->getTable(),
-            function (AttributeBlueprint $attribute) {
-                $attribute->name("fillable_field")->type("string")->fillable(true);
-            }
+            StringAttribute::make("fillable_field")->fillable(true)
         );
-        $builder->save();
 
-        $this->assertResourceMigration($builder);
+        $this->assertActionMigration($action);
     }
 
     #[Depends("testAddAttributeStringFillableWithMigration")]
@@ -233,22 +214,19 @@ class DataSchemaExportTest extends BaseCase
 
         $this->assertEquals("Hello", Bar::where('id', 1)->first()->name);
 
-        $builder = $this->getService()->getModelBuilder()->removeAttribute(
+        $action = $this->getService()->getModelBuilder()->removeAttribute(
             $model->getTable(),
             "name"
         );
 
-        $builder->save();
+        $this->assertActionModel($action);
 
-        $this->assertResourceModel($builder);
-
-        $builder = $this->getService()->getMigrationBuilder()->removeAttribute(
+        $action = $this->getService()->getMigrationBuilder()->removeAttribute(
             $model->getTable(),
             "name"
         );
-        $builder->save();
 
-        $this->assertResourceMigration($builder);
+        $this->assertActionMigration($action);
     }
 
     #[Depends("testRemoveAttributeStringFillableWithMigration")]
@@ -271,22 +249,19 @@ class DataSchemaExportTest extends BaseCase
         $this->assertEquals("Hello", Baz::where('id', 1)->first()->name);
         $this->assertEquals("There", Baz::where('id', 1)->first()->description);
 
-        $builder = $this->getService()->getModelBuilder()->removeAttribute(
+        $action = $this->getService()->getModelBuilder()->removeAttribute(
             $model->getTable(),
             "description"
         );
 
-        $builder->save();
+        $this->assertActionModel($action);
 
-        $this->assertResourceModel($builder);
-
-        $builder = $this->getService()->getMigrationBuilder()->removeAttribute(
+        $action = $this->getService()->getMigrationBuilder()->removeAttribute(
             $model->getTable(),
             "description"
         );
-        $builder->save();
 
-        $this->assertResourceMigration($builder);
+        $this->assertActionMigration($action);
     }
 
     #[Depends("testRemoveAttributeStringFillableMultipleWithMigration")]
@@ -310,22 +285,19 @@ class DataSchemaExportTest extends BaseCase
 
         $this->assertEquals("Hello", Bar::where('id', 1)->first()->name);
 
-        $builder = $this->getService()->getModelBuilder()->removeAttribute(
+        $action = $this->getService()->getModelBuilder()->removeAttribute(
             $model->getTable(),
             "id"
         );
 
-        $builder->save();
+        $this->assertActionModel($action);
 
-        $this->assertResourceModel($builder);
-
-        $builder = $this->getService()->getMigrationBuilder()->removeAttribute(
+        $action = $this->getService()->getMigrationBuilder()->removeAttribute(
             $model->getTable(),
             "id"
         );
-        $builder->save();
 
-        $this->assertResourceMigration($builder);
+        $this->assertActionMigration($action);
     }
 
     #[Depends("testRemoveAttributeIdWithMigration")]
@@ -338,19 +310,45 @@ class DataSchemaExportTest extends BaseCase
         $this->assertEquals(null, Bar::where("name", "Hello")->first()->id);
     }
 
+    public function testRenameAttribute()
+    {
+        $model = new Baz();
+
+        Baz::create([
+            "name" => "Hello",
+            "description" => "There"
+        ]);
+
+        $this->assertEquals("There", Baz::where('id', 1)->first()->description);
+
+        $action = $this->getService()->getModelBuilder()->renameAttribute(
+            $model->getTable(),
+            "description",
+            "summary"
+        );
+
+        $this->assertActionModel($action);
+
+        $action = $this->getService()->getMigrationBuilder()->renameAttribute(
+            $model->getTable(),
+            "description",
+            "summary"
+        );
+
+        $this->assertActionMigration($action);
+    }
+
     public function testCompactAddAttribute()
     {
         $model = new Foo();
 
-        [$modelBuilder, $migrationBuilder] = $this->getService()->createAttribute(
+        $result = $this->getService()->createAttribute(
             $model->getTable(),
-            function (AttributeBlueprint $attribute) {
-                $attribute->name("fillable_field")->type("string")->fillable(true);
-            }
+            StringAttribute::make("fillable_field")->fillable(true)
         );
 
-        $this->assertResourceModel($modelBuilder);
-        $this->assertResourceMigration($migrationBuilder);
+        $this->assertActionModel($result['model']);
+        $this->assertActionMigration($result['migration']);
     }
 
     /*

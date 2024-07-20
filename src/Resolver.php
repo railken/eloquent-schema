@@ -3,7 +3,9 @@
 namespace Railken\EloquentSchema;
 
 use Exception;
-use Railken\EloquentSchema\Concerns\Schema\SchemaRetrieverInterface;
+use Railken\EloquentSchema\Builders\MigrationBuilder;
+use Railken\EloquentSchema\Builders\ModelBuilder;
+use Railken\EloquentSchema\Schema\SchemaRetrieverInterface;
 
 class Resolver
 {

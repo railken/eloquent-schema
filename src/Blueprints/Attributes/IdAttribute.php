@@ -1,9 +1,12 @@
 <?php
 
-namespace Railken\EloquentSchema\Attributes;
+namespace Railken\EloquentSchema\Blueprints\Attributes;
 
 class IdAttribute extends BaseAttribute
 {
+    public string $type = "id";
+    public string $db = "id";
+
     public function migrateColumn(): string
     {
         return "->{$this->type}()";

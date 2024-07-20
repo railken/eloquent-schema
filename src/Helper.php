@@ -2,16 +2,11 @@
 
 namespace Railken\EloquentSchema;
 
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Migrations\Migrator;
-
 use Closure;
-use Railken\EloquentSchema\Concerns\Schema\DatabaseSchemaRetriever;
-use Railken\EloquentSchema\Concerns\Schema\SchemaRetrieverInterface;
+use Illuminate\Support\Collection;
+use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
+use Railken\EloquentSchema\Schema\DatabaseSchemaRetriever;
+use Railken\EloquentSchema\Schema\SchemaRetrieverInterface;
 
 class Helper
 {
@@ -83,11 +78,11 @@ class Helper
         return $this->resolver->resolveByModel($this->schemaRetriever, "migration");
     }
 
-    public function createAttribute(string $table, Closure $closure)
+    public function createAttribute(string $table, AttributeBlueprint $attribute): array
     {
         return [
-            $this->getModelBuilder()->createAttribute($table, $closure)->save(),
-            $this->getMigrationBuilder()->createAttribute($table, $closure)->save()
+            'model' => $this->getModelBuilder()->createAttribute($table, $attribute),
+            'migration' => $this->getMigrationBuilder()->createAttribute($table, $attribute)
         ];
     }
 }

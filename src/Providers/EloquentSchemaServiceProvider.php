@@ -1,8 +1,9 @@
 <?php
 
-namespace Railken\EloquentSchema;
+namespace Railken\EloquentSchema\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Railken\EloquentSchema\Helper;
 
 class EloquentSchemaServiceProvider extends ServiceProvider
 {

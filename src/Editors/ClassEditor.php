@@ -1,6 +1,6 @@
 <?php
 
-namespace Railken\EloquentSchema;
+namespace Railken\EloquentSchema\Editors;
 
 use Archetype\Facades\PHPFile;
 
@@ -20,9 +20,11 @@ class ClassEditor
         return $this->path;
     }
 
-    public function save()
+    public function save(): array
     {
-        file_put_contents($this->getPath(), $this->render());
+        $render = $this->render();
+        file_put_contents($this->getPath(), $render);
+        return [$this->getPath() => $render];
     }
 
     public function render(): string

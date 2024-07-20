@@ -1,8 +1,7 @@
 <?php
 
-namespace Railken\EloquentSchema\Concerns\Schema;
+namespace Railken\EloquentSchema\Schema;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 
 interface SchemaRetrieverInterface

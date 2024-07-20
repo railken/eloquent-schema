@@ -1,22 +1,26 @@
 <?php
 
-namespace Railken\EloquentSchema\Concerns\Schema;
+namespace Railken\EloquentSchema\Schema;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use KitLoong\MigrationsGenerator\Enum\Driver;
+use KitLoong\MigrationsGenerator\Enum\Migrations\Method\IndexType;
 use KitLoong\MigrationsGenerator\Schema\MySQLSchema;
 use KitLoong\MigrationsGenerator\Schema\PgSQLSchema;
-
 use KitLoong\MigrationsGenerator\Schema\Schema;
 use KitLoong\MigrationsGenerator\Schema\SQLiteSchema;
 use KitLoong\MigrationsGenerator\Schema\SQLSrvSchema;
-use KitLoong\MigrationsGenerator\Enum\Driver;
-
-use Exception;
+use Railken\EloquentSchema\Actions\Eloquent\Attribute;
+use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
+use Railken\EloquentSchema\Blueprints\Attributes\IdAttribute;
+use Railken\EloquentSchema\Blueprints\Attributes\StringAttribute;
+use Railken\EloquentSchema\Blueprints\Attributes\TextAttribute;
 
 use function WyriHaximus\listInstantiatableClassesInDirectory;
-use function WyriHaximus\listClassesInDirectories;
 
 class SchemaRetriever implements SchemaRetrieverInterface
 {
@@ -84,8 +88,55 @@ class SchemaRetriever implements SchemaRetrieverInterface
      *
      * @throws \Exception
      */
-    public function getMigrationGeneratorSchemaByName(string $table)
+    public function getMigrationGeneratorSchemaByName(string $table): \KitLoong\MigrationsGenerator\Schema\Models\Table
     {
         return $this->getMigrationGeneratorSchema()->getTable($table);
+    }
+
+    public function getAttributeBlueprint(string $table, string $attributeName): AttributeBlueprint
+    {
+        $params = $this->getMigrationGeneratorSchema()->getTable($table);
+
+        $column = $params->getColumns()->filter(function ($column) use ($attributeName) {
+            return $column->getName() == $attributeName;
+        })->first();
+
+        if (empty($column)) {
+            throw new Exception(sprintf("Couldn't find the attribute in the db %s", $attributeName));
+        }
+
+        $indexes = $params->getIndexes()->filter(function ($index) use ($attributeName) {
+            return in_array($attributeName, $index->getColumns()) && count($index->getColumns()) > 1;
+        });
+
+        if (count($indexes) > 0) {
+            throw new Exception("Please change your index before removing the attribute");
+        }
+
+        $attribute = $this->guessType($column, $params);
+        $attribute->required($column->isNotNull());
+
+        return $attribute;
+    }
+
+    public function guessType($column, $params): AttributeBlueprint
+    {
+        if ($column->getName() == "id") {
+
+            // Check that field is has an index primary
+            $id = $params->getIndexes()->filter(function ($index) {
+                return in_array("id", $index->getColumns()) && count($index->getColumns()) == 1 && $index->getType() == IndexType::PRIMARY;
+            })->first();
+
+            if (!empty($id)) {
+                return IdAttribute::make($column->getName());
+            }
+        }
+
+        // Handle all types...
+        return match ($column->getType()->value) {
+            "text" => TextAttribute::make($column->getName()),
+            default => StringAttribute::make($column->getName()),
+        };
     }
 }

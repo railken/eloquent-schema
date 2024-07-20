@@ -1,6 +1,6 @@
 <?php
 
-namespace Railken\EloquentSchema;
+namespace Railken\EloquentSchema\Editors;
 
 enum Visibility
 {

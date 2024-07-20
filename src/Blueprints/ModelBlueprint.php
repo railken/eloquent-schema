@@ -1,8 +1,9 @@
 <?php
 
-namespace Railken\EloquentSchema;
+namespace Railken\EloquentSchema\Blueprints;
 
 use Illuminate\Support\Collection;
+use Railken\EloquentSchema\ActionCase;
 
 class ModelBlueprint
 {

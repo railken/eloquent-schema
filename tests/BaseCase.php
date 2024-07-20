@@ -20,7 +20,7 @@ abstract class BaseCase extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [
-            \Railken\EloquentSchema\EloquentSchemaServiceProvider::class,
+            \Railken\EloquentSchema\Providers\EloquentSchemaServiceProvider::class,
             \Tests\SchemaServiceProvider::class
         ];
     }

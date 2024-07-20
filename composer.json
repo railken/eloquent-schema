@@ -40,7 +40,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Railken\\EloquentSchema\\EloquentSchemaServiceProvider"
+                "Railken\\EloquentSchema\\Providers\\EloquentSchemaServiceProvider"
             ]
         }
     },
