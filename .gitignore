@@ -9,3 +9,5 @@ build/
 phpunit.xml
 .php-cs-fixer.cache
 /.idea
+output/
+.phpunit.cache/

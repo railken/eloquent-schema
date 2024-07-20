@@ -8,4 +8,9 @@ class IdAttribute extends BaseAttribute
     {
         return "->{$this->type}()";
     }
+
+    public function migrateDrop()
+    {
+        return "->dropPrimary();\n".'$table->dropColumn'."('{$this->type}')";
+    }
 }
