@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Railken\EloquentSchema\Actions\Action;
 use Railken\EloquentSchema\Actions\Eloquent\Attribute;
+use Railken\EloquentSchema\Blueprints\Attributes\IntegerAttribute;
 use Railken\EloquentSchema\Blueprints\Attributes\StringAttribute;
 use Railken\EloquentSchema\Hooks\CastHook;
 use Railken\EloquentSchema\Hooks\FillableHook;
@@ -324,6 +325,49 @@ class DataSchemaExportTest extends BaseCase
 
         $this->assertEquals('Nice1', Baz::where('id', 2)->first()->summary);
         $this->assertEquals('Nice1', Baz::where('id', 2)->first()->description); // Legacy preserved
+    }
+
+    public function testUpdateAttributeFillable()
+    {
+        $result = $this->getService()->createAttribute(
+            (new Baz())->getTable(),
+            StringAttribute::make('field')->fillable(true)
+        );
+
+        $result['model']->run();
+        $result['migration']->run();
+        $this->artisan('migrate');
+
+        $action = $this->getService()->updateAttribute(
+            (new Baz())->getTable(),
+            'field',
+            IntegerAttribute::make('field')->fillable(false)
+        );
+
+        $this->assertAction($action);
+    }
+
+    #[Depends('testUpdateAttributeFillable')]
+    public function testUpdateAttributeFillableExceptionGenerated()
+    {
+        $this->expectException(\Illuminate\Database\QueryException::class);
+        $baz = Baz::create([
+            'name' => 'Hello2',
+            'field' => 'Nice1', // Should give error, not fillable
+        ]);
+    }
+
+    #[Depends('testUpdateAttributeFillable')]
+    public function testUpdateAttributeFillableGenerated()
+    {
+        $baz = new Baz([
+            'name' => 'Hello2',
+        ]);
+
+        $baz->field = 5;
+        $baz->save();
+
+        $this->assertEquals(5, Baz::where('id', 1)->first()->field);
     }
 
     public function testCompactAddAttribute()

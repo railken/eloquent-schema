@@ -103,4 +103,12 @@ class Helper
             'migration' => $this->getMigrationBuilder()->renameAttribute($table, $oldAttributeName, $newAttributeName),
         ];
     }
+
+    public function updateAttribute(string $table, string $attributeName, AttributeBlueprint $newAttribute): array
+    {
+        return [
+            'model' => $this->getModelBuilder()->updateAttribute($table, $attributeName, $newAttribute),
+            'migration' => $this->getMigrationBuilder()->updateAttribute($table, $attributeName, $newAttribute),
+        ];
+    }
 }

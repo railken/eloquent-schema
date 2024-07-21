@@ -1,0 +1,22 @@
+<?php
+
+namespace Tests\Generated;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Baz extends Model
+{
+    protected $guarded = [
+        'field',
+    ];
+    protected $fillable = [
+        'name',
+        'description',
+    ];
+
+    protected $casts = [
+        'name' => 'string',
+        'description' => 'string',
+        'field' => 'integer',
+    ];
+}

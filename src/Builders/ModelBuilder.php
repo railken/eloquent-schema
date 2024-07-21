@@ -7,6 +7,7 @@ use Railken\EloquentSchema\Actions\Eloquent\Attribute;
 use Railken\EloquentSchema\Actions\Eloquent\CreateAttributeAction;
 use Railken\EloquentSchema\Actions\Eloquent\RemoveAttributeAction;
 use Railken\EloquentSchema\Actions\Eloquent\RenameAttributeAction;
+use Railken\EloquentSchema\Actions\Eloquent\UpdateAttributeAction;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 use Railken\EloquentSchema\Support;
@@ -25,7 +26,7 @@ class ModelBuilder extends Builder
     }
 
     /**
-     * Add a new attribute to the table and the relative table
+     * Add a new attribute to the table and the relative model
      *
      * @throws Exception
      */
@@ -51,7 +52,7 @@ class ModelBuilder extends Builder
     }
 
     /**
-     * Remove an attribute from the table and the relative model
+     * Rename an attribute
      *
      * @throws Exception
      */
@@ -67,5 +68,21 @@ class ModelBuilder extends Builder
         $newAttribute->name($newAttributeName);
 
         return new RenameAttributeAction($this->classEditor, $oldAttribute, $newAttribute);
+    }
+
+    /**
+     * update an attribute
+     *
+     * @throws Exception
+     */
+    public function updateAttribute(string $table, string $attributeName, AttributeBlueprint $newAttribute): UpdateAttributeAction
+    {
+        $this->initializeByTable($table);
+
+        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($table, $attributeName);
+
+        Attribute::callHooks('set', [$this->classEditor, $oldAttribute]);
+
+        return new UpdateAttributeAction($this->classEditor, $oldAttribute, $newAttribute);
     }
 }

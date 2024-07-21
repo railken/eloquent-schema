@@ -21,3 +21,18 @@
 - [ ] Add hook for custom file expect models/migration (e.g. schema or validator)
 - [ ] phpstan level max
 - [x] fix errors in injectors about variable not existant
+
+- [ ] Migrations without changes to the db should not be created
+- [ ] Update hooks with "change" set/unset based on current attribute and remove from other places
+- [ ] add default value
+
+Attributes to add
+
+- [ ] Custom "casts" by class https://laravel.com/docs/11.x/eloquent-mutators#custom-casts
+- [ ] add boolean
+- [ ] add date https://laravel.com/docs/11.x/eloquent-mutators#date-casting
+- [ ] add datetime
+- [ ] add array/json https://laravel.com/docs/11.x/eloquent-mutators#array-and-json-casting
+- [ ] add number that will manage double, float, integer, decimal and others
+- [ ] add timestamp
+- [ ] add enum https://laravel.com/docs/11.x/eloquent-mutators#enum-casting

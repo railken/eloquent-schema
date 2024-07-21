@@ -6,6 +6,7 @@ use Exception;
 use Railken\EloquentSchema\Actions\Migration\CreateColumnAction;
 use Railken\EloquentSchema\Actions\Migration\RemoveColumnAction;
 use Railken\EloquentSchema\Actions\Migration\RenameColumnAction;
+use Railken\EloquentSchema\Actions\Migration\UpdateColumnAction;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 
 class MigrationBuilder extends Builder
@@ -44,5 +45,17 @@ class MigrationBuilder extends Builder
         $newAttribute->name($newAttributeName);
 
         return new RenameColumnAction($this->table, $this->classEditor, $oldAttribute, $newAttribute);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function updateAttribute(string $table, string $oldAttributeName, AttributeBlueprint $newAttribute): UpdateColumnAction
+    {
+        $this->initializeByTable($table);
+
+        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($table, $oldAttributeName);
+
+        return new UpdateColumnAction($this->table, $this->classEditor, $oldAttribute, $newAttribute);
     }
 }
