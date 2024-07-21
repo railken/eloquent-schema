@@ -12,3 +12,4 @@ phpunit.xml
 output/
 .phpunit.cache/
 qodana.yaml
+/logs

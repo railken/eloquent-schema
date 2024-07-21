@@ -20,16 +20,15 @@ class ModelMutatorRenameInjector extends MethodInjector
     protected function methodToInject(): Attribute
     {
         return Attribute::make(
-            get: fn (?string $value, $attributes) => $attributes["newName"],
-            set: fn (?string $value, $attributes) => ["newName" => $value],
+            get: fn (?string $value) => $this->placeholder,
+            set: fn (?string $value) => $this->placeholder = $value
         );
     }
 
     public function leaveNode(Node $node): void {
         parent::leaveNode($node);
-
-        if ($node instanceof Node\Scalar\String_ && $node->value == "newName") {
-            $node->value = $this->newName;
+        if ($node instanceof Node\Identifier && $node->name == "placeholder") {
+            $node->name = $this->newName;
 
             // return NodeVisitor::DONT_TRAVERSE_CHILDREN;
         }

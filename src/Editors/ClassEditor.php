@@ -7,6 +7,7 @@ use Archetype\Facades\PHPFile;
 use PhpParser\{Node, NodeTraverser, NodeVisitorAbstract, BuilderFactory};
 use Railken\EloquentSchema\Injectors\Injector;
 use Railken\EloquentSchema\Injectors\MethodInjector;
+use Railken\EloquentSchema\Visitors\AppendToClassVisitor;
 
 class ClassEditor
 {
@@ -16,7 +17,12 @@ class ClassEditor
     public function __construct(string $path)
     {
         $this->path = $path;
-        $this->file = PHPFile::load($path);
+        $this->reload();
+    }
+
+    public function reload()
+    {
+        $this->file = PHPFile::load($this->path);
     }
 
     public function getPath(): string
@@ -98,9 +104,12 @@ class ClassEditor
         return $this;
     }
 
-    public function addUse(string $class)
+    public function addUse(string $class): ClassEditor
     {
-        $this->file->use($class);
+        $uses = $this->file->use();
+        $uses[] = $class;
+        $this->file->use($uses);
+
         return $this;
     }
 
@@ -118,10 +127,9 @@ class ClassEditor
         $traverser->addVisitor($injector);
 
         $reflector = new \ReflectionClass(get_class($injector));
-
-
         $traverser->traverse(PHPFile::load($reflector->getFileName())->ast());
 
+        // Extract code to inject
         $stmts = $injector->getStmts();
 
         $factory = new BuilderFactory;
@@ -130,22 +138,28 @@ class ClassEditor
                 ->addStmt($stmts[0])
             )->getNode();
 
-
-        $newCode = $prettyPrinter->prettyPrintFile([$node]);
-
-        // $newCode = $prettyPrinter->prettyPrintFile($stmts);
-
+        // Export to code end re-import to avoid lines
         $parser = (new \PhpParser\ParserFactory())->createForNewestSupportedVersion();
-
-
-        $stmts = $parser->parse($newCode);
-
-
+        $stmts = $parser->parse($prettyPrinter->prettyPrintFile([$node]));
         $toSave = $this->file->ast();
-        $toSave[0]->stmts[1]->stmts[] = $stmts[0]->stmts[0]->stmts[0];
 
+        // Put code to current class
+        $this->addStmtsToBody($stmts[0]->stmts[0]->stmts[0]);
 
         $this->updateFile($toSave);
+    }
 
+    public function addStmtsToBody(Node $node)
+    {
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor(new AppendToClassVisitor($node));
+        $result = $traverser->traverse([$this->file->ast()[0]]);
+    }
+
+    public function prettyPrint($node)
+    {
+        $prettyPrinter = new \PhpParser\PrettyPrinter\Standard;
+        $prettyPrinter->prettyPrintFile($node);
     }
 }

@@ -13,28 +13,13 @@ class RenameAttributeAction extends UpdateAttributeAction
         $this->classEditor->addUse(
             \Illuminate\Database\Eloquent\Casts\Attribute::class
         );
+        $this->save();
+
+        // reload file...
+        $this->classEditor->reload();
 
         $injector = new ModelMutatorRenameInjector(Str::camel($this->oldAttribute->name), $this->newAttribute->name);
         $this->classEditor->inject($injector);
-
-
-        /*$this->classEditor
-            ->addProtectedMethod(Str::camel($this->oldAttribute))
-            ->setReturnType(Attribute::class)
-            ->setBody(function() {
-                return Attribute::make(
-                    get: fn (string $value) => ucfirst($value),
-                    set: fn (string $value) => strtolower($value),
-                );
-            });
-
-        // add legacy in case there is code needed
-        protected function firstName(): Attribute
-        {
-            return Attribute::make(
-                get: fn (string $value) => ucfirst($value),
-                set: fn (string $value) => strtolower($value),
-            );
-        }*/
+        $this->save();
     }
 }

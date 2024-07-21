@@ -12,8 +12,8 @@ class AttributeBlueprint
     public string $name;
     public string $type;
     public string $db;
-    public ?bool $fillable = null;
-    public ?bool $required = null;
+    public bool $fillable = true;
+    public bool $required = false;
 
     public function __construct(string $name)
     {
