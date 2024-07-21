@@ -2,15 +2,17 @@
 
 namespace Railken\EloquentSchema\Builders;
 
+use Illuminate\Database\Eloquent\Model;
 use Railken\EloquentSchema\Editors\ClassEditor;
 use Railken\EloquentSchema\Schema\SchemaRetrieverInterface;
-use Illuminate\Database\Eloquent\Model;
 use Railken\EloquentSchema\Support;
 
 class Builder
 {
     protected Model $model;
+
     protected string $table;
+
     protected ClassEditor $classEditor;
 
     protected SchemaRetrieverInterface $schemaRetriever;
@@ -38,8 +40,6 @@ class Builder
         $model = $this->newModelInstanceByTable($table);
         $this->model = $model;
 
-
         $this->classEditor = new ClassEditor(Support::getPathByObject($model));
     }
-
 }

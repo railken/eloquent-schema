@@ -2,7 +2,6 @@
 
 namespace Railken\EloquentSchema\Hooks;
 
-use Railken\EloquentSchema\Actions\Eloquent\Attribute;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 
@@ -22,5 +21,4 @@ class CastHook
     {
         // Type is already defined in the database, no need to redefine it
     }
-
 }

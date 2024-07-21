@@ -8,7 +8,7 @@ class RemoveColumnAction extends CreateColumnAction
 {
     public function getPrefix(): string
     {
-        return "remove_";
+        return 'remove_';
     }
 
     public function migrateUp(): string

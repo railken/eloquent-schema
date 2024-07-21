@@ -11,7 +11,7 @@ class Resolver
 {
     public static array $classes = [
         'model' => ModelBuilder::class,
-        'migration' => MigrationBuilder::class
+        'migration' => MigrationBuilder::class,
     ];
 
     /**
@@ -21,11 +21,10 @@ class Resolver
     {
         $builders = self::$classes;
 
-        if (!isset($builders[$builder])) {
-            throw new Exception(sprintf("No builder found: %s", $builder));
+        if (! isset($builders[$builder])) {
+            throw new Exception(sprintf('No builder found: %s', $builder));
         }
 
         return new $builders[$builder]($schemaRetriever);
     }
-
 }

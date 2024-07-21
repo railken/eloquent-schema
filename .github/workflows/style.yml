@@ -28,8 +28,7 @@ jobs:
       - name: Run fix:style
         run: |
           export PATH="$HOME/.composer/vendor/bin:$PATH"
-          ./vendor/bin/php-cs-fixer fix src
-          ./vendor/bin/php-cs-fixer fix tests
+          ./vendor/bin/pint
 
       - uses: stefanzweifel/git-auto-commit-action@v2.1.0
         with:

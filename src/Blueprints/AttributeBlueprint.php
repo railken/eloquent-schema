@@ -2,17 +2,16 @@
 
 namespace Railken\EloquentSchema\Blueprints;
 
-use Exception;
-use KitLoong\MigrationsGenerator\Enum\Migrations\Method\IndexType;
-use Railken\EloquentSchema\ActionCase;
-use Railken\EloquentSchema\Editors\ClassEditor;
-
 class AttributeBlueprint
 {
     public string $name;
+
     public string $type;
+
     public string $db;
+
     public ?bool $fillable = null;
+
     public ?bool $required = null;
 
     public function __construct(string $name)
@@ -20,9 +19,10 @@ class AttributeBlueprint
         $this->name($name);
     }
 
-    public static function make(string $name): AttributeBlueprint
+    public static function make(): AttributeBlueprint
     {
-        return new static($name);
+        // @phpstan-ignore-next-line
+        return new static(...func_get_args());
     }
 
     public function name(string $name): AttributeBlueprint

@@ -2,8 +2,8 @@
 
 namespace Railken\EloquentSchema\Visitors;
 
-use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node;
+use PhpParser\NodeVisitorAbstract;
 
 class AppendToClassVisitor extends NodeVisitorAbstract
 {
@@ -20,5 +20,4 @@ class AppendToClassVisitor extends NodeVisitorAbstract
             $node->stmts[] = $this->node;
         }
     }
-
 }

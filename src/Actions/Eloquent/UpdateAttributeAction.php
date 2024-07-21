@@ -8,6 +8,7 @@ use Railken\EloquentSchema\Editors\ClassEditor;
 class UpdateAttributeAction extends Attribute
 {
     protected AttributeBlueprint $oldAttribute;
+
     protected AttributeBlueprint $newAttribute;
 
     public function __construct(ClassEditor $classEditor, AttributeBlueprint $oldAttribute, AttributeBlueprint $newAttribute)

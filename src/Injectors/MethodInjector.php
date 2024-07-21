@@ -2,12 +2,12 @@
 
 namespace Railken\EloquentSchema\Injectors;
 
-use PhpParser\BuilderFactory;
 use PhpParser\Node;
 
 class MethodInjector extends Injector
 {
     protected string $methodName;
+
     protected Node $node;
 
     protected string $repositoryClassName;

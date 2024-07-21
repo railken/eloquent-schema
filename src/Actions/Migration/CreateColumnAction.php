@@ -3,13 +3,13 @@
 namespace Railken\EloquentSchema\Actions\Migration;
 
 use Railken\EloquentSchema\ActionCase;
-use Railken\EloquentSchema\Actions\Action;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 
 class CreateColumnAction extends Column
 {
     protected AttributeBlueprint $attribute;
+
     protected array $result = [];
 
     public function __construct(string $table, ClassEditor $classEditor, AttributeBlueprint $attribute)
@@ -26,7 +26,7 @@ class CreateColumnAction extends Column
 
     public function getPrefix(): string
     {
-        return "create_";
+        return 'create_';
     }
 
     public function migrateUp(): string

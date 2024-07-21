@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Baz extends Model
 {
     protected $fillable = [
-        'name', 'description'
+        'name', 'description',
     ];
 
     protected $casts = [

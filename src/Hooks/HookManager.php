@@ -2,8 +2,6 @@
 
 namespace Railken\EloquentSchema\Hooks;
 
-use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
-
 trait HookManager
 {
     protected static array $hooks = [];

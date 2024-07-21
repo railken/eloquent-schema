@@ -6,7 +6,9 @@ use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 
 class BaseAttribute extends AttributeBlueprint
 {
-    public string $type = "string";
-    public string $db = "string";
+    public string $type = 'string';
+
+    public string $db = 'string';
+
     public bool $dbNeedsName = true;
 }

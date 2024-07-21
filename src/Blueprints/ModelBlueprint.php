@@ -8,7 +8,9 @@ use Railken\EloquentSchema\ActionCase;
 class ModelBlueprint
 {
     public string $table;
+
     public Collection $attributes;
+
     public ActionCase $action;
 
     public function __construct(ActionCase $action)
@@ -36,5 +38,4 @@ class ModelBlueprint
 
         return $this;
     }
-
 }

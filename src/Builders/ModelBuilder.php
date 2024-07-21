@@ -27,23 +27,18 @@ class ModelBuilder extends Builder
     /**
      * Add a new attribute to the table and the relative table
      *
-     * @param string $table
-     * @param AttributeBlueprint $attribute
-     * @return CreateAttributeAction
      * @throws Exception
      */
     public function createAttribute(string $table, AttributeBlueprint $attribute): CreateAttributeAction
     {
         $this->initializeByTable($table);
+
         return new CreateAttributeAction($this->classEditor, $attribute);
     }
 
     /**
      * Remove an attribute from the table and the relative model
      *
-     * @param string $table
-     * @param string $attributeName
-     * @return RemoveAttributeAction
      * @throws Exception
      */
     public function removeAttribute(string $table, string $attributeName): RemoveAttributeAction
@@ -58,10 +53,6 @@ class ModelBuilder extends Builder
     /**
      * Remove an attribute from the table and the relative model
      *
-     * @param string $table
-     * @param string $oldAttributeName
-     * @param string $newAttributeName
-     * @return RenameAttributeAction
      * @throws Exception
      */
     public function renameAttribute(string $table, string $oldAttributeName, string $newAttributeName): RenameAttributeAction
@@ -70,8 +61,7 @@ class ModelBuilder extends Builder
 
         $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($table, $oldAttributeName);
 
-        Attribute::callHooks("set", [$this->classEditor, $oldAttribute]);
-
+        Attribute::callHooks('set', [$this->classEditor, $oldAttribute]);
 
         $newAttribute = clone $oldAttribute;
         $newAttribute->name($newAttributeName);

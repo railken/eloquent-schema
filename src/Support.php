@@ -2,8 +2,8 @@
 
 namespace Railken\EloquentSchema;
 
-use ReflectionException;
 use ReflectionClass;
+use ReflectionException;
 
 class Support
 {
@@ -13,6 +13,7 @@ class Support
     public static function getPathByClass(string $class): string
     {
         $reflector = new ReflectionClass($class);
+
         return $reflector->getFileName();
     }
 

@@ -2,7 +2,6 @@
 
 namespace Railken\EloquentSchema\Hooks;
 
-use Railken\EloquentSchema\Actions\Eloquent\Attribute;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 
@@ -10,8 +9,8 @@ class GuardedHook
 {
     public function add(ClassEditor $classEditor, AttributeBlueprint $attribute): void
     {
-        if (!$attribute->fillable) {
-            $classEditor->addProtectedProperty("guarded", $attribute->name);
+        if (! $attribute->fillable) {
+            $classEditor->addProtectedProperty('guarded', $attribute->name);
         }
     }
 
@@ -24,5 +23,4 @@ class GuardedHook
     {
         // FillableHook will take care of filling the value of fillable
     }
-
 }

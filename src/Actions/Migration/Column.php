@@ -5,15 +5,13 @@ namespace Railken\EloquentSchema\Actions\Migration;
 use Exception;
 use Railken\EloquentSchema\ActionCase;
 use Railken\EloquentSchema\Actions\Action;
-use Railken\EloquentSchema\Actions\Global\Attribute;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
-use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Editors\ClassEditor;
 use Railken\Template\Generators;
 
 abstract class Column extends Action
 {
-    protected static string $VarTable = "\$table";
+    protected static string $VarTable = '$table';
 
     protected ClassEditor $classEditor;
 
@@ -28,6 +26,7 @@ abstract class Column extends Action
     }
 
     abstract public function getPrefix(): string;
+
     public function getResult(): array
     {
         return $this->result;
@@ -67,26 +66,22 @@ abstract class Column extends Action
         return $generator->generateAndRender($this->getStub(), [
             'table' => $this->table,
             'oldValue' => $this->migrateDown(),
-            'newValue' => $this->migrateUp()
+            'newValue' => $this->migrateUp(),
         ]);
     }
 
     /**
      * Get the full path to the migration.
-     *
-     * @return string
      */
     protected function getPath(): string
     {
-        $name = $this->getPrefix().$this->table."_table";
+        $name = $this->getPrefix().$this->table.'_table';
 
-        return database_path().DIRECTORY_SEPARATOR."migrations".DIRECTORY_SEPARATOR.$this->getDatePrefix().'_'.$name.'.php';
+        return database_path().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR.$this->getDatePrefix().'_'.$name.'.php';
     }
 
     /**
      * Get the date prefix for the migration.
-     *
-     * @return string
      */
     protected function getDatePrefix(): string
     {
@@ -95,25 +90,24 @@ abstract class Column extends Action
 
     /**
      * Get the migration stub file.
-     *
-     * @return string
      */
     protected function getStub(): string
     {
-        return file_get_contents(__DIR__."/../../../stubs/migration.attribute.stub");
+        return file_get_contents(__DIR__.'/../../../stubs/migration.attribute.stub');
     }
 
     abstract protected function migrateDown(): string;
+
     abstract protected function migrateUp(): string;
 
     public function migrateChange(): string
     {
-        return "->change()";
+        return '->change()';
     }
 
     public function migrateNullable(): string
     {
-        return "->nullable()";
+        return '->nullable()';
     }
 
     public function migrate(AttributeBlueprint $attribute, ActionCase $action): string
@@ -132,12 +126,12 @@ abstract class Column extends Action
             $migration .= $this->migrateChange();
         }
 
-        return $migration.";";
+        return $migration.';';
     }
 
     public function migrateColumn(AttributeBlueprint $attribute): string
     {
-        return "->".$attribute->db.($attribute->dbNeedsName ? "('{$attribute->name}')" : "()");
+        return '->'.$attribute->db.($attribute->dbNeedsName ? "('{$attribute->name}')" : '()');
     }
 
     public function dropColumn(AttributeBlueprint $attribute): string
@@ -149,5 +143,4 @@ abstract class Column extends Action
     {
         return Column::$VarTable."->renameColumn('{$oldAttribute->name}', '{$newAttribute->name}');";
     }
-
 }

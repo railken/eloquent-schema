@@ -3,8 +3,6 @@
 namespace Railken\EloquentSchema\Actions\Global;
 
 use Railken\EloquentSchema\Actions\Action;
-use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
-use Railken\EloquentSchema\Editors\ClassEditor;
 
 abstract class Attribute extends Action
 {
@@ -19,5 +17,4 @@ abstract class Attribute extends Action
     {
         return $this->result;
     }
-
 }

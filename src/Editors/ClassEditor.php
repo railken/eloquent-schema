@@ -3,9 +3,8 @@
 namespace Railken\EloquentSchema\Editors;
 
 use Archetype\Facades\PHPFile;
-
-use PhpParser\{Node, NodeTraverser, NodeVisitorAbstract, BuilderFactory};
-use Railken\EloquentSchema\Injectors\Injector;
+use PhpParser\Node;
+use PhpParser\NodeTraverser;
 use Railken\EloquentSchema\Injectors\MethodInjector;
 use Railken\EloquentSchema\Support;
 use Railken\EloquentSchema\Visitors\AppendToClassVisitor;
@@ -13,6 +12,7 @@ use Railken\EloquentSchema\Visitors\AppendToClassVisitor;
 class ClassEditor
 {
     protected string $path;
+
     protected \Archetype\PHPFile $file;
 
     public function __construct(string $path)
@@ -35,6 +35,7 @@ class ClassEditor
     {
         $render = $this->render();
         file_put_contents($this->getPath(), $render);
+
         return [$this->getPath() => $render];
     }
 
@@ -42,11 +43,12 @@ class ClassEditor
     {
         return $this->file->render();
     }
+
     public function addPropertyValue(string $name, mixed $value, Visibility $visibility): ClassEditor
     {
         $builder = $this->file->add($value)->to();
 
-        switch($visibility) {
+        switch ($visibility) {
             case Visibility::Public:
                 $builder = $builder->public();
                 break;
@@ -67,6 +69,7 @@ class ClassEditor
     {
         return $this->file->property($name);
     }
+
     public function getAttributeByIndex(string $name)
     {
         return $this->file->property($name);
@@ -83,19 +86,20 @@ class ClassEditor
 
         return $this;
     }
+
     public function addProtectedProperty(string $name, mixed $value): ClassEditor
     {
         $this->addPropertyValue($name, $value, Visibility::Protected);
 
         return $this;
     }
+
     public function addPrivateProperty(string $name, mixed $value): ClassEditor
     {
         $this->addPropertyValue($name, $value, Visibility::Private);
 
         return $this;
     }
-
 
     public function removePropertyValue(string $name, mixed $value): ClassEditor
     {
@@ -141,6 +145,7 @@ class ClassEditor
     {
         $traverser = new NodeTraverser();
         $traverser->addVisitor(new AppendToClassVisitor($node));
+
         return $traverser->traverse([$this->file->ast()[0]]);
     }
 }

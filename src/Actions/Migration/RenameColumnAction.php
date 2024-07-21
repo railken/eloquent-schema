@@ -2,8 +2,6 @@
 
 namespace Railken\EloquentSchema\Actions\Migration;
 
-use Railken\EloquentSchema\ActionCase;
-
 class RenameColumnAction extends UpdateColumnAction
 {
     public function migrateUp(): string
@@ -15,5 +13,4 @@ class RenameColumnAction extends UpdateColumnAction
     {
         return $this->renameColumn($this->newAttribute, $this->oldAttribute);
     }
-
 }

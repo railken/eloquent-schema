@@ -11,7 +11,7 @@ class SchemaServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->loadMigrationsFrom(__DIR__ . '/Generated/migrations');
-        $this->loadMigrationsFrom(__DIR__ . '/../vendor/orchestra/testbench-core/laravel/database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/Generated/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../vendor/orchestra/testbench-core/laravel/database/migrations');
     }
 }

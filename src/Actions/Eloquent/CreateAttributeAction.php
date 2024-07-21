@@ -8,6 +8,7 @@ use Railken\EloquentSchema\Editors\ClassEditor;
 class CreateAttributeAction extends Attribute
 {
     protected AttributeBlueprint $attribute;
+
     public function __construct(ClassEditor $classEditor, AttributeBlueprint $attribute)
     {
         $this->attribute = $attribute;

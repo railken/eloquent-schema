@@ -2,15 +2,11 @@
 
 namespace Railken\EloquentSchema\Builders;
 
-use Closure;
 use Exception;
-use Railken\EloquentSchema\ActionCase;
-use Railken\EloquentSchema\Actions\Eloquent\RenameAttributeAction;
 use Railken\EloquentSchema\Actions\Migration\CreateColumnAction;
 use Railken\EloquentSchema\Actions\Migration\RemoveColumnAction;
 use Railken\EloquentSchema\Actions\Migration\RenameColumnAction;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
-use Railken\Template\Generators;
 
 class MigrationBuilder extends Builder
 {
@@ -19,6 +15,7 @@ class MigrationBuilder extends Builder
     public function createAttribute(string $table, AttributeBlueprint $attribute): CreateColumnAction
     {
         $this->initializeByTable($table);
+
         return new CreateColumnAction($table, $this->classEditor, $attribute);
     }
 
@@ -33,6 +30,7 @@ class MigrationBuilder extends Builder
 
         return new RemoveColumnAction($table, $this->classEditor, $attribute);
     }
+
     /**
      * @throws Exception
      */

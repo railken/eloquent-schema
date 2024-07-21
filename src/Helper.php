@@ -2,7 +2,6 @@
 
 namespace Railken\EloquentSchema;
 
-use Closure;
 use Illuminate\Support\Collection;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Schema\DatabaseSchemaRetriever;
@@ -11,8 +10,11 @@ use Railken\EloquentSchema\Schema\SchemaRetrieverInterface;
 class Helper
 {
     protected $attributes;
+
     protected $migrations;
+
     protected $resolver;
+
     protected SchemaRetrieverInterface $schemaRetriever;
 
     /**
@@ -70,19 +72,19 @@ class Helper
 
     public function getModelBuilder()
     {
-        return $this->resolver->resolveByModel($this->schemaRetriever, "model");
+        return $this->resolver->resolveByModel($this->schemaRetriever, 'model');
     }
 
     public function getMigrationBuilder()
     {
-        return $this->resolver->resolveByModel($this->schemaRetriever, "migration");
+        return $this->resolver->resolveByModel($this->schemaRetriever, 'migration');
     }
 
     public function createAttribute(string $table, AttributeBlueprint $attribute): array
     {
         return [
             'model' => $this->getModelBuilder()->createAttribute($table, $attribute),
-            'migration' => $this->getMigrationBuilder()->createAttribute($table, $attribute)
+            'migration' => $this->getMigrationBuilder()->createAttribute($table, $attribute),
         ];
     }
 
@@ -90,7 +92,7 @@ class Helper
     {
         return [
             'model' => $this->getModelBuilder()->removeAttribute($table, $attributeName),
-            'migration' => $this->getMigrationBuilder()->removeAttribute($table, $attributeName)
+            'migration' => $this->getMigrationBuilder()->removeAttribute($table, $attributeName),
         ];
     }
 
@@ -98,7 +100,7 @@ class Helper
     {
         return [
             'model' => $this->getModelBuilder()->renameAttribute($table, $oldAttributeName, $newAttributeName),
-            'migration' => $this->getMigrationBuilder()->renameAttribute($table, $oldAttributeName, $newAttributeName)
+            'migration' => $this->getMigrationBuilder()->renameAttribute($table, $oldAttributeName, $newAttributeName),
         ];
     }
 }

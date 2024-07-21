@@ -11,6 +11,7 @@ class UpdateColumnAction extends Column
     protected string $table;
 
     protected AttributeBlueprint $oldAttribute;
+
     protected AttributeBlueprint $newAttribute;
 
     public function __construct(string $table, ClassEditor $classEditor, AttributeBlueprint $oldAttribute, AttributeBlueprint $newAttribute)
@@ -23,7 +24,7 @@ class UpdateColumnAction extends Column
 
     public function getPrefix(): string
     {
-        return "update_";
+        return 'update_';
     }
 
     public function migrateUp(): string

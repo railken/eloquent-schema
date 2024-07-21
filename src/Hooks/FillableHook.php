@@ -2,7 +2,6 @@
 
 namespace Railken\EloquentSchema\Hooks;
 
-use Railken\EloquentSchema\Actions\Eloquent\Attribute;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 
@@ -11,7 +10,7 @@ class FillableHook
     public function add(ClassEditor $classEditor, AttributeBlueprint $attribute): void
     {
         if ($attribute->fillable) {
-            $classEditor->addProtectedProperty("fillable", $attribute->name);
+            $classEditor->addProtectedProperty('fillable', $attribute->name);
         }
     }
 
@@ -22,7 +21,6 @@ class FillableHook
 
     public function set(ClassEditor $classEditor, AttributeBlueprint $attribute): void
     {
-        $attribute->fillable($classEditor->isValueInAttribute("fillable", $attribute->name));
+        $attribute->fillable($classEditor->isValueInAttribute('fillable', $attribute->name));
     }
-
 }

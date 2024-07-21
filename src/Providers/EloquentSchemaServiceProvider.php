@@ -20,5 +20,4 @@ class EloquentSchemaServiceProvider extends ServiceProvider
 
         parent::register();
     }
-
 }

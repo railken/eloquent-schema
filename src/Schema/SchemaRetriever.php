@@ -4,7 +4,6 @@ namespace Railken\EloquentSchema\Schema;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use KitLoong\MigrationsGenerator\Enum\Driver;
@@ -14,7 +13,6 @@ use KitLoong\MigrationsGenerator\Schema\PgSQLSchema;
 use KitLoong\MigrationsGenerator\Schema\Schema;
 use KitLoong\MigrationsGenerator\Schema\SQLiteSchema;
 use KitLoong\MigrationsGenerator\Schema\SQLSrvSchema;
-use Railken\EloquentSchema\Actions\Eloquent\Attribute;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Blueprints\Attributes\IdAttribute;
 use Railken\EloquentSchema\Blueprints\Attributes\StringAttribute;
@@ -41,7 +39,7 @@ class SchemaRetriever implements SchemaRetrieverInterface
                 if ($model instanceof Model) {
 
                     if ($this->models->has($model->getTable())) {
-                        throw new \Exception(sprintf("Model already added %s: %s", $class, $model->getTable()));
+                        throw new \Exception(sprintf('Model already added %s: %s', $class, $model->getTable()));
                     }
 
                     $this->models->put($model->getTable(), $class);
@@ -70,15 +68,15 @@ class SchemaRetriever implements SchemaRetrieverInterface
     {
         $driver = DB::getDriverName();
 
-        if (!$driver) {
+        if (! $driver) {
             throw new Exception('Failed to find database driver.');
         }
 
         return match ($driver) {
-            Driver::MARIADB->value, Driver::MYSQL->value    => app(MySQLSchema::class),
-            Driver::PGSQL->value                            => app(PgSQLSchema::class),
-            Driver::SQLITE->value                           => app(SQLiteSchema::class),
-            Driver::SQLSRV->value                           => app(SQLSrvSchema::class),
+            Driver::MARIADB->value, Driver::MYSQL->value => app(MySQLSchema::class),
+            Driver::PGSQL->value => app(PgSQLSchema::class),
+            Driver::SQLITE->value => app(SQLiteSchema::class),
+            Driver::SQLSRV->value => app(SQLSrvSchema::class),
             default => throw new Exception('The database driver in use is not supported.'),
         };
     }
@@ -110,7 +108,7 @@ class SchemaRetriever implements SchemaRetrieverInterface
         });
 
         if (count($indexes) > 0) {
-            throw new Exception("Please change your index before removing the attribute");
+            throw new Exception('Please change your index before removing the attribute');
         }
 
         $attribute = $this->guessType($column, $params);
@@ -121,21 +119,21 @@ class SchemaRetriever implements SchemaRetrieverInterface
 
     public function guessType($column, $params): AttributeBlueprint
     {
-        if ($column->getName() == "id") {
+        if ($column->getName() == 'id') {
 
             // Check that field is has an index primary
             $id = $params->getIndexes()->filter(function ($index) {
-                return in_array("id", $index->getColumns()) && count($index->getColumns()) == 1 && $index->getType() == IndexType::PRIMARY;
+                return in_array('id', $index->getColumns()) && count($index->getColumns()) == 1 && $index->getType() == IndexType::PRIMARY;
             })->first();
 
-            if (!empty($id)) {
+            if (! empty($id)) {
                 return IdAttribute::make($column->getName());
             }
         }
 
         // Handle all types...
         return match ($column->getType()->value) {
-            "text" => TextAttribute::make($column->getName()),
+            'text' => TextAttribute::make($column->getName()),
             default => StringAttribute::make($column->getName()),
         };
     }

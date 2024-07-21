@@ -21,7 +21,7 @@ abstract class BaseCase extends \Orchestra\Testbench\TestCase
     {
         return [
             \Railken\EloquentSchema\Providers\EloquentSchemaServiceProvider::class,
-            \Tests\SchemaServiceProvider::class
+            \Tests\SchemaServiceProvider::class,
         ];
     }
 }

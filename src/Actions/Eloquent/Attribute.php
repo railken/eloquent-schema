@@ -13,7 +13,6 @@ abstract class Attribute extends Action
 
     protected ClassEditor $classEditor;
 
-
     protected array $result = [];
 
     public function __construct(ClassEditor $classEditor)
@@ -33,11 +32,11 @@ abstract class Attribute extends Action
 
     public function addToModel(AttributeBlueprint $attribute): void
     {
-        self::callHooks("add", [$this->classEditor, $attribute]);
+        self::callHooks('add', [$this->classEditor, $attribute]);
     }
 
     public function removeFromModel(AttributeBlueprint $attribute): void
     {
-        self::callHooks("remove", [$this->classEditor, $attribute]);
+        self::callHooks('remove', [$this->classEditor, $attribute]);
     }
 }
