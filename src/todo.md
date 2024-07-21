@@ -5,7 +5,8 @@
 - [ ] Update attribute
 - [ ] When "renaming" an attribute, an update occurs in all eloquent module. Not only database but also eloquent model has to be retrieved in order to fill fields such as: validation, fillable, etc... 
 - [ ] Tests updates and check all differences between fillable/required/validation
-- [ ] Add hooks so dev can add custom rules when something is added, eg. extra param
+- [x] Added hooks to Eloquent\Model
+- [x] Add hooks so dev can add custom rules when something is added, eg. extra param
 - [ ] Migrate migration stubs to injector (even text maybe -> -> ->)
 - [ ] Create new model
 - [ ] Rename model
@@ -17,6 +18,6 @@
 - [ ] Test with different attributes
 - [ ] Separate tests based on action
 - [ ] Find a way for better text then new file
-
+- [ ] Add hook for custom file expect models/migration (e.g. schema or validator)
 - [ ] phpstan level max
 - [x] fix errors in injectors about variable not existant

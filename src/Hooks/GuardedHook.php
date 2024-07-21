@@ -20,9 +20,9 @@ class GuardedHook
         $classEditor->removePropertyValue('guarded', $attribute->name);
     }
 
-    public function get(ClassEditor $classEditor, AttributeBlueprint $attribute): bool
+    public function set(ClassEditor $classEditor, AttributeBlueprint $attribute): void
     {
-        return $classEditor->getAttribute("guarded");
+        // FillableHook will take care of filling the value of fillable
     }
 
 }

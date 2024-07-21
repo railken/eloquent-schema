@@ -18,9 +18,9 @@ class CastHook
         $classEditor->removeAttributeValueByIndex('casts', $attribute->name);
     }
 
-    public function get(ClassEditor $classEditor, AttributeBlueprint $attribute): bool
+    public function set(ClassEditor $classEditor, AttributeBlueprint $attribute)
     {
-        return $classEditor->getAttributeByIndex("casts", $attribute->name);
+        // Type is already defined in the database, no need to redefine it
     }
 
 }

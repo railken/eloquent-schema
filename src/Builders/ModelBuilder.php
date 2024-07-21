@@ -3,6 +3,7 @@
 namespace Railken\EloquentSchema\Builders;
 
 use Exception;
+use Railken\EloquentSchema\Actions\Eloquent\Attribute;
 use Railken\EloquentSchema\Actions\Eloquent\CreateAttributeAction;
 use Railken\EloquentSchema\Actions\Eloquent\RemoveAttributeAction;
 use Railken\EloquentSchema\Actions\Eloquent\RenameAttributeAction;
@@ -68,6 +69,9 @@ class ModelBuilder extends Builder
         $this->initializeByTable($table);
 
         $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($table, $oldAttributeName);
+
+        Attribute::callHooks("set", [$this->classEditor, $oldAttribute]);
+
 
         $newAttribute = clone $oldAttribute;
         $newAttribute->name($newAttributeName);

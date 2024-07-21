@@ -20,9 +20,9 @@ class FillableHook
         $classEditor->removePropertyValue('fillable', $attribute->name);
     }
 
-    public function get(ClassEditor $classEditor, AttributeBlueprint $attribute): bool
+    public function set(ClassEditor $classEditor, AttributeBlueprint $attribute): void
     {
-        return $classEditor->getAttribute("fillable");
+        $attribute->fillable($classEditor->isValueInAttribute("fillable", $attribute->name));
     }
 
 }

@@ -8,7 +8,7 @@ trait HookManager
 {
     protected static array $hooks = [];
 
-    public function callHooks(string $event, array $params): void
+    public static function callHooks(string $event, array $params): void
     {
         foreach (self::getHooks() as $hook) {
             $hook = new $hook();
