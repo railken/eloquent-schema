@@ -13,3 +13,4 @@ output/
 .phpunit.cache/
 qodana.yaml
 /logs
+/tests/Generated
