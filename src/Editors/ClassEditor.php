@@ -123,10 +123,10 @@ class ClassEditor
 
         $stmts = $injector->getStmts();
 
-        $this->addStmtsToBody($stmts[0]);
+        $this->addNodeToBody($stmts[0]);
     }
 
-    public function addStmtsToBody(Node $node): array
+    public function addNodeToBody(Node $node): array
     {
         $traverser = new NodeTraverser();
         $traverser->addVisitor(new AppendToClassVisitor($node));
