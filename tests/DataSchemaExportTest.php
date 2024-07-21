@@ -58,7 +58,13 @@ class DataSchemaExportTest extends BaseCase
 
     }
 
-    public function assertActionModel(Action $action, string $filename = null)
+    public function assertAction(array $result): void
+    {
+        $this->assertActionModel($result['model']);
+        $this->assertActionMigration($result['migration']);
+    }
+
+    public function assertActionModel(Action $action, string $filename = null): void
     {
         $action->run();
 
@@ -66,7 +72,6 @@ class DataSchemaExportTest extends BaseCase
             // @todo: handle multiple results resources
             $filename = __DIR__ . "/resources/" . $this->name() . ".txt";
         }
-
 
         foreach ($action->getResult() as $filepath => $content) {
 
@@ -80,7 +85,7 @@ class DataSchemaExportTest extends BaseCase
             );
         }
     }
-    public function assertActionMigration($action)
+    public function assertActionMigration($action): void
     {
         $this->assertActionModel($action, __DIR__."/resources/".$this->name()."_migration.txt");
     }
@@ -104,12 +109,12 @@ class DataSchemaExportTest extends BaseCase
     {
         $model = new Foo();
 
-        $action = $this->getService()->getModelBuilder()->createAttribute(
+        $action = $this->getService()->createAttribute(
             $model->getTable(),
             StringAttribute::make("fillable_field")->fillable(true)
         );
 
-        $this->assertActionModel($action);
+        $this->assertActionModel($action['model']);
     }
 
     #[Depends("testAddAttributeStringFillable")]
@@ -129,12 +134,12 @@ class DataSchemaExportTest extends BaseCase
     {
         $model = new Foo();
 
-        $action = $this->getService()->getModelBuilder()->createAttribute(
+        $action = $this->getService()->createAttribute(
             $model->getTable(),
             StringAttribute::make("guarded_field")->fillable(false)
         );
 
-        $this->assertActionModel($action);
+        $this->assertActionModel($action['model']);
     }
 
     #[Depends("testAddAttributeStringNotFillable")]
@@ -155,19 +160,19 @@ class DataSchemaExportTest extends BaseCase
     {
         $model = new Foo();
 
-        $action = $this->getService()->getModelBuilder()->createAttribute(
+        $result = $this->getService()->createAttribute(
             $model->getTable(),
             StringAttribute::make("fillable_field")->fillable(true)
         );
 
-        $action->run(); // Skip check, just run
+        $result['model']->run();
 
-        $action = $this->getService()->getModelBuilder()->createAttribute(
+        $result = $this->getService()->createAttribute(
             $model->getTable(),
             StringAttribute::make("guarded_field")->fillable(false)
         );
 
-        $this->assertActionModel($action);
+        $this->assertActionModel($result['model']);
     }
 
     #[Depends("testAddAttributeStringFillableAndNot")]
@@ -189,19 +194,12 @@ class DataSchemaExportTest extends BaseCase
     {
         $model = new Foo();
 
-        $action = $this->getService()->getModelBuilder()->createAttribute(
+        $result = $this->getService()->createAttribute(
             $model->getTable(),
             StringAttribute::make("fillable_field")->fillable(true)
         );
 
-        $this->assertActionModel($action);
-
-        $action = $this->getService()->getMigrationBuilder()->createAttribute(
-            $model->getTable(),
-            StringAttribute::make("fillable_field")->fillable(true)
-        );
-
-        $this->assertActionMigration($action);
+        $this->assertAction($result);
     }
 
     #[Depends("testAddAttributeStringFillableWithMigration")]
@@ -216,27 +214,18 @@ class DataSchemaExportTest extends BaseCase
 
     public function testRemoveAttributeStringFillableWithMigration()
     {
-        $model = new Bar();
-
         Bar::create([
             "name" => "Hello"
         ]);
 
         $this->assertEquals("Hello", Bar::where('id', 1)->first()->name);
 
-        $action = $this->getService()->getModelBuilder()->removeAttribute(
-            $model->getTable(),
+        $result = $this->getService()->removeAttribute(
+            (new Bar)->getTable(),
             "name"
         );
 
-        $this->assertActionModel($action);
-
-        $action = $this->getService()->getMigrationBuilder()->removeAttribute(
-            $model->getTable(),
-            "name"
-        );
-
-        $this->assertActionMigration($action);
+        $this->assertAction($result);
     }
 
     #[Depends("testRemoveAttributeStringFillableWithMigration")]
@@ -259,19 +248,12 @@ class DataSchemaExportTest extends BaseCase
         $this->assertEquals("Hello", Baz::where('id', 1)->first()->name);
         $this->assertEquals("There", Baz::where('id', 1)->first()->description);
 
-        $action = $this->getService()->getModelBuilder()->removeAttribute(
+        $result = $this->getService()->removeAttribute(
             $model->getTable(),
             "description"
         );
 
-        $this->assertActionModel($action);
-
-        $action = $this->getService()->getMigrationBuilder()->removeAttribute(
-            $model->getTable(),
-            "description"
-        );
-
-        $this->assertActionMigration($action);
+        $this->assertAction($result);
     }
 
     #[Depends("testRemoveAttributeStringFillableMultipleWithMigration")]
@@ -287,27 +269,18 @@ class DataSchemaExportTest extends BaseCase
 
     public function testRemoveAttributeIdWithMigration()
     {
-        $model = new Bar();
-
         Bar::create([
             "name" => "Hello"
         ]);
 
         $this->assertEquals("Hello", Bar::where('id', 1)->first()->name);
 
-        $action = $this->getService()->getModelBuilder()->removeAttribute(
-            $model->getTable(),
+        $result = $this->getService()->removeAttribute(
+            (new Bar())->getTable(),
             "id"
         );
 
-        $this->assertActionModel($action);
-
-        $action = $this->getService()->getMigrationBuilder()->removeAttribute(
-            $model->getTable(),
-            "id"
-        );
-
-        $this->assertActionMigration($action);
+        $this->assertAction($result);
     }
 
     #[Depends("testRemoveAttributeIdWithMigration")]
@@ -322,8 +295,6 @@ class DataSchemaExportTest extends BaseCase
 
     public function testRenameAttribute()
     {
-        $model = new Baz();
-
         Baz::create([
             "name" => "Hello",
             "description" => "There"
@@ -331,21 +302,13 @@ class DataSchemaExportTest extends BaseCase
 
         $this->assertEquals("There", Baz::where('id', 1)->first()->description);
 
-        $action = $this->getService()->getModelBuilder()->renameAttribute(
-            $model->getTable(),
+        $action = $this->getService()->renameAttribute(
+            (new Baz)->getTable(),
             "description",
             "summary"
         );
 
-        $this->assertActionModel($action);
-
-        $action = $this->getService()->getMigrationBuilder()->renameAttribute(
-            $model->getTable(),
-            "description",
-            "summary"
-        );
-
-        $this->assertActionMigration($action);
+        $this->assertAction($action);
     }
 
     #[Depends("testRenameAttribute")]
@@ -373,8 +336,7 @@ class DataSchemaExportTest extends BaseCase
             StringAttribute::make("fillable_field")->fillable(true)
         );
 
-        $this->assertActionModel($result['model']);
-        $this->assertActionMigration($result['migration']);
+        $this->assertAction($result);
     }
 
     /*
