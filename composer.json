@@ -14,7 +14,8 @@
     "require-dev": {
         "phpunit/phpunit": "*",
         "orchestra/testbench": "*",
-        "laravel/pint": "^1.16"
+        "laravel/pint": "^1.16",
+        "larastan/larastan": "^2.0"
     },
     "scripts": {
         "test:coverage": [

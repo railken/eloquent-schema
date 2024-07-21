@@ -24,7 +24,6 @@ jobs:
       - name: Install Composer dependencies
         run: |
             composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
-            composer require --dev phpstan/phpstan
       - name: Test Quality
         run: |
           export PATH="$HOME/.composer/vendor/bin:$PATH"
