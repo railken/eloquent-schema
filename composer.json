@@ -9,7 +9,8 @@
         "doctrine/dbal": "^4.0",
         "haydenpierce/class-finder": "^0.5.3",
         "ajthinking/archetype": "^2.0",
-        "railken/template": "^1.1"
+        "railken/template": "^1.1",
+        "kitloong/laravel-migrations-generator": "^7.0"
     },
     "require-dev": {
         "phpunit/phpunit": "*",
