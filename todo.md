@@ -3,7 +3,7 @@
 - [x] Manage migrations
 - [x] Rename attribute
 - [ ] Update attribute
-- [ ] When "renaming" an attribute, an update occurs in all eloquent module. Not only database but also eloquent model has to be retrieved in order to fill fields such as: validation, fillable, etc... 
+- [x] When "renaming" an attribute, an update occurs in all eloquent module. Not only database but also eloquent model has to be retrieved in order to fill fields such as: validation, fillable, etc... 
 - [ ] Tests updates and check all differences between fillable/required/validation
 - [x] Added hooks to Eloquent\Model
 - [x] Add hooks so dev can add custom rules when something is added, eg. extra param
