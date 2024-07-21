@@ -5,6 +5,7 @@ namespace Railken\EloquentSchema\Injectors;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use PhpParser\BuilderFactory;
 use PhpParser\Node;
+use Railken\EloquentSchema\Injectors\Repositories\ModelRepository;
 
 class ModelMutatorRenameInjector extends MethodInjector
 {
@@ -12,32 +13,17 @@ class ModelMutatorRenameInjector extends MethodInjector
 
     public function __construct(string $methodName, string $newName)
     {
-        parent::__construct($methodName);
+        parent::__construct($methodName, ModelRepository::class, "renameMutator");
 
         $this->newName = $newName;
     }
 
-    protected function oldValuePlaceholder(): Attribute
-    {
-        return Attribute::make(
-            get: fn (?string $value) => $this->newValuePlaceholder,
-            set: fn (?string $value) => $this->newValuePlaceholder = $value
-        );
-    }
-
     public function leaveNode(Node $node): void
     {
-        $attrs = [];
-
-        if ($node instanceof Node\Stmt\ClassMethod && $node->name->name == "oldValuePlaceholder") {
-            $this->stmts = [$node];
-            $node->name->name = $this->methodName;
-        }
-
         if ($node instanceof Node\Identifier && $node->name == "newValuePlaceholder") {
             $node->name = $this->newName;
         }
 
-        $node->setAttributes($attrs);
+        parent::leaveNode($node);
     }
 }

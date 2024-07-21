@@ -8,17 +8,19 @@ use Railken\EloquentSchema\Actions\Eloquent\RemoveAttributeAction;
 use Railken\EloquentSchema\Actions\Eloquent\RenameAttributeAction;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
+use Railken\EloquentSchema\Support;
+use ReflectionException;
 
 class ModelBuilder extends Builder
 {
+    /**
+     * @throws ReflectionException
+     */
     protected function initializeByTable(string $table): void
     {
         parent::initializeByTable($table);
 
-        $reflector = new \ReflectionClass(get_class($this->model));
-        $path = $reflector->getFileName();
-
-        $this->classEditor = new ClassEditor($path);
+        $this->classEditor = new ClassEditor(Support::getPathByObject($this->model));
     }
 
     /**
@@ -27,6 +29,7 @@ class ModelBuilder extends Builder
      * @param string $table
      * @param AttributeBlueprint $attribute
      * @return CreateAttributeAction
+     * @throws Exception
      */
     public function createAttribute(string $table, AttributeBlueprint $attribute): CreateAttributeAction
     {
@@ -38,7 +41,7 @@ class ModelBuilder extends Builder
      * Remove an attribute from the table and the relative model
      *
      * @param string $table
-     * @param string $attribute
+     * @param string $attributeName
      * @return RemoveAttributeAction
      * @throws Exception
      */

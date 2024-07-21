@@ -17,10 +17,10 @@ class ClassEditor
     public function __construct(string $path)
     {
         $this->path = $path;
-        $this->reload();
+        $this->load();
     }
 
-    public function reload()
+    public function load(): void
     {
         $this->file = PHPFile::load($this->path);
     }
@@ -118,12 +118,10 @@ class ClassEditor
         $traverser = new NodeTraverser();
         $traverser->addVisitor($injector);
 
-        $reflector = new \ReflectionClass(get_class($injector));
+        $reflector = new \ReflectionClass($injector->getRepositoryClassName());
         $traverser->traverse(PHPFile::load($reflector->getFileName())->ast());
 
-        $stmts = $injector->getStmts();
-
-        $this->addNodeToBody($stmts[0]);
+        $this->addNodeToBody($injector->getNode());
     }
 
     public function addNodeToBody(Node $node): array

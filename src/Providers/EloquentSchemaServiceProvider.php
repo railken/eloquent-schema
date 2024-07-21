@@ -10,7 +10,7 @@ class EloquentSchemaServiceProvider extends ServiceProvider
     /**
      * @inherit
      */
-    public function register()
+    public function register(): void
     {
         $this->app->register(\Archetype\ServiceProvider::class);
         $this->app->register(\Railken\Template\TemplateServiceProvider::class);
@@ -21,7 +21,4 @@ class EloquentSchemaServiceProvider extends ServiceProvider
         parent::register();
     }
 
-    public function boot()
-    {
-    }
 }

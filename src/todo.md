@@ -17,3 +17,6 @@
 - [ ] Test with different attributes
 - [ ] Separate tests based on action
 - [ ] Find a way for better text then new file
+
+- [ ] phpstan level max
+- [x] fix errors in injectors about variable not existant

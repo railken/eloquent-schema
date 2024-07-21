@@ -5,6 +5,7 @@ namespace Railken\EloquentSchema\Builders;
 use Railken\EloquentSchema\Editors\ClassEditor;
 use Railken\EloquentSchema\Schema\SchemaRetrieverInterface;
 use Illuminate\Database\Eloquent\Model;
+use Railken\EloquentSchema\Support;
 
 class Builder
 {
@@ -37,10 +38,8 @@ class Builder
         $model = $this->newModelInstanceByTable($table);
         $this->model = $model;
 
-        $reflector = new \ReflectionClass(get_class($model));
-        $path = $reflector->getFileName();
 
-        $this->classEditor = new ClassEditor($path);
+        $this->classEditor = new ClassEditor(Support::getPathByObject($model));
     }
 
 }
