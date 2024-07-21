@@ -14,7 +14,8 @@ class AppendToClassVisitor extends NodeVisitorAbstract
         $this->node = $node;
     }
 
-    public function leaveNode(Node $node): void {
+    public function leaveNode(Node $node): void
+    {
         if ($node instanceof Node\Stmt\Class_) {
             $node->stmts[] = $this->node;
         }

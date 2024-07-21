@@ -13,7 +13,7 @@ class AttributeBlueprint
     public string $type;
     public string $db;
     public bool $fillable = true;
-    public bool $required = false;
+    public bool $required = true;
 
     public function __construct(string $name)
     {

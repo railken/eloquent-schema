@@ -6,5 +6,4 @@ use PhpParser\NodeVisitorAbstract;
 
 class Injector extends NodeVisitorAbstract
 {
-
 }

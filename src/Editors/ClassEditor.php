@@ -113,53 +113,23 @@ class ClassEditor
         return $this;
     }
 
-    public function updateFile($stmts): void
-    {
-        $query = $this->file->astQuery();
-        $query->resultingAST = $stmts;
-        $query->commit();
-    }
-
     public function inject(MethodInjector $injector): void
     {
-        $prettyPrinter = new \PhpParser\PrettyPrinter\Standard;
-        $traverser = new NodeTraverser;
+        $traverser = new NodeTraverser();
         $traverser->addVisitor($injector);
 
         $reflector = new \ReflectionClass(get_class($injector));
         $traverser->traverse(PHPFile::load($reflector->getFileName())->ast());
 
-        // Extract code to inject
         $stmts = $injector->getStmts();
 
-        $factory = new BuilderFactory;
-        $node = $factory->namespace('Temp')
-            ->addStmt($factory->class('Temp')
-                ->addStmt($stmts[0])
-            )->getNode();
-
-        // Export to code end re-import to avoid lines
-        $parser = (new \PhpParser\ParserFactory())->createForNewestSupportedVersion();
-        $stmts = $parser->parse($prettyPrinter->prettyPrintFile([$node]));
-        $toSave = $this->file->ast();
-
-        // Put code to current class
-        $this->addStmtsToBody($stmts[0]->stmts[0]->stmts[0]);
-
-        $this->updateFile($toSave);
+        $this->addStmtsToBody($stmts[0]);
     }
 
-    public function addStmtsToBody(Node $node)
+    public function addStmtsToBody(Node $node): array
     {
-
-        $traverser = new NodeTraverser;
+        $traverser = new NodeTraverser();
         $traverser->addVisitor(new AppendToClassVisitor($node));
-        $result = $traverser->traverse([$this->file->ast()[0]]);
-    }
-
-    public function prettyPrint($node)
-    {
-        $prettyPrinter = new \PhpParser\PrettyPrinter\Standard;
-        $prettyPrinter->prettyPrintFile($node);
+        return $traverser->traverse([$this->file->ast()[0]]);
     }
 }

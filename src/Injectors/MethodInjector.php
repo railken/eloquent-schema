@@ -14,16 +14,6 @@ class MethodInjector extends Injector
         $this->methodName = $methodName;
     }
 
-    public function leaveNode(Node $node): void {
-
-        if ($node instanceof Node\Stmt\ClassMethod && $node->name->name == "methodToInject") {
-
-            $this->stmts = [$node];
-            $node->name->name = $this->methodName;
-
-            // return NodeVisitor::DONT_TRAVERSE_CHILDREN;
-        }
-    }
 
     public function getStmts(): array
     {
