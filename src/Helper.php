@@ -27,7 +27,7 @@ class Helper
         $this->setSchemaRetriever(new DatabaseSchemaRetriever());
     }
 
-    public function setSchemaRetriever(SchemaRetrieverInterface $schemaRetriever)
+    public function setSchemaRetriever(SchemaRetrieverInterface $schemaRetriever): void
     {
         $this->schemaRetriever = $schemaRetriever;
     }
@@ -37,7 +37,7 @@ class Helper
         return $this->schemaRetriever;
     }
 
-    public function addModelFolders(array $folders)
+    public function addModelFolders(array $folders): void
     {
         $this->schemaRetriever->addModelFolders($folders);
     }

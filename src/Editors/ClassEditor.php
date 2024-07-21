@@ -7,6 +7,7 @@ use Archetype\Facades\PHPFile;
 use PhpParser\{Node, NodeTraverser, NodeVisitorAbstract, BuilderFactory};
 use Railken\EloquentSchema\Injectors\Injector;
 use Railken\EloquentSchema\Injectors\MethodInjector;
+use Railken\EloquentSchema\Support;
 use Railken\EloquentSchema\Visitors\AppendToClassVisitor;
 
 class ClassEditor
@@ -41,7 +42,7 @@ class ClassEditor
     {
         return $this->file->render();
     }
-    public function addAttribute(string $name, mixed $value, Visibility $visibility): ClassEditor
+    public function addPropertyValue(string $name, mixed $value, Visibility $visibility): ClassEditor
     {
         $builder = $this->file->add($value)->to();
 
@@ -62,27 +63,41 @@ class ClassEditor
         return $this;
     }
 
+    public function getAttribute(string $name)
+    {
+        return $this->file->property($name);
+    }
+    public function getAttributeByIndex(string $name)
+    {
+        return $this->file->property($name);
+    }
+
+    public function isValueInAttribute(string $name, mixed $value): bool
+    {
+        return in_array($value, $this->getAttribute($name));
+    }
+
     public function addPublicAttribute(string $name, mixed $value): ClassEditor
     {
-        $this->addAttribute($name, $value, Visibility::Public);
+        $this->addPropertyValue($name, $value, Visibility::Public);
 
         return $this;
     }
-    public function addProtectedAttribute(string $name, mixed $value): ClassEditor
+    public function addProtectedProperty(string $name, mixed $value): ClassEditor
     {
-        $this->addAttribute($name, $value, Visibility::Protected);
+        $this->addPropertyValue($name, $value, Visibility::Protected);
 
         return $this;
     }
-    public function addPrivateAttribute(string $name, mixed $value): ClassEditor
+    public function addPrivateProperty(string $name, mixed $value): ClassEditor
     {
-        $this->addAttribute($name, $value, Visibility::Private);
+        $this->addPropertyValue($name, $value, Visibility::Private);
 
         return $this;
     }
 
 
-    public function removeAttributeValue(string $name, mixed $value): ClassEditor
+    public function removePropertyValue(string $name, mixed $value): ClassEditor
     {
         if (is_array($this->file->property($name))) {
             $this->file->protected()->property($name, array_diff($this->file->property($name), [$value]));
@@ -117,9 +132,7 @@ class ClassEditor
     {
         $traverser = new NodeTraverser();
         $traverser->addVisitor($injector);
-
-        $reflector = new \ReflectionClass($injector->getRepositoryClassName());
-        $traverser->traverse(PHPFile::load($reflector->getFileName())->ast());
+        $traverser->traverse(PHPFile::load(Support::getPathByClass($injector->getRepositoryClassName()))->ast());
 
         $this->addNodeToBody($injector->getNode());
     }

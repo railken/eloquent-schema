@@ -7,8 +7,12 @@ use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Railken\EloquentSchema\Actions\Action;
+use Railken\EloquentSchema\Actions\Eloquent\Attribute;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Blueprints\Attributes\StringAttribute;
+use Railken\EloquentSchema\Hooks\CastHook;
+use Railken\EloquentSchema\Hooks\FillableHook;
+use Railken\EloquentSchema\Hooks\GuardedHook;
 use Tests\Generated\Bar;
 use Tests\Generated\Baz;
 use Tests\Generated\Foo;
@@ -26,6 +30,12 @@ class DataSchemaExportTest extends BaseCase
      */
     public function setUp(): void
     {
+        Attribute::addHooks([
+            FillableHook::class,
+            GuardedHook::class,
+            CastHook::class
+        ]);
+
         parent::setUp();
 
         if (!str_contains($this->name(), "Generated")) {
