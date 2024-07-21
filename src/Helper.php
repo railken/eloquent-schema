@@ -85,4 +85,20 @@ class Helper
             'migration' => $this->getMigrationBuilder()->createAttribute($table, $attribute)
         ];
     }
+
+    public function removeAttribute(string $table, string $attributeName): array
+    {
+        return [
+            'model' => $this->getModelBuilder()->removeAttribute($table, $attributeName),
+            'migration' => $this->getMigrationBuilder()->removeAttribute($table, $attributeName)
+        ];
+    }
+
+    public function renameAttribute(string $table, string $oldAttributeName, string $newAttributeName): array
+    {
+        return [
+            'model' => $this->getModelBuilder()->renameAttribute($table, $oldAttributeName, $newAttributeName),
+            'migration' => $this->getMigrationBuilder()->renameAttribute($table, $oldAttributeName, $newAttributeName)
+        ];
+    }
 }
