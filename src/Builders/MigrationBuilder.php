@@ -3,6 +3,7 @@
 namespace Railken\EloquentSchema\Builders;
 
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Railken\EloquentSchema\Actions\Migration\CreateColumnAction;
 use Railken\EloquentSchema\Actions\Migration\RemoveColumnAction;
 use Railken\EloquentSchema\Actions\Migration\RenameColumnAction;
@@ -13,33 +14,33 @@ class MigrationBuilder extends Builder
 {
     protected AttributeBlueprint $attribute;
 
-    public function createAttribute(string $table, AttributeBlueprint $attribute): CreateColumnAction
+    public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): CreateColumnAction
     {
-        $this->initializeByTable($table);
+        $this->initialize($ini);
 
-        return new CreateColumnAction($table, $this->classEditor, $attribute);
+        return new CreateColumnAction($this->table, $this->classEditor, $attribute);
     }
 
     /**
      * @throws Exception
      */
-    public function removeAttribute(string $table, string $attributeName): RemoveColumnAction
+    public function removeAttribute(string|Model $ini, string $attributeName): RemoveColumnAction
     {
-        $this->initializeByTable($table);
+        $this->initialize($ini);
 
-        $attribute = $this->schemaRetriever->getAttributeBlueprint($table, $attributeName);
+        $attribute = $this->schemaRetriever->getAttributeBlueprint($this->table, $attributeName);
 
-        return new RemoveColumnAction($table, $this->classEditor, $attribute);
+        return new RemoveColumnAction($this->table, $this->classEditor, $attribute);
     }
 
     /**
      * @throws Exception
      */
-    public function renameAttribute(string $table, string $oldAttributeName, string $newAttributeName): RenameColumnAction
+    public function renameAttribute(string|Model $ini, string $oldAttributeName, string $newAttributeName): RenameColumnAction
     {
-        $this->initializeByTable($table);
+        $this->initialize($ini);
 
-        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($table, $oldAttributeName);
+        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($this->table, $oldAttributeName);
 
         $newAttribute = clone $oldAttribute;
         $newAttribute->name($newAttributeName);
@@ -50,11 +51,11 @@ class MigrationBuilder extends Builder
     /**
      * @throws Exception
      */
-    public function updateAttribute(string $table, string $oldAttributeName, AttributeBlueprint $newAttribute): UpdateColumnAction
+    public function updateAttribute(string|Model $ini, string $oldAttributeName, AttributeBlueprint $newAttribute): UpdateColumnAction
     {
-        $this->initializeByTable($table);
+        $this->initialize($ini);
 
-        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($table, $oldAttributeName);
+        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($this->table, $oldAttributeName);
 
         return new UpdateColumnAction($this->table, $this->classEditor, $oldAttribute, $newAttribute);
     }

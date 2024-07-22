@@ -2,6 +2,7 @@
 
 namespace Railken\EloquentSchema;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Schema\DatabaseSchemaRetriever;
@@ -9,11 +10,9 @@ use Railken\EloquentSchema\Schema\SchemaRetrieverInterface;
 
 class Helper
 {
-    protected $attributes;
+    protected Collection $migrations;
 
-    protected $migrations;
-
-    protected $resolver;
+    protected Resolver $resolver;
 
     protected SchemaRetrieverInterface $schemaRetriever;
 
@@ -80,35 +79,35 @@ class Helper
         return $this->resolver->resolveByModel($this->schemaRetriever, 'migration');
     }
 
-    public function createAttribute(string $table, AttributeBlueprint $attribute): array
+    public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): array
     {
         return [
-            'model' => $this->getModelBuilder()->createAttribute($table, $attribute),
-            'migration' => $this->getMigrationBuilder()->createAttribute($table, $attribute),
+            'model' => $this->getModelBuilder()->createAttribute($ini, $attribute),
+            'migration' => $this->getMigrationBuilder()->createAttribute($ini, $attribute),
         ];
     }
 
-    public function removeAttribute(string $table, string $attributeName): array
+    public function removeAttribute(string|Model $ini, string $attributeName): array
     {
         return [
-            'model' => $this->getModelBuilder()->removeAttribute($table, $attributeName),
-            'migration' => $this->getMigrationBuilder()->removeAttribute($table, $attributeName),
+            'model' => $this->getModelBuilder()->removeAttribute($ini, $attributeName),
+            'migration' => $this->getMigrationBuilder()->removeAttribute($ini, $attributeName),
         ];
     }
 
-    public function renameAttribute(string $table, string $oldAttributeName, string $newAttributeName): array
+    public function renameAttribute(string|Model $ini, string $oldAttributeName, string $newAttributeName): array
     {
         return [
-            'model' => $this->getModelBuilder()->renameAttribute($table, $oldAttributeName, $newAttributeName),
-            'migration' => $this->getMigrationBuilder()->renameAttribute($table, $oldAttributeName, $newAttributeName),
+            'model' => $this->getModelBuilder()->renameAttribute($ini, $oldAttributeName, $newAttributeName),
+            'migration' => $this->getMigrationBuilder()->renameAttribute($ini, $oldAttributeName, $newAttributeName),
         ];
     }
 
-    public function updateAttribute(string $table, string $attributeName, AttributeBlueprint $newAttribute): array
+    public function updateAttribute(string|Model $ini, string $attributeName, AttributeBlueprint $newAttribute): array
     {
         return [
-            'model' => $this->getModelBuilder()->updateAttribute($table, $attributeName, $newAttribute),
-            'migration' => $this->getMigrationBuilder()->updateAttribute($table, $attributeName, $newAttribute),
+            'model' => $this->getModelBuilder()->updateAttribute($ini, $attributeName, $newAttribute),
+            'migration' => $this->getMigrationBuilder()->updateAttribute($ini, $attributeName, $newAttribute),
         ];
     }
 }

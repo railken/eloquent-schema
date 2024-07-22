@@ -3,6 +3,7 @@
 namespace Railken\EloquentSchema\Builders;
 
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Railken\EloquentSchema\Actions\Eloquent\Attribute;
 use Railken\EloquentSchema\Actions\Eloquent\CreateAttributeAction;
 use Railken\EloquentSchema\Actions\Eloquent\RemoveAttributeAction;
@@ -18,11 +19,13 @@ class ModelBuilder extends Builder
     /**
      * @throws ReflectionException
      */
-    protected function initializeByTable(string $table): void
+    protected function initialize(string|Model $ini): ModelBuilder
     {
-        parent::initializeByTable($table);
+        parent::initialize($ini);
 
         $this->classEditor = new ClassEditor(Support::getPathByObject($this->model));
+
+        return $this;
     }
 
     /**
@@ -30,9 +33,9 @@ class ModelBuilder extends Builder
      *
      * @throws Exception
      */
-    public function createAttribute(string $table, AttributeBlueprint $attribute): CreateAttributeAction
+    public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): CreateAttributeAction
     {
-        $this->initializeByTable($table);
+        $this->initialize($ini);
 
         return new CreateAttributeAction($this->classEditor, $attribute);
     }
@@ -42,11 +45,11 @@ class ModelBuilder extends Builder
      *
      * @throws Exception
      */
-    public function removeAttribute(string $table, string $attributeName): RemoveAttributeAction
+    public function removeAttribute(string|Model $ini, string $attributeName): RemoveAttributeAction
     {
-        $this->initializeByTable($table);
+        $this->initialize($ini);
 
-        $attribute = $this->schemaRetriever->getAttributeBlueprint($table, $attributeName);
+        $attribute = $this->schemaRetriever->getAttributeBlueprint($this->table, $attributeName);
 
         return new RemoveAttributeAction($this->classEditor, $attribute);
     }
@@ -56,11 +59,11 @@ class ModelBuilder extends Builder
      *
      * @throws Exception
      */
-    public function renameAttribute(string $table, string $oldAttributeName, string $newAttributeName): RenameAttributeAction
+    public function renameAttribute(string|Model $ini, string $oldAttributeName, string $newAttributeName): RenameAttributeAction
     {
-        $this->initializeByTable($table);
+        $this->initialize($ini);
 
-        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($table, $oldAttributeName);
+        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($this->table, $oldAttributeName);
 
         Attribute::callHooks('set', [$this->classEditor, $oldAttribute]);
 
@@ -75,11 +78,11 @@ class ModelBuilder extends Builder
      *
      * @throws Exception
      */
-    public function updateAttribute(string $table, string $attributeName, AttributeBlueprint $newAttribute): UpdateAttributeAction
+    public function updateAttribute(string|Model $ini, string $attributeName, AttributeBlueprint $newAttribute): UpdateAttributeAction
     {
-        $this->initializeByTable($table);
+        $this->initialize($ini);
 
-        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($table, $attributeName);
+        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($this->table, $attributeName);
 
         Attribute::callHooks('set', [$this->classEditor, $oldAttribute]);
 

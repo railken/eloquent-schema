@@ -34,12 +34,33 @@ class Builder
         return $this->classEditor;
     }
 
-    protected function initializeByTable(string $table): void
+    protected function initialize(string|Model $ini): Builder
+    {
+        if ($ini instanceof Model) {
+            return $this->initializeByModel($ini);
+        }
+
+        return $this->initializeByTable($ini);
+    }
+
+    protected function initializeByTable(string $table): Builder
     {
         $this->table = $table;
         $model = $this->newModelInstanceByTable($table);
         $this->model = $model;
 
         $this->classEditor = new ClassEditor(Support::getPathByObject($model));
+
+        return $this;
+    }
+
+    protected function initializeByModel(Model $model): Builder
+    {
+        $this->table = $model->getTable();
+        $this->model = $model;
+
+        $this->classEditor = new ClassEditor(Support::getPathByObject($model));
+
+        return $this;
     }
 }
