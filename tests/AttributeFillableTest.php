@@ -2,10 +2,12 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Railken\EloquentSchema\Blueprints\Attributes\StringAttribute;
 use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Builders\ModelBuilder;
 
+#[RunTestsInSeparateProcesses]
 class AttributeFillableTest extends BaseCase
 {
     public function test_fillable()
@@ -36,6 +38,7 @@ class AttributeFillableTest extends BaseCase
                 'fillable' => 'string',
             ];
         };
+        
         EOD;
 
         $this->assertEquals($final, $result->get(ModelBuilder::class)->first());
@@ -91,6 +94,7 @@ class AttributeFillableTest extends BaseCase
                 'not_fillable' => 'string',
             ];
         };
+        
         EOD;
 
         $this->assertEquals($final, $result->get(ModelBuilder::class)->first());

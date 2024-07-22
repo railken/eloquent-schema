@@ -2,9 +2,11 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Builders\ModelBuilder;
 
+#[RunTestsInSeparateProcesses]
 class RenameAttributeTest extends BaseCase
 {
     public function test_rename()

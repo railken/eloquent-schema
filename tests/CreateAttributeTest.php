@@ -2,13 +2,15 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Railken\EloquentSchema\Blueprints\Attributes\StringAttribute;
 use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Builders\ModelBuilder;
 
+#[RunTestsInSeparateProcesses]
 class CreateAttributeTest extends BaseCase
 {
-    public function test_create()
+    public function test_create_simple()
     {
         $model = $this->newModel();
 
@@ -36,6 +38,7 @@ class CreateAttributeTest extends BaseCase
                 'description' => 'string',
             ];
         };
+        
         EOD;
 
         $this->assertEquals($final, $result->get(ModelBuilder::class)->first());

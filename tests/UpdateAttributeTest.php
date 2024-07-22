@@ -2,10 +2,12 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Railken\EloquentSchema\Blueprints\Attributes\StringAttribute;
 use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Builders\ModelBuilder;
 
+#[RunTestsInSeparateProcesses]
 class UpdateAttributeTest extends BaseCase
 {
     public function test_create_and_update()
@@ -46,6 +48,7 @@ class UpdateAttributeTest extends BaseCase
                 'color' => 'string',
             ];
         };
+        
         EOD;
 
         $this->assertEquals($final, $result->get(ModelBuilder::class)->first());

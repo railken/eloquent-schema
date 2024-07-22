@@ -2,9 +2,11 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Builders\ModelBuilder;
 
+#[RunTestsInSeparateProcesses]
 class RemoveAttributeTest extends BaseCase
 {
     public function test_remove()
@@ -29,6 +31,7 @@ class RemoveAttributeTest extends BaseCase
         
             protected $casts = [];
         };
+        
         EOD;
 
         $this->assertEquals($final, $result->get(ModelBuilder::class)->first());
