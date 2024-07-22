@@ -2,20 +2,9 @@
 
 namespace Railken\EloquentSchema\Actions\Global;
 
-use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
-
 class CreateAttributeAction extends Attribute
 {
-    protected string $attribute;
-
-    protected array $result = [];
-
-    public function __construct(string $table, AttributeBlueprint $attribute)
-    {
-        $this->$attribute = $attribute;
-
-        parent::__construct($table);
-    }
+    public function __construct() {}
 
     public function run(): void {}
 }

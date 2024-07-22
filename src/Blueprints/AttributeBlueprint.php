@@ -14,6 +14,8 @@ class AttributeBlueprint
 
     public ?bool $required = null;
 
+    public mixed $default = null;
+
     public function __construct(string $name)
     {
         $this->name($name);
@@ -49,6 +51,13 @@ class AttributeBlueprint
     public function nullable(?bool $nullable = true): AttributeBlueprint
     {
         $this->required($nullable);
+
+        return $this;
+    }
+
+    public function default(mixed $default): AttributeBlueprint
+    {
+        $this->default = $default;
 
         return $this;
     }

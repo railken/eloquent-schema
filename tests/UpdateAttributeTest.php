@@ -6,15 +6,23 @@ use Railken\EloquentSchema\Blueprints\Attributes\StringAttribute;
 use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Builders\ModelBuilder;
 
-class CreateAttributeTest extends BaseCase
+class UpdateAttributeTest extends BaseCase
 {
-    public function test_create()
+    public function test_create_and_update()
     {
         $model = $this->newModel();
 
         $result = $this->getService()->createAttribute(
             $model,
-            StringAttribute::make('description')->fillable(true)
+            StringAttribute::make('color')->fillable(true)
+        )->run();
+
+        $this->artisan('migrate');
+
+        $result = $this->getService()->updateAttribute(
+            $model,
+            'color',
+            StringAttribute::make('color')->fillable(false)->default('red')
         )->run();
 
         $final = <<<'EOD'
@@ -24,16 +32,18 @@ class CreateAttributeTest extends BaseCase
         
         return new class extends Model
         {
+            protected $guarded = [
+                'color',
+            ];
             protected $table = 'parrots';
         
             protected $fillable = [
                 'name',
-                'description',
             ];
-        
+
             protected $casts = [
                 'name' => 'string',
-                'description' => 'string',
+                'color' => 'string',
             ];
         };
         EOD;
@@ -42,22 +52,18 @@ class CreateAttributeTest extends BaseCase
 
         $final = <<<'EOD'
         Schema::table('parrots', function (Blueprint $table) {
-            $table->string('description');
+            $table->string('color')->default('red')->change();
         });
         EOD;
         $this->assertEquals($final, $result->get(MigrationBuilder::class)->first()->get('up'));
 
         $final = <<<'EOD'
         Schema::table('parrots', function (Blueprint $table) {
-            $table->dropColumn('description');
+            $table->string('color')->default(null)->change();
         });
         EOD;
         $this->assertEquals($final, $result->get(MigrationBuilder::class)->first()->get('down'));
 
         $this->artisan('migrate');
-
-        $this->assertEquals('A very nice parrot', $this->newModel()->create([
-            'description' => 'A very nice parrot',
-        ])->description);
     }
 }

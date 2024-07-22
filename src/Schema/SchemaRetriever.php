@@ -113,6 +113,7 @@ class SchemaRetriever implements SchemaRetrieverInterface
 
         $attribute = $this->guessType($column, $params);
         $attribute->required($column->isNotNull());
+        $attribute->default($column->getDefault());
 
         return $attribute;
     }

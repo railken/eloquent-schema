@@ -14,6 +14,7 @@ class RenameAttributeAction extends UpdateAttributeAction
         $this->classEditor->addUse(
             \Illuminate\Database\Eloquent\Casts\Attribute::class
         );
+
         $injector = new ModelMutatorRenameInjector(Str::camel($this->oldAttribute->name), $this->newAttribute->name);
         $this->classEditor->inject($injector);
         $this->save();

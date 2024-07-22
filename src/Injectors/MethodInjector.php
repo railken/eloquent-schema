@@ -39,7 +39,6 @@ class MethodInjector extends Injector
     public function leaveNode(Node $node): void
     {
         $attrs = [];
-
         if ($node instanceof Node\Stmt\ClassMethod && $node->name->name == $this->repositoryMethodName) {
             $this->node = $node;
             $node->name->name = $this->methodName;

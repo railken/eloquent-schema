@@ -3,11 +3,11 @@
 namespace Railken\EloquentSchema\Actions\Migration;
 
 use Exception;
+use Illuminate\Support\Collection;
 use Railken\EloquentSchema\ActionCase;
 use Railken\EloquentSchema\Actions\Action;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
-use Railken\Template\Generators;
 
 abstract class Column extends Action
 {
@@ -49,9 +49,18 @@ abstract class Column extends Action
      */
     public function save(): void
     {
-        $render = $this->render();
-        file_put_contents($this->getPath(), $this->render());
-        $this->result = [$this->getPath() => $render];
+        $up = $this->renderUp();
+        $down = $this->renderDown();
+
+        $render = $this->render($up, $down);
+        file_put_contents($this->getPath(), $render);
+        $this->result = [
+            $this->getPath() => new Collection([
+                'full' => $render,
+                'up' => $up,
+                'down' => $down,
+            ]),
+        ];
     }
 
     /**
@@ -59,15 +68,57 @@ abstract class Column extends Action
      *
      * @throws Exception
      */
-    protected function render(): string
+    protected function render(string $up, string $down): string
     {
-        $generator = new Generators\HtmlGenerator();
+        return $this->renderMigration($up, $down);
+    }
 
-        return $generator->generateAndRender($this->getStub(), [
-            'table' => $this->table,
-            'oldValue' => $this->migrateDown(),
-            'newValue' => $this->migrateUp(),
-        ]);
+    public function renderMigration(string $up, string $down): string
+    {
+        return <<<EOD
+        <?php
+        
+        use Illuminate\Database\Migrations\Migration;
+        use Illuminate\Database\Schema\Blueprint;
+        use Illuminate\Support\Facades\Schema;
+
+        return new class() extends Migration
+        {
+            /**
+             * Run the migrations.
+             */
+            public function up(): void
+            {
+                {$up}
+            }
+
+            /**
+             * Reverse the migrations.
+             */
+            public function down(): void
+            {
+                {$down}
+            }
+        };
+        EOD;
+    }
+
+    public function renderUp(): string
+    {
+        return <<<EOD
+        Schema::table('{$this->table}', function (Blueprint \$table) {
+            {$this->migrateUp()}
+        });
+        EOD;
+    }
+
+    public function renderDown(): string
+    {
+        return <<<EOD
+        Schema::table('{$this->table}', function (Blueprint \$table) {
+            {$this->migrateDown()}
+        });
+        EOD;
     }
 
     /**
@@ -110,6 +161,17 @@ abstract class Column extends Action
         return '->nullable()';
     }
 
+    public function migrateDefault($value): string
+    {
+        $quotes = is_string($value) ? "'" : '';
+
+        if (is_scalar($value)) {
+            return "->default({$quotes}{$value}{$quotes})";
+        } else {
+            return '->default(null)';
+        }
+    }
+
     public function migrate(AttributeBlueprint $attribute, ActionCase $action): string
     {
         $migration = Column::$VarTable;
@@ -121,8 +183,17 @@ abstract class Column extends Action
                 $migration .= $this->migrateNullable();
             }
         }
+        if (in_array($action, [ActionCase::Create])) {
+
+            if ($attribute->default !== null) {
+                $migration .= $this->migrateDefault($attribute->default);
+            }
+        }
 
         if (in_array($action, [ActionCase::Update])) {
+
+            $migration .= $this->migrateDefault($attribute->default);
+
             $migration .= $this->migrateChange();
         }
 

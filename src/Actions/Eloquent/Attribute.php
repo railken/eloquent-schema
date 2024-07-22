@@ -13,7 +13,7 @@ abstract class Attribute extends Action
 
     protected ClassEditor $classEditor;
 
-    protected array $result = [];
+    protected array $result;
 
     public function __construct(ClassEditor $classEditor)
     {

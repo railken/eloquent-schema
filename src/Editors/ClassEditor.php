@@ -146,6 +146,6 @@ class ClassEditor
         $traverser = new NodeTraverser();
         $traverser->addVisitor(new AppendToClassVisitor($node));
 
-        return $traverser->traverse([$this->file->ast()[0]]);
+        return $traverser->traverse((array) $this->file->ast());
     }
 }

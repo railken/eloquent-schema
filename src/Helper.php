@@ -5,6 +5,7 @@ namespace Railken\EloquentSchema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
+use Railken\EloquentSchema\Builders\Builder;
 use Railken\EloquentSchema\Schema\DatabaseSchemaRetriever;
 use Railken\EloquentSchema\Schema\SchemaRetrieverInterface;
 
@@ -12,7 +13,7 @@ class Helper
 {
     protected Collection $migrations;
 
-    protected Resolver $resolver;
+    protected array $resolvers = [];
 
     protected SchemaRetrieverInterface $schemaRetriever;
 
@@ -23,7 +24,6 @@ class Helper
      */
     public function __construct()
     {
-        $this->resolver = new Resolver();
         $this->migrations = Collection::make();
         $this->setSchemaRetriever(new DatabaseSchemaRetriever());
     }
@@ -69,45 +69,50 @@ class Helper
         }*/
     }
 
-    public function getModelBuilder()
+    public function addResolvers(array $resolvers): void
     {
-        return $this->resolver->resolveByModel($this->schemaRetriever, 'model');
+        $this->setResolvers(array_merge($this->resolvers, $resolvers));
     }
 
-    public function getMigrationBuilder()
+    public function setResolvers(array $resolvers): void
     {
-        return $this->resolver->resolveByModel($this->schemaRetriever, 'migration');
+        $this->resolvers = $resolvers;
     }
 
-    public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): array
+    public function callResolver($method): ResultResolver
     {
-        return [
-            'model' => $this->getModelBuilder()->createAttribute($ini, $attribute),
-            'migration' => $this->getMigrationBuilder()->createAttribute($ini, $attribute),
-        ];
+        $result = new ResultResolver();
+
+        foreach ($this->resolvers as $resolverClass) {
+            if (is_subclass_of($resolverClass, Builder::class)) {
+                $resolver = new $resolverClass($this->schemaRetriever);
+
+                $args = func_get_args();
+                unset($args[0]);
+                $result[$resolverClass] = $resolver->$method(...$args);
+            }
+        }
+
+        return $result;
     }
 
-    public function removeAttribute(string|Model $ini, string $attributeName): array
+    public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): ResultResolver
     {
-        return [
-            'model' => $this->getModelBuilder()->removeAttribute($ini, $attributeName),
-            'migration' => $this->getMigrationBuilder()->removeAttribute($ini, $attributeName),
-        ];
+        return $this->callResolver('createAttribute', $ini, $attribute);
     }
 
-    public function renameAttribute(string|Model $ini, string $oldAttributeName, string $newAttributeName): array
+    public function removeAttribute(string|Model $ini, string $attributeName): ResultResolver
     {
-        return [
-            'model' => $this->getModelBuilder()->renameAttribute($ini, $oldAttributeName, $newAttributeName),
-            'migration' => $this->getMigrationBuilder()->renameAttribute($ini, $oldAttributeName, $newAttributeName),
-        ];
+        return $this->callResolver('removeAttribute', $ini, $attributeName);
     }
 
-    public function updateAttribute(string|Model $ini, string $attributeName, AttributeBlueprint $newAttribute): array
+    public function renameAttribute(string|Model $ini, string $oldAttributeName, string $newAttributeName): ResultResolver
     {
-        return [
-            'model' => $this->getModelBuilder()->updateAttribute($ini, $attributeName, $newAttribute),
-            'migration' => $this->getMigrationBuilder()->updateAttribute($ini, $attributeName, $newAttribute),
-        ];
+        return $this->callResolver('renameAttribute', $ini, $oldAttributeName, $newAttributeName);
+    }
+
+    public function updateAttribute(string|Model $ini, string $oldAttributeName, AttributeBlueprint $newAttribute): ResultResolver
+    {
+        return $this->callResolver('updateAttribute', $ini, $oldAttributeName, $newAttribute);
     }
 }

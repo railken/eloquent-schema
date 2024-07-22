@@ -2,19 +2,18 @@
 
 namespace Tests;
 
-use Railken\EloquentSchema\Blueprints\Attributes\StringAttribute;
 use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Builders\ModelBuilder;
 
-class CreateAttributeTest extends BaseCase
+class RemoveAttributeTest extends BaseCase
 {
-    public function test_create()
+    public function test_remove()
     {
         $model = $this->newModel();
 
-        $result = $this->getService()->createAttribute(
+        $result = $this->getService()->removeAttribute(
             $model,
-            StringAttribute::make('description')->fillable(true)
+            'name'
         )->run();
 
         $final = <<<'EOD'
@@ -26,15 +25,9 @@ class CreateAttributeTest extends BaseCase
         {
             protected $table = 'parrots';
         
-            protected $fillable = [
-                'name',
-                'description',
-            ];
+            protected $fillable = [];
         
-            protected $casts = [
-                'name' => 'string',
-                'description' => 'string',
-            ];
+            protected $casts = [];
         };
         EOD;
 
@@ -42,22 +35,21 @@ class CreateAttributeTest extends BaseCase
 
         $final = <<<'EOD'
         Schema::table('parrots', function (Blueprint $table) {
-            $table->string('description');
+            $table->dropColumn('name');
         });
         EOD;
         $this->assertEquals($final, $result->get(MigrationBuilder::class)->first()->get('up'));
 
+        // Default must be present
         $final = <<<'EOD'
         Schema::table('parrots', function (Blueprint $table) {
-            $table->dropColumn('description');
+            $table->string('name')->default('Apollo');
         });
         EOD;
         $this->assertEquals($final, $result->get(MigrationBuilder::class)->first()->get('down'));
 
         $this->artisan('migrate');
 
-        $this->assertEquals('A very nice parrot', $this->newModel()->create([
-            'description' => 'A very nice parrot',
-        ])->description);
+        $this->assertEquals(null, $this->newModel()->create([])->name);
     }
 }

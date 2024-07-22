@@ -14,13 +14,18 @@ trait HookManager
         }
     }
 
-    public static function addHooks(array $hooks): void
-    {
-        self::$hooks = array_merge(self::$hooks, $hooks);
-    }
-
     public static function getHooks(): array
     {
         return self::$hooks;
+    }
+
+    public static function setHooks(array $hooks): void
+    {
+        self::$hooks = $hooks;
+    }
+
+    public static function addHooks(array $hooks): void
+    {
+        self::setHooks(array_merge(self::$hooks, $hooks));
     }
 }

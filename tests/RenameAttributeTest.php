@@ -2,39 +2,41 @@
 
 namespace Tests;
 
-use Railken\EloquentSchema\Blueprints\Attributes\StringAttribute;
 use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Builders\ModelBuilder;
 
-class CreateAttributeTest extends BaseCase
+class RenameAttributeTest extends BaseCase
 {
-    public function test_create()
+    public function test_rename()
     {
         $model = $this->newModel();
 
-        $result = $this->getService()->createAttribute(
+        $result = $this->getService()->renameAttribute(
             $model,
-            StringAttribute::make('description')->fillable(true)
+            'name',
+            'title'
         )->run();
 
         $final = <<<'EOD'
         <?php
         
+        use Illuminate\Database\Eloquent\Casts\Attribute;
         use Illuminate\Database\Eloquent\Model;
-        
         return new class extends Model
         {
             protected $table = 'parrots';
-        
+
             protected $fillable = [
-                'name',
-                'description',
+                'title',
             ];
-        
+
             protected $casts = [
-                'name' => 'string',
-                'description' => 'string',
+                'title' => 'string',
             ];
+            protected function name() : Attribute
+            {
+                return Attribute::make(get: fn(?string $value) => $this->title, set: fn(?string $value) => $this->title = $value);
+            }
         };
         EOD;
 
@@ -42,22 +44,25 @@ class CreateAttributeTest extends BaseCase
 
         $final = <<<'EOD'
         Schema::table('parrots', function (Blueprint $table) {
-            $table->string('description');
+            $table->renameColumn('name', 'title');
         });
         EOD;
         $this->assertEquals($final, $result->get(MigrationBuilder::class)->first()->get('up'));
 
         $final = <<<'EOD'
         Schema::table('parrots', function (Blueprint $table) {
-            $table->dropColumn('description');
+            $table->renameColumn('title', 'name');
         });
         EOD;
         $this->assertEquals($final, $result->get(MigrationBuilder::class)->first()->get('down'));
 
         $this->artisan('migrate');
 
-        $this->assertEquals('A very nice parrot', $this->newModel()->create([
-            'description' => 'A very nice parrot',
-        ])->description);
+        $this->newModel()->create([
+            'title' => 'Cookie',
+        ]);
+
+        $this->assertEquals('Cookie', $this->newModel()->where('id', 1)->first()->title);
+        $this->assertEquals('Cookie', $this->newModel()->where('id', 1)->first()->name);
     }
 }
