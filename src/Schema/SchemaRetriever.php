@@ -15,6 +15,7 @@ use KitLoong\MigrationsGenerator\Schema\SQLiteSchema;
 use KitLoong\MigrationsGenerator\Schema\SQLSrvSchema;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Blueprints\Attributes\IdAttribute;
+use Railken\EloquentSchema\Blueprints\Attributes\IntegerAttribute;
 use Railken\EloquentSchema\Blueprints\Attributes\StringAttribute;
 use Railken\EloquentSchema\Blueprints\Attributes\TextAttribute;
 
@@ -24,9 +25,12 @@ class SchemaRetriever implements SchemaRetrieverInterface
 {
     protected Collection $models;
 
+    protected Collection $folders;
+
     public function __construct()
     {
         $this->models = new Collection();
+        $this->folders = new Collection();
     }
 
     public function addModelFolders(array $folders)
@@ -46,7 +50,13 @@ class SchemaRetriever implements SchemaRetrieverInterface
 
                 }
             }
+            $this->folders = $this->folders->merge($folders);
         }
+    }
+
+    public function getFolders(): Collection
+    {
+        return $this->folders;
     }
 
     public function retrieveAttributes(string $table): Collection
@@ -113,6 +123,7 @@ class SchemaRetriever implements SchemaRetrieverInterface
 
         $attribute = $this->guessType($column, $params);
         $attribute->required($column->isNotNull());
+
         $attribute->default($column->getDefault());
 
         return $attribute;
@@ -134,7 +145,9 @@ class SchemaRetriever implements SchemaRetrieverInterface
 
         // Handle all types...
         return match ($column->getType()->value) {
+            // 'varchar' => StringAttribute::make($column->getName()),
             'text' => TextAttribute::make($column->getName()),
+            'integer' => IntegerAttribute::make($column->getName()),
             default => StringAttribute::make($column->getName()),
         };
     }

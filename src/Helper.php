@@ -5,6 +5,7 @@ namespace Railken\EloquentSchema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
+use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 use Railken\EloquentSchema\Builders\Builder;
 use Railken\EloquentSchema\Schema\DatabaseSchemaRetriever;
 use Railken\EloquentSchema\Schema\SchemaRetrieverInterface;
@@ -94,6 +95,16 @@ class Helper
         }
 
         return $result;
+    }
+
+    public function createModel(ModelBlueprint $model): ResultResolver
+    {
+        return $this->callResolver('createModel', $model);
+    }
+
+    public function removeModel(string $name): ResultResolver
+    {
+        return $this->callResolver('removeModel', $name);
     }
 
     public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): ResultResolver

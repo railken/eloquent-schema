@@ -3,8 +3,10 @@
 namespace Railken\EloquentSchema\Editors;
 
 use Archetype\Facades\PHPFile;
+use PhpParser\BuilderFactory;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
+use PhpParser\PrettyPrinter;
 use Railken\EloquentSchema\Injectors\MethodInjector;
 use Railken\EloquentSchema\Support;
 use Railken\EloquentSchema\Visitors\AppendToClassVisitor;
@@ -21,9 +23,27 @@ class ClassEditor
         $this->load();
     }
 
+    public static function newClass(string $className, string $workingDir): ClassEditor
+    {
+        $filename = $workingDir.'/'.$className.'.php';
+
+        if (file_exists($filename)) {
+            throw new \Exception(sprintf('Impossible to create a new class, file already exists %s', $filename));
+        }
+
+        return new self($filename);
+    }
+
+    public function getBuilder(): BuilderFactory
+    {
+        return new BuilderFactory;
+    }
+
     public function load(): void
     {
-        $this->file = PHPFile::load($this->path);
+        if (file_exists($this->path)) {
+            $this->file = PHPFile::load($this->path);
+        }
     }
 
     public function getPath(): string
@@ -34,6 +54,17 @@ class ClassEditor
     public function save(): array
     {
         $render = $this->render();
+
+        file_put_contents($this->getPath(), $render);
+
+        return [$this->getPath() => $render];
+    }
+
+    public function saveFromNodes(array $nodes): array
+    {
+        $prettyPrinter = new PrettyPrinter\Standard();
+        $render = $prettyPrinter->prettyPrintFile($nodes);
+
         file_put_contents($this->getPath(), $render);
 
         return [$this->getPath() => $render];

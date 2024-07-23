@@ -5,14 +5,30 @@ namespace Railken\EloquentSchema\Builders;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Railken\EloquentSchema\Actions\Migration\CreateColumnAction;
+use Railken\EloquentSchema\Actions\Migration\CreateTableAction;
 use Railken\EloquentSchema\Actions\Migration\RemoveColumnAction;
+use Railken\EloquentSchema\Actions\Migration\RemoveTableAction;
 use Railken\EloquentSchema\Actions\Migration\RenameColumnAction;
 use Railken\EloquentSchema\Actions\Migration\UpdateColumnAction;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
+use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 
 class MigrationBuilder extends Builder
 {
     protected AttributeBlueprint $attribute;
+
+    public function createModel(ModelBlueprint $model): CreateTableAction
+    {
+        return new CreateTableAction($model);
+    }
+
+    public function removeModel(string $ini): RemoveTableAction
+    {
+        $this->initialize($ini);
+        $model = new ModelBlueprint($ini);
+
+        return new RemoveTableAction($this->table, $this->classEditor, $model);
+    }
 
     public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): CreateColumnAction
     {

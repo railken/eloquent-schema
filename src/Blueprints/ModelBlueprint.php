@@ -2,39 +2,57 @@
 
 namespace Railken\EloquentSchema\Blueprints;
 
-use Illuminate\Support\Collection;
-use Railken\EloquentSchema\ActionCase;
+use Illuminate\Support\Str;
 
 class ModelBlueprint
 {
+    public string $name;
+
     public string $table;
 
-    public Collection $attributes;
+    public string $class;
 
-    public ActionCase $action;
+    public bool $anonymous = false;
 
-    public function __construct(ActionCase $action)
+    public string $namespace;
+
+    public function __construct(string $name)
     {
-        $this->action($action);
+        $this->name = $name;
+        $this->table($name);
+        $this->class($name);
     }
 
-    public function action(ActionCase $action): ModelBlueprint
+    public function namespace(string $namespace): ModelBlueprint
     {
-        $this->action = $action;
+        $this->$namespace = $namespace;
 
         return $this;
+    }
+
+    public function anonymous(bool $anonymous): ModelBlueprint
+    {
+        $this->anonymous = $anonymous;
+
+        return $this;
+    }
+
+    public static function make(): ModelBlueprint
+    {
+        // @phpstan-ignore-next-line
+        return new static(...func_get_args());
     }
 
     public function table(string $table): ModelBlueprint
     {
-        $this->table = $table;
+        $this->table = strtolower(Str::snake($table));
 
         return $this;
     }
 
-    public function addAttribute(AttributeBlueprint $attribute): ModelBlueprint
+    public function class(string $class): ModelBlueprint
     {
-        $this->attributes[$attribute->name] = $attribute;
+        $this->class = ucfirst(Str::camel($class));
 
         return $this;
     }

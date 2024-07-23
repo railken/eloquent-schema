@@ -6,10 +6,13 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Railken\EloquentSchema\Actions\Eloquent\Attribute;
 use Railken\EloquentSchema\Actions\Eloquent\CreateAttributeAction;
+use Railken\EloquentSchema\Actions\Eloquent\CreateModelAction;
 use Railken\EloquentSchema\Actions\Eloquent\RemoveAttributeAction;
+use Railken\EloquentSchema\Actions\Eloquent\RemoveModelAction;
 use Railken\EloquentSchema\Actions\Eloquent\RenameAttributeAction;
 use Railken\EloquentSchema\Actions\Eloquent\UpdateAttributeAction;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
+use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 use Railken\EloquentSchema\Support;
 use ReflectionException;
@@ -26,6 +29,23 @@ class ModelBuilder extends Builder
         $this->classEditor = new ClassEditor(Support::getPathByObject($this->model));
 
         return $this;
+    }
+
+    public function createModel(ModelBlueprint $model): CreateModelAction
+    {
+        $firstFolder = $this->schemaRetriever->getFolders()->first();
+
+        $this->classEditor = ClassEditor::newClass($model->class, $firstFolder);
+
+        return new CreateModelAction($this->classEditor, $model);
+    }
+
+    public function removeModel(string $ini): RemoveModelAction
+    {
+        $this->initialize($ini);
+        $model = new ModelBlueprint($ini);
+
+        return new RemoveModelAction($this->classEditor, $model);
     }
 
     /**

@@ -47,4 +47,4 @@
 - [ ] More tests between up/down of nullable, required, fillable, default
 
 
-
+- [ ] Errors: Name can only be alphanumeric

@@ -10,7 +10,7 @@ use Railken\EloquentSchema\Builders\ModelBuilder;
 #[RunTestsInSeparateProcesses]
 class CreateAttributeTest extends BaseCase
 {
-    public function test_create_simple()
+    public function test_create_attribute()
     {
         $model = $this->newModel();
 
