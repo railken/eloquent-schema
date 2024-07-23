@@ -25,7 +25,7 @@ class ModelBlueprint
 
     public function namespace(string $namespace): ModelBlueprint
     {
-        $this->$namespace = $namespace;
+        $this->namespace = $namespace;
 
         return $this;
     }

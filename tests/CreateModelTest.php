@@ -8,7 +8,7 @@ use Railken\EloquentSchema\Builders\ModelBuilder;
 #[RunTestsInSeparateProcesses]
 class CreateModelTest extends \Tests\BaseCase
 {
-    public function test_create_simple()
+    public function test_create_model_simple()
     {
         $result = $this->getService()->createModel(ModelBlueprint::make('cat'))->run();
 
@@ -40,5 +40,46 @@ class CreateModelTest extends \Tests\BaseCase
         $this->assertEquals($final, $result->get(MigrationBuilder::class)->first()->get('down'));
 
         $this->artisan('migrate');
+    }
+
+    public function test_create_model_with_namespace()
+    {
+        $result = $this->getService()->createModel(
+            ModelBlueprint::make('cat')->namespace('App\\Models')
+        )->run();
+
+        $final = <<<'EOD'
+        <?php
+        
+        namespace App\Models;
+        
+        use Illuminate\Database\Eloquent\Model;
+        
+        class Cat extends Model
+        {
+            protected $table = 'cat';
+        }
+        EOD;
+
+        $this->assertEquals($final, $result->get(ModelBuilder::class)->first());
+    }
+
+    public function test_create_model_anonymous()
+    {
+        $result = $this->getService()->createModel(
+            ModelBlueprint::make('cat')->anonymous(true)
+        )->run();
+
+        $final = <<<'EOD'
+        <?php
+        
+        use Illuminate\Database\Eloquent\Model;
+        return new class extends Model
+        {
+            protected $table = 'cat';
+        };
+        EOD;
+
+        $this->assertEquals($final, $result->get(ModelBuilder::class)->first());
     }
 }

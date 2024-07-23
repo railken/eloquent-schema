@@ -22,10 +22,15 @@ class CreateModelAction extends ModelAction
     public function run(): void
     {
         $factory = $this->classEditor->getBuilder();
+        $nodes = [];
+
+        if (! empty($this->model->namespace)) {
+            $nodes[] = $factory->namespace($this->model->namespace)->getNode();
+        }
 
         $nodes[] = $factory->use(\Illuminate\Database\Eloquent\Model::class)->getNode();
 
-        $nodes[] = $factory->class($this->model->class)
+        $class = $factory->class($this->model->class)
             ->extend('Model')
             ->addStmt($factory
                 ->property('table')
@@ -33,6 +38,16 @@ class CreateModelAction extends ModelAction
                 ->setDefault($this->model->table)
             )->setDocComment('')
             ->getNode();
+
+        if ($this->model->anonymous) {
+            $nodes[] = new \PhpParser\Node\Stmt\Return_(
+                new \PhpParser\Node\Expr\New_(
+                    $class
+                )
+            );
+        } else {
+            $nodes[] = $class;
+        }
 
         $this->result = $this->classEditor->saveFromNodes($nodes);
     }
