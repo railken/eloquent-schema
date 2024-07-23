@@ -27,7 +27,7 @@ class MigrationBuilder extends Builder
         $this->initialize($ini);
         $model = new ModelBlueprint($ini);
 
-        return new RemoveTableAction($this->table, $this->classEditor, $model);
+        return new RemoveTableAction($model);
     }
 
     public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): CreateColumnAction

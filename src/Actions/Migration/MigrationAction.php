@@ -106,4 +106,10 @@ abstract class MigrationAction extends Action
     abstract protected function migrateDown(): string;
 
     abstract protected function migrateUp(): string;
+
+    abstract protected function renderDown(): string;
+
+    abstract protected function renderUp(): string;
+
+    abstract protected function render(string $up, string $down): string;
 }

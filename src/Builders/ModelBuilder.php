@@ -33,9 +33,14 @@ class ModelBuilder extends Builder
 
     public function createModel(ModelBlueprint $model): CreateModelAction
     {
-        $firstFolder = $this->schemaRetriever->getFolders()->first();
 
-        $this->classEditor = ClassEditor::newClass($model->class, $firstFolder);
+        if (empty($model->workingDir)) {
+            $model->workingDir = $this->schemaRetriever->getFolders()->first();
+        }
+
+        $model->updateNameSpaceToWorkingDir();
+
+        $this->classEditor = ClassEditor::newClass($model->class, $model->workingDir);
 
         return new CreateModelAction($this->classEditor, $model);
     }

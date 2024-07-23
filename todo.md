@@ -45,15 +45,16 @@
 - [ ] add enum https://laravel.com/docs/11.x/eloquent-mutators#enum-casting
 - 
 ### CreateModel
-- [ ] Resolve namespace automatically creating folders
-- [ ] Set path/Configure root folder for all models create
-- [ ] Handle exception: Model already exists
+- [x] Resolve namespace automatically creating folders
+- [x] Set path/Configure root folder for all models create
+- [x] Handle exception: Model already exists
 
 ### UpdateModel
 - [ ] Change primary key
 
 ### RemoveModel
-- [ ] Make it work. Check dependency in the code
+- [ ] Add RemoveModel
+- [ ] Check dependency in the code
 
 ### RenameModel
 - [ ] Create a version with the older name e.g. NewName extends OldName

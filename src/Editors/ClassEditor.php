@@ -7,6 +7,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\PrettyPrinter;
+use Railken\EloquentSchema\Exceptions\ClassAlreadyExistsException;
 use Railken\EloquentSchema\Injectors\MethodInjector;
 use Railken\EloquentSchema\Support;
 use Railken\EloquentSchema\Visitors\AppendToClassVisitor;
@@ -23,12 +24,15 @@ class ClassEditor
         $this->load();
     }
 
+    /**
+     * @throws ClassAlreadyExistsException
+     */
     public static function newClass(string $className, string $workingDir): ClassEditor
     {
-        $filename = $workingDir.'/'.$className.'.php';
+        $filename = $workingDir.$className.'.php';
 
         if (file_exists($filename)) {
-            throw new \Exception(sprintf('Impossible to create a new class, file already exists %s', $filename));
+            throw new ClassAlreadyExistsException($className, $workingDir);
         }
 
         return new self($filename);
@@ -55,7 +59,7 @@ class ClassEditor
     {
         $render = $this->render();
 
-        file_put_contents($this->getPath(), $render);
+        $this->saveToPath($this->getPath(), $render);
 
         return [$this->getPath() => $render];
     }
@@ -65,9 +69,18 @@ class ClassEditor
         $prettyPrinter = new PrettyPrinter\Standard();
         $render = $prettyPrinter->prettyPrintFile($nodes);
 
-        file_put_contents($this->getPath(), $render);
+        $this->saveToPath($this->getPath(), $render);
 
         return [$this->getPath() => $render];
+    }
+
+    public function saveToPath(string $path, string $render): void
+    {
+        if (! file_exists(dirname($path))) {
+            mkdir(dirname($path), 0777, true);
+        }
+
+        file_put_contents($path, $render);
     }
 
     public function render(): string

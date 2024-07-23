@@ -4,6 +4,7 @@ use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Builders\ModelBuilder;
+use Railken\EloquentSchema\Exceptions\ClassAlreadyExistsException;
 
 #[RunTestsInSeparateProcesses]
 class CreateModelTest extends \Tests\BaseCase
@@ -45,7 +46,9 @@ class CreateModelTest extends \Tests\BaseCase
     public function test_create_model_with_namespace()
     {
         $result = $this->getService()->createModel(
-            ModelBlueprint::make('cat')->namespace('App\\Models')
+            ModelBlueprint::make('cat')
+                ->namespace('App\\Models')
+                ->workingDir(__DIR__.'/Generated')
         )->run();
 
         $final = <<<'EOD'
@@ -60,6 +63,11 @@ class CreateModelTest extends \Tests\BaseCase
             protected $table = 'cat';
         }
         EOD;
+
+        $this->assertEquals(
+            __DIR__.'/Generated/App/Models/Cat.php',
+            $result->get(ModelBuilder::class)->keys()->first()
+        );
 
         $this->assertEquals($final, $result->get(ModelBuilder::class)->first());
     }
@@ -81,5 +89,29 @@ class CreateModelTest extends \Tests\BaseCase
         EOD;
 
         $this->assertEquals($final, $result->get(ModelBuilder::class)->first());
+
+        $this->artisan('migrate');
+
+        $model = $this->newModel('Cat');
+        $model->create([]);
+
+        $this->assertEquals(1, $model->where('id', 1)->first()->id);
+    }
+
+    public function test_create_already_exists_exception()
+    {
+        $this->expectException(ClassAlreadyExistsException::class);
+
+        $result = $this->getService()->createModel(
+            ModelBlueprint::make('cat')
+                ->namespace('App\\Models')
+                ->workingDir(__DIR__.'/Generated')
+        )->run();
+
+        $result = $this->getService()->createModel(
+            ModelBlueprint::make('cat')
+                ->namespace('App\\Models')
+                ->workingDir(__DIR__.'/Generated')
+        )->run();
     }
 }
