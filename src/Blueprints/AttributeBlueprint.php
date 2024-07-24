@@ -8,6 +8,8 @@ class AttributeBlueprint
 
     public string $type;
 
+    public ?string $cast = null;
+
     public string $db;
 
     public ?bool $fillable = null;
@@ -36,7 +38,14 @@ class AttributeBlueprint
         return $this;
     }
 
-    public function model(ModelBlueprint $model): ModelBlueprint
+    public function cast(string $cast): AttributeBlueprint
+    {
+        $this->cast = $cast;
+
+        return $this;
+    }
+
+    public function model(ModelBlueprint $model): AttributeBlueprint
     {
         $this->model = $model;
 
@@ -59,7 +68,7 @@ class AttributeBlueprint
 
     public function nullable(?bool $nullable = true): AttributeBlueprint
     {
-        $this->required($nullable);
+        $this->required(! $nullable);
 
         return $this;
     }

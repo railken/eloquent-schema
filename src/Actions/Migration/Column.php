@@ -8,7 +8,7 @@ use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 
 abstract class Column extends MigrationAction
 {
-    protected static string $VarTable = '$table';
+    public static string $VarTable = '$table';
 
     protected array $result = [];
 

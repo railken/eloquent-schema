@@ -2,6 +2,7 @@
 
 namespace Railken\EloquentSchema\Blueprints;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Railken\EloquentSchema\Exceptions\AttributeNotFoundException;
 
@@ -14,7 +15,7 @@ class ModelBlueprint
     public string $class;
 
     /** @var AttributeBlueprint[] */
-    public array $attributes;
+    public array $attributes = [];
 
     public string $workingDir;
 
@@ -25,6 +26,8 @@ class ModelBlueprint
     public bool $anonymous = false;
 
     public string $namespace = '';
+
+    public Model $instance;
 
     public function __construct(string $name)
     {
@@ -43,6 +46,13 @@ class ModelBlueprint
     public function anonymous(bool $anonymous): ModelBlueprint
     {
         $this->anonymous = $anonymous;
+
+        return $this;
+    }
+
+    public function instance(Model $instance): ModelBlueprint
+    {
+        $this->instance = $instance;
 
         return $this;
     }
@@ -88,7 +98,16 @@ class ModelBlueprint
 
     public function attributes(array $attributes): ModelBlueprint
     {
-        $this->attributes = $attributes;
+        $this->attributes = [];
+
+        foreach ($attributes as $attribute) {
+            if (! $attribute instanceof AttributeBlueprint) {
+                throw new \Exception(sprintf('AttributeBlueprint should be used'));
+            }
+
+            $attribute->model($this);
+            $this->attributes[$attribute->name] = $attribute;
+        }
 
         return $this;
     }
@@ -127,5 +146,10 @@ class ModelBlueprint
         $this->incrementing = $incrementing;
 
         return $this;
+    }
+
+    public function hasAttributes(array $needle): bool
+    {
+        return count(array_intersect(array_keys($this->attributes), $needle)) == count($needle);
     }
 }

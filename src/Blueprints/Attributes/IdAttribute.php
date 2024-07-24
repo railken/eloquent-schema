@@ -8,5 +8,12 @@ class IdAttribute extends BaseAttribute
 
     public string $db = 'id';
 
+    public ?string $cast = null;
+
     public bool $dbNeedsName = false;
+
+    public function __construct(?string $name = null)
+    {
+        parent::__construct('id');
+    }
 }

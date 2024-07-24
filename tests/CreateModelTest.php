@@ -30,7 +30,8 @@ class CreateModelTest extends \Tests\BaseCase
         $final = <<<'EOD'
         Schema::create('cat', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
         EOD;
 
@@ -130,11 +131,17 @@ class CreateModelTest extends \Tests\BaseCase
         
         class Duck extends Model
         {
+            protected $casts = [
+                'name' => 'string',
+                'color' => 'string',
+            ];
             protected $table = 'duck';
             
             protected $incrementing = false;
             
             protected $primaryKey = ['name', 'color'];
+            
+            public $timestamps = false;
         }
         EOD;
 
@@ -144,7 +151,7 @@ class CreateModelTest extends \Tests\BaseCase
         Schema::create('duck', function (Blueprint $table) {
             $table->string('name');
             $table->string('color');
-            $table->primary(['name', 'color']);
+            $table->primary(['name','color']);
         });
         EOD;
 

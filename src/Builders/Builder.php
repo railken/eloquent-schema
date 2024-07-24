@@ -44,6 +44,13 @@ abstract class Builder
         return $this->newModelInstanceByTable($ini);
     }
 
+    public function getBlueprint($ini): ModelBlueprint
+    {
+        $model = $this->getModel($ini);
+
+        return $this->newModelBlueprintByModel($model);
+    }
+
     public function newModelBlueprintByModel(Model $model): ModelBlueprint
     {
         $reflection = new \ReflectionClass($model);
@@ -51,6 +58,7 @@ abstract class Builder
         $blueprint = new ModelBlueprint($reflection->getName());
         $blueprint->namespace($reflection->getNamespaceName());
         $blueprint->table($model->getTable());
+        $blueprint->instance($model);
 
         return $blueprint;
     }

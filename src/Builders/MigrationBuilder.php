@@ -24,16 +24,15 @@ class MigrationBuilder extends Builder
 
     public function removeModel(string|Model $ini): RemoveTableAction
     {
-        $model = $this->getModel($ini);
-        $modelBlueprint = $this->newModelBlueprintByModel($model);
+        $modelBlueprint = $this->getBlueprint($ini);
 
         return new RemoveTableAction($modelBlueprint);
     }
 
     public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): CreateColumnAction
     {
-        $model = $this->getModel($ini);
-        $modelBlueprint = $this->newModelBlueprintByModel($model);
+        $modelBlueprint = $this->getBlueprint($ini);
+
         $attribute->model($modelBlueprint);
 
         return new CreateColumnAction($attribute);
@@ -44,8 +43,7 @@ class MigrationBuilder extends Builder
      */
     public function removeAttribute(string|Model $ini, string $attributeName): RemoveColumnAction
     {
-        $model = $this->getModel($ini);
-        $modelBlueprint = $this->newModelBlueprintByModel($model);
+        $modelBlueprint = $this->getBlueprint($ini);
 
         $attribute = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $attributeName);
         $attribute->model($modelBlueprint);
@@ -58,8 +56,7 @@ class MigrationBuilder extends Builder
      */
     public function renameAttribute(string|Model $ini, string $oldAttributeName, string $newAttributeName): RenameColumnAction
     {
-        $model = $this->getModel($ini);
-        $modelBlueprint = $this->newModelBlueprintByModel($model);
+        $modelBlueprint = $this->getBlueprint($ini);
 
         $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $oldAttributeName);
         $oldAttribute->model($modelBlueprint);
@@ -75,8 +72,7 @@ class MigrationBuilder extends Builder
      */
     public function updateAttribute(string|Model $ini, string $oldAttributeName, AttributeBlueprint $newAttribute): UpdateColumnAction
     {
-        $model = $this->getModel($ini);
-        $modelBlueprint = $this->newModelBlueprintByModel($model);
+        $modelBlueprint = $this->getBlueprint($ini);
 
         $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $oldAttributeName);
         $oldAttribute->model($modelBlueprint);

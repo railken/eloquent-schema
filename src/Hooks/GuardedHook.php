@@ -9,7 +9,7 @@ class GuardedHook
 {
     public function add(ClassEditor $classEditor, AttributeBlueprint $attribute): void
     {
-        if (! $attribute->fillable) {
+        if (! $attribute->fillable && $attribute->fillable !== null) {
             $classEditor->addProtectedProperty('guarded', $attribute->name);
         }
     }

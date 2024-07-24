@@ -21,7 +21,12 @@ abstract class ModelAction extends Action
     public function __construct(ModelBlueprint $model)
     {
         $this->model = $model;
-        $this->classEditor = new ClassEditor(Support::getPathByObject($model));
+
+        if (isset($model->instance)) {
+            $this->classEditor = new ClassEditor(Support::getPathByObject($model->instance));
+        } else {
+            $this->classEditor = ClassEditor::newClass($model->class, $model->workingDir);
+        }
     }
 
     public function getResult(): array

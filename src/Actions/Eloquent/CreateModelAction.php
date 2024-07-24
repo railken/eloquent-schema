@@ -3,6 +3,7 @@
 namespace Railken\EloquentSchema\Actions\Eloquent;
 
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
+use Railken\EloquentSchema\Editors\ClassEditor;
 
 class CreateModelAction extends ModelAction
 {
@@ -30,6 +31,7 @@ class CreateModelAction extends ModelAction
 
         $this->addIncrementing($class, $this->model);
         $this->addPrimaryKey($class, $this->model);
+        $this->addTimestamps($class, $this->model);
 
         $class = $class->getNode();
 
@@ -44,6 +46,16 @@ class CreateModelAction extends ModelAction
         }
 
         $this->result = $this->classEditor->saveFromNodes($nodes);
+
+        $path = array_keys($this->result)[0];
+
+        $this->classEditor = new ClassEditor($path);
+
+        foreach ($this->model->attributes as $attribute) {
+            (new CreateAttributeAction($this->classEditor, $attribute))->run();
+        }
+
+        $this->result = [$path => file_get_contents($path)];
     }
 
     protected function addIncrementing($class, ModelBlueprint $model): void
@@ -60,15 +72,29 @@ class CreateModelAction extends ModelAction
         }
     }
 
+    protected function addTimestamps($class, ModelBlueprint $model): void
+    {
+        $factory = $this->classEditor->getBuilder();
+
+        if (! $model->hasAttributes(['created_at', 'updated_at'])) {
+            $class->addStmt($factory
+                ->property('timestamps')
+                ->makePublic()
+                ->setDefault(false)
+                ->setDocComment('')
+            );
+        }
+    }
+
     protected function addPrimaryKey($class, ModelBlueprint $model): void
     {
         $factory = $this->classEditor->getBuilder();
 
-        if (! $model->primaryKey[0] !== 'id') {
+        if ($model->primaryKey[0] !== 'id' || count($model->primaryKey) > 1) {
             $class->addStmt($factory
                 ->property('primaryKey')
                 ->makeProtected()
-                ->setDefault($this->model->primaryKey)
+                ->setDefault(count($this->model->primaryKey) == 1 ? $this->model->primaryKey[0] : $this->model->primaryKey)
                 ->setDocComment('')
             );
         }

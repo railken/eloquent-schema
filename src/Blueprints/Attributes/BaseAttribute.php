@@ -8,6 +8,8 @@ class BaseAttribute extends AttributeBlueprint
 {
     public string $type = 'string';
 
+    public ?string $cast = 'string';
+
     public string $db = 'string';
 
     public bool $dbNeedsName = true;

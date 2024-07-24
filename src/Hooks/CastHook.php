@@ -9,7 +9,9 @@ class CastHook
 {
     public function add(ClassEditor $classEditor, AttributeBlueprint $attribute): void
     {
-        $classEditor->addProtectedProperty('casts', [$attribute->name => $attribute->type]);
+        if ($attribute->cast !== null) {
+            $classEditor->addProtectedProperty('casts', [$attribute->name => $attribute->cast]);
+        }
     }
 
     public function remove(ClassEditor $classEditor, AttributeBlueprint $attribute): void

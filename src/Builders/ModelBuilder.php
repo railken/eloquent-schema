@@ -14,11 +14,13 @@ use Railken\EloquentSchema\Actions\Eloquent\UpdateAttributeAction;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
+use Railken\EloquentSchema\Support;
 
 class ModelBuilder extends Builder
 {
     public function createModel(ModelBlueprint $modelBlueprint): CreateModelAction
     {
+
         if (empty($modelBlueprint->workingDir)) {
             $modelBlueprint->workingDir = $this->schemaRetriever->getFolders()->first();
         }
@@ -43,11 +45,12 @@ class ModelBuilder extends Builder
      */
     public function createAttribute(string|Model $ini, AttributeBlueprint $attributeBlueprint): CreateAttributeAction
     {
-        $model = $this->getModel($ini);
-        $modelBlueprint = $this->newModelBlueprintByModel($model);
+        $modelBlueprint = $this->getBlueprint($ini);
         $attributeBlueprint->model($modelBlueprint);
 
-        return new CreateAttributeAction($attributeBlueprint);
+        $classEditor = new ClassEditor(Support::getPathByObject($attributeBlueprint->model->instance));
+
+        return new CreateAttributeAction($classEditor, $attributeBlueprint);
     }
 
     /**
@@ -57,13 +60,14 @@ class ModelBuilder extends Builder
      */
     public function removeAttribute(string|Model $ini, string $attributeName): RemoveAttributeAction
     {
-        $model = $this->getModel($ini);
-        $modelBlueprint = $this->newModelBlueprintByModel($model);
+        $modelBlueprint = $this->getBlueprint($ini);
 
         $attributeBlueprint = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $attributeName);
         $attributeBlueprint->model($modelBlueprint);
 
-        return new RemoveAttributeAction($attributeBlueprint);
+        $classEditor = new ClassEditor(Support::getPathByObject($attributeBlueprint->model->instance));
+
+        return new RemoveAttributeAction($classEditor, $attributeBlueprint);
     }
 
     /**
@@ -73,18 +77,18 @@ class ModelBuilder extends Builder
      */
     public function renameAttribute(string|Model $ini, string $oldAttributeName, string $newAttributeName): RenameAttributeAction
     {
-        $model = $this->getModel($ini);
-        $modelBlueprint = $this->newModelBlueprintByModel($model);
+        $modelBlueprint = $this->getBlueprint($ini);
 
         $oldAttributeBlueprint = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $oldAttributeName);
         $oldAttributeBlueprint->model($modelBlueprint);
 
-        // Attribute::callHooks('set', [$this->classEditor, $oldAttributeBlueprint]);
+        $classEditor = new ClassEditor(Support::getPathByObject($modelBlueprint->instance));
+        Attribute::callHooks('set', [$classEditor, $oldAttributeBlueprint]); // Refactor this hook
 
         $newAttributeBlueprint = clone $oldAttributeBlueprint;
         $newAttributeBlueprint->name($newAttributeName);
 
-        return new RenameAttributeAction($this->classEditor, $oldAttributeBlueprint, $newAttributeBlueprint);
+        return new RenameAttributeAction($classEditor, $oldAttributeBlueprint, $newAttributeBlueprint);
     }
 
     /**
@@ -94,14 +98,16 @@ class ModelBuilder extends Builder
      */
     public function updateAttribute(string|Model $ini, string $attributeName, AttributeBlueprint $newAttributeBlueprint): UpdateAttributeAction
     {
-        $model = $this->getModel($ini);
-        $modelBlueprint = $this->newModelBlueprintByModel($model);
+        $modelBlueprint = $this->getBlueprint($ini);
 
         $oldAttributeBlueprint = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $attributeName);
+
+        $classEditor = new ClassEditor(Support::getPathByObject($modelBlueprint->instance));
+        Attribute::callHooks('set', [$classEditor, $oldAttributeBlueprint]); // Refactor this hook
+
         $oldAttributeBlueprint->model($modelBlueprint);
+        $newAttributeBlueprint->model($modelBlueprint);
 
-        // Attribute::callHooks('set', [$this->classEditor, $oldAttributeBlueprint]);
-
-        return new UpdateAttributeAction($this->classEditor, $oldAttributeBlueprint, $newAttributeBlueprint);
+        return new UpdateAttributeAction($classEditor, $oldAttributeBlueprint, $newAttributeBlueprint);
     }
 }

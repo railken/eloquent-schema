@@ -6,5 +6,7 @@ class IntegerAttribute extends BaseAttribute
 {
     public string $type = 'integer';
 
+    public ?string $cast = 'integer';
+
     public string $db = 'integer';
 }
