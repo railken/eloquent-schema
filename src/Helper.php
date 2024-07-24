@@ -102,9 +102,9 @@ class Helper
         return $this->callResolver('createModel', $model);
     }
 
-    public function removeModel(string $name): ResultResolver
+    public function removeModel(string|Model $ini): ResultResolver
     {
-        return $this->callResolver('removeModel', $name);
+        return $this->callResolver('removeModel', $ini);
     }
 
     public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): ResultResolver

@@ -8,4 +8,14 @@ class RemoveTableAction extends CreateTableAction
     {
         return 'drop_';
     }
+
+    public function renderUp(): string
+    {
+        return parent::renderDown();
+    }
+
+    public function renderDown(): string
+    {
+        return parent::renderUp();
+    }
 }

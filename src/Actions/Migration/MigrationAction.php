@@ -103,10 +103,6 @@ abstract class MigrationAction extends Action
         EOD;
     }
 
-    abstract protected function migrateDown(): string;
-
-    abstract protected function migrateUp(): string;
-
     abstract protected function renderDown(): string;
 
     abstract protected function renderUp(): string;

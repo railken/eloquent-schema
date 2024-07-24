@@ -53,9 +53,17 @@
 - [ ] Change primary key
 
 ### RemoveModel
-- [ ] Add RemoveModel
+- [x] Add RemoveModel
 - [ ] Check dependency in the code
+- [ ] renderUp should re-add all the columns
 
 ### RenameModel
 - [ ] Create a version with the older name e.g. NewName extends OldName
 
+-----
+
+- [ ] Generate records of all models from code
+- [ ] Get attributes from fillable/guarded, etc for Eloquent (maybe read migration code), get them from schema for Amethyst
+- [ ] Add new record with source: user instead of code
+- [ ] Automatic generation based on difference
+- [ ] Handle relationships

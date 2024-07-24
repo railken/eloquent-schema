@@ -22,12 +22,16 @@ class MigrationBuilder extends Builder
         return new CreateTableAction($model);
     }
 
-    public function removeModel(string $ini): RemoveTableAction
+    public function removeModel(string|Model $ini): RemoveTableAction
     {
         $this->initialize($ini);
-        $model = new ModelBlueprint($ini);
+        $reflection = new \ReflectionClass($this->model);
 
-        return new RemoveTableAction($model);
+        $blueprint = new ModelBlueprint($reflection->getName());
+        $blueprint->namespace($reflection->getNamespaceName());
+        $blueprint->table($this->model->getTable());
+
+        return new RemoveTableAction($blueprint);
     }
 
     public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): CreateColumnAction

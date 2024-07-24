@@ -45,12 +45,17 @@ class ModelBuilder extends Builder
         return new CreateModelAction($this->classEditor, $model);
     }
 
-    public function removeModel(string $ini): RemoveModelAction
+    public function removeModel(string|Model $ini): RemoveModelAction
     {
         $this->initialize($ini);
-        $model = new ModelBlueprint($ini);
 
-        return new RemoveModelAction($this->classEditor, $model);
+        $reflection = new \ReflectionClass($this->model);
+
+        $blueprint = new ModelBlueprint($reflection->getName());
+        $blueprint->namespace($reflection->getNamespaceName());
+        $blueprint->table($this->model->getTable());
+
+        return new RemoveModelAction($this->classEditor, $blueprint);
     }
 
     /**

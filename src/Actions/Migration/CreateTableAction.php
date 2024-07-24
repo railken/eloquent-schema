@@ -4,14 +4,21 @@ namespace Railken\EloquentSchema\Actions\Migration;
 
 class CreateTableAction extends TableAction
 {
-    public function migrateUp(): string
+    public function renderUp(): string
     {
-        return $this->createTable($this->table);
+        return <<<EOD
+        Schema::create('{$this->table}', function (Blueprint \$table) {
+            \$table->id();
+            \$table->timestamps();
+        });
+        EOD;
     }
 
-    public function migrateDown(): string
+    public function renderDown(): string
     {
-        return $this->dropTable($this->table);
+        return <<<EOD
+        Schema::dropTable('{$this->table}');
+        EOD;
     }
 
     public function getPrefix(): string

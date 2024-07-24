@@ -6,7 +6,8 @@ class RemoveModelAction extends CreateModelAction
 {
     public function run(): void
     {
-        $this->remove($this->model);
-        $this->save();
+        unlink($this->classEditor->getPath());
+
+        $this->result = [$this->classEditor->getPath() => null];
     }
 }

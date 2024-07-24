@@ -17,7 +17,6 @@ abstract class TableAction extends MigrationAction
     public function __construct(ModelBlueprint $model)
     {
         $this->model = $model;
-
         parent::__construct($model->table);
     }
 
@@ -31,34 +30,7 @@ abstract class TableAction extends MigrationAction
         return $this->renderMigration($up, $down);
     }
 
-    public function renderUp(): string
-    {
-        return <<<EOD
-        Schema::create('{$this->table}', function (Blueprint \$table) {
-            {$this->migrateUp()}
-        });
-        EOD;
-    }
+    abstract public function renderUp(): string;
 
-    public function renderDown(): string
-    {
-        return <<<EOD
-        Schema::dropTable('{$this->table}');
-        EOD;
-    }
-
-    public function dropTable(string $name): string
-    {
-        return <<<EOD
-        \$table->dropTable('$name');
-        EOD;
-    }
-
-    public function createTable(string $name): string
-    {
-        return <<<'EOD'
-        $table->id();
-            $table->timestamps();
-        EOD;
-    }
+    abstract public function renderDown(): string;
 }
