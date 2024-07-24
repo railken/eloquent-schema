@@ -26,7 +26,7 @@ class Helper
     public function __construct()
     {
         $this->migrations = Collection::make();
-        $this->setSchemaRetriever(new DatabaseSchemaRetriever());
+        $this->setSchemaRetriever(new DatabaseSchemaRetriever);
     }
 
     public function setSchemaRetriever(SchemaRetrieverInterface $schemaRetriever): void
@@ -82,7 +82,7 @@ class Helper
 
     public function callResolver($method): ResultResolver
     {
-        $result = new ResultResolver();
+        $result = new ResultResolver;
 
         foreach ($this->resolvers as $resolverClass) {
             if (is_subclass_of($resolverClass, Builder::class)) {

@@ -29,7 +29,7 @@ abstract class Builder
     {
         $class = $this->schemaRetriever->getModels()->get($table);
 
-        return new $class();
+        return new $class;
     }
 
     protected function getClassEditor(): ClassEditor

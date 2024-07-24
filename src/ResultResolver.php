@@ -8,7 +8,7 @@ class ResultResolver extends Collection
 {
     public function run(): Collection
     {
-        $result = new Collection();
+        $result = new Collection;
 
         foreach ($this->items as $key => $item) {
             $item->run();

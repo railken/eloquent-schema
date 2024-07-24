@@ -9,7 +9,7 @@ trait HookManager
     public static function callHooks(string $event, array $params): void
     {
         foreach (self::getHooks() as $hook) {
-            $hook = new $hook();
+            $hook = new $hook;
             $hook->$event(...$params);
         }
     }
