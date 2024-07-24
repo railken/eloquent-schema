@@ -66,7 +66,7 @@ class ClassEditor
 
     public function saveFromNodes(array $nodes): array
     {
-        $prettyPrinter = new PrettyPrinter\Standard();
+        $prettyPrinter = new PrettyPrinter\Standard;
         $render = $prettyPrinter->prettyPrintFile($nodes);
 
         $this->saveToPath($this->getPath(), $render);
@@ -178,7 +178,7 @@ class ClassEditor
 
     public function inject(MethodInjector $injector): void
     {
-        $traverser = new NodeTraverser();
+        $traverser = new NodeTraverser;
         $traverser->addVisitor($injector);
         $traverser->traverse(PHPFile::load(Support::getPathByClass($injector->getRepositoryClassName()))->ast());
 
@@ -187,7 +187,7 @@ class ClassEditor
 
     public function addNodeToBody(Node $node): array
     {
-        $traverser = new NodeTraverser();
+        $traverser = new NodeTraverser;
         $traverser->addVisitor(new AppendToClassVisitor($node));
 
         return $traverser->traverse((array) $this->file->ast());

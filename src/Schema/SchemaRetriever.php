@@ -29,8 +29,8 @@ class SchemaRetriever implements SchemaRetrieverInterface
 
     public function __construct()
     {
-        $this->models = new Collection();
-        $this->folders = new Collection();
+        $this->models = new Collection;
+        $this->folders = new Collection;
     }
 
     public function addModelFolders(array $folders)
@@ -38,7 +38,7 @@ class SchemaRetriever implements SchemaRetrieverInterface
         // @todo, parse files/directory only first time they are requested
         foreach ($folders as $folder) {
             foreach (listInstantiatableClassesInDirectory($folder) as $class) {
-                $model = new $class();
+                $model = new $class;
 
                 if ($model instanceof Model) {
 
