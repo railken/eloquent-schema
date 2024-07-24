@@ -6,6 +6,7 @@ use Railken\EloquentSchema\Actions\Action;
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 use Railken\EloquentSchema\Hooks\HookManager;
+use Railken\EloquentSchema\Support;
 
 abstract class ModelAction extends Action
 {
@@ -13,11 +14,14 @@ abstract class ModelAction extends Action
 
     protected ClassEditor $classEditor;
 
+    protected ModelBlueprint $model;
+
     protected array $result;
 
-    public function __construct(ClassEditor $classEditor)
+    public function __construct(ModelBlueprint $model)
     {
-        $this->classEditor = $classEditor;
+        $this->model = $model;
+        $this->classEditor = new ClassEditor(Support::getPathByObject($model));
     }
 
     public function getResult(): array

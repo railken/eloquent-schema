@@ -2,14 +2,15 @@
 
 namespace Railken\EloquentSchema\Actions\Migration;
 
+use Railken\EloquentSchema\ActionCase;
+
 class CreateTableAction extends TableAction
 {
     public function renderUp(): string
     {
         return <<<EOD
         Schema::create('{$this->table}', function (Blueprint \$table) {
-            \$table->id();
-            \$table->timestamps();
+            {$this->migrateUp()}
         });
         EOD;
     }
@@ -24,5 +25,20 @@ class CreateTableAction extends TableAction
     public function getPrefix(): string
     {
         return 'create_';
+    }
+
+    public function migrateUp(): string
+    {
+        $content = '';
+
+        foreach ($this->model->attributes as $attribute) {
+            $content .= (new CreateColumnAction(
+                $this->model->table,
+                null,
+                $attribute
+            ))->migrate($attribute, ActionCase::Create);
+        }
+
+        return $content;
     }
 }

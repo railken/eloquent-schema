@@ -3,6 +3,7 @@
 namespace Railken\EloquentSchema\Blueprints;
 
 use Illuminate\Support\Str;
+use Railken\EloquentSchema\Exceptions\AttributeNotFoundException;
 
 class ModelBlueprint
 {
@@ -12,7 +13,14 @@ class ModelBlueprint
 
     public string $class;
 
+    /** @var AttributeBlueprint[] */
+    public array $attributes;
+
     public string $workingDir;
+
+    public array $primaryKey = ['id'];
+
+    public bool $incrementing = true;
 
     public bool $anonymous = false;
 
@@ -74,6 +82,49 @@ class ModelBlueprint
     public function class(string $class): ModelBlueprint
     {
         $this->class = ucfirst(Str::camel($class));
+
+        return $this;
+    }
+
+    public function attributes(array $attributes): ModelBlueprint
+    {
+        $this->attributes = $attributes;
+
+        return $this;
+    }
+
+    public function getAttributeByName(string $name): ?AttributeBlueprint
+    {
+        foreach ($this->attributes as $attribute) {
+            if ($attribute->name == $name) {
+                return $attribute;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @throws AttributeNotFoundException
+     */
+    public function primaryKey(array $primaryKey): ModelBlueprint
+    {
+        foreach ($primaryKey as $key) {
+            $attribute = $this->getAttributeByName($key);
+
+            if (! $attribute) {
+                throw new AttributeNotFoundException($key, $this->name);
+            }
+        }
+
+        $this->primaryKey = $primaryKey;
+
+        return $this;
+    }
+
+    public function incrementing(bool $incrementing): ModelBlueprint
+    {
+        $this->incrementing = $incrementing;
 
         return $this;
     }

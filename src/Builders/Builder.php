@@ -8,7 +8,6 @@ use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 use Railken\EloquentSchema\Schema\SchemaRetrieverInterface;
-use Railken\EloquentSchema\Support;
 
 abstract class Builder
 {
@@ -32,39 +31,28 @@ abstract class Builder
         return new $class;
     }
 
-    protected function getClassEditor(): ClassEditor
-    {
-        return $this->classEditor;
-    }
-
-    protected function initialize(string|Model $ini): Builder
+    protected function getModel(string|Model $ini): Model
     {
         if ($ini instanceof Model) {
-            return $this->initializeByModel($ini);
+            return $ini;
         }
 
-        return $this->initializeByTable($ini);
+        if (is_subclass_of($ini, Model::class)) {
+            return new $ini;
+        }
+
+        return $this->newModelInstanceByTable($ini);
     }
 
-    protected function initializeByTable(string $table): Builder
+    public function newModelBlueprintByModel(Model $model): ModelBlueprint
     {
-        $this->table = $table;
-        $model = $this->newModelInstanceByTable($table);
-        $this->model = $model;
+        $reflection = new \ReflectionClass($model);
 
-        $this->classEditor = new ClassEditor(Support::getPathByObject($model));
+        $blueprint = new ModelBlueprint($reflection->getName());
+        $blueprint->namespace($reflection->getNamespaceName());
+        $blueprint->table($model->getTable());
 
-        return $this;
-    }
-
-    protected function initializeByModel(Model $model): Builder
-    {
-        $this->table = $model->getTable();
-        $this->model = $model;
-
-        $this->classEditor = new ClassEditor(Support::getPathByObject($model));
-
-        return $this;
+        return $blueprint;
     }
 
     abstract public function createModel(

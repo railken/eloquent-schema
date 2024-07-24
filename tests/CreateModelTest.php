@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Railken\EloquentSchema\Blueprints\Attributes\StringAttribute;
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Builders\ModelBuilder;
@@ -113,5 +114,47 @@ class CreateModelTest extends \Tests\BaseCase
                 ->namespace('App\\Models')
                 ->workingDir(__DIR__.'/Generated')
         )->run();
+    }
+
+    public function test_create_model_custom_id()
+    {
+        $result = $this->getService()->createModel(ModelBlueprint::make('duck')->attributes([
+            StringAttribute::make('name'),
+            StringAttribute::make('color'),
+        ])->primaryKey(['name', 'color'])->incrementing(false))->run();
+
+        $final = <<<'EOD'
+        <?php
+        
+        use Illuminate\Database\Eloquent\Model;
+        
+        class Duck extends Model
+        {
+            protected $table = 'duck';
+            
+            protected $incrementing = false;
+            
+            protected $primaryKey = ['name', 'color'];
+        }
+        EOD;
+
+        $this->assertEquals($final, $result->get(ModelBuilder::class)->first());
+
+        $final = <<<'EOD'
+        Schema::create('duck', function (Blueprint $table) {
+            $table->string('name');
+            $table->string('color');
+            $table->primary(['name', 'color']);
+        });
+        EOD;
+
+        $this->assertEquals($final, $result->get(MigrationBuilder::class)->first()->get('up'));
+
+        $final = <<<'EOD'
+        Schema::dropTable('duck');
+        EOD;
+        $this->assertEquals($final, $result->get(MigrationBuilder::class)->first()->get('down'));
+
+        $this->artisan('migrate');
     }
 }

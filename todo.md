@@ -43,11 +43,14 @@
 - [ ] add number that will manage double, float, integer, decimal and others
 - [ ] add timestamp
 - [ ] add enum https://laravel.com/docs/11.x/eloquent-mutators#enum-casting
-- 
+
+
 ### CreateModel
 - [x] Resolve namespace automatically creating folders
 - [x] Set path/Configure root folder for all models create
 - [x] Handle exception: Model already exists
+- [ ] Separate timestamps
+- [ ] Separate ids
 
 ### UpdateModel
 - [ ] Change primary key

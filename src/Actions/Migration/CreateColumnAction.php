@@ -4,7 +4,6 @@ namespace Railken\EloquentSchema\Actions\Migration;
 
 use Railken\EloquentSchema\ActionCase;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
-use Railken\EloquentSchema\Editors\ClassEditor;
 
 class CreateColumnAction extends Column
 {
@@ -12,11 +11,11 @@ class CreateColumnAction extends Column
 
     protected array $result = [];
 
-    public function __construct(string $table, ClassEditor $classEditor, AttributeBlueprint $attribute)
+    public function __construct(AttributeBlueprint $attribute)
     {
         $this->attribute = $attribute;
 
-        parent::__construct($table, $classEditor);
+        parent::__construct($attribute->model->table);
     }
 
     public function run(): void

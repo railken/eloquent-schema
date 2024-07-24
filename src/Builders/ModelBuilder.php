@@ -14,48 +14,26 @@ use Railken\EloquentSchema\Actions\Eloquent\UpdateAttributeAction;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
-use Railken\EloquentSchema\Support;
-use ReflectionException;
 
 class ModelBuilder extends Builder
 {
-    /**
-     * @throws ReflectionException
-     */
-    protected function initialize(string|Model $ini): ModelBuilder
+    public function createModel(ModelBlueprint $modelBlueprint): CreateModelAction
     {
-        parent::initialize($ini);
-
-        $this->classEditor = new ClassEditor(Support::getPathByObject($this->model));
-
-        return $this;
-    }
-
-    public function createModel(ModelBlueprint $model): CreateModelAction
-    {
-
-        if (empty($model->workingDir)) {
-            $model->workingDir = $this->schemaRetriever->getFolders()->first();
+        if (empty($modelBlueprint->workingDir)) {
+            $modelBlueprint->workingDir = $this->schemaRetriever->getFolders()->first();
         }
 
-        $model->updateNameSpaceToWorkingDir();
+        $modelBlueprint->updateNameSpaceToWorkingDir();
 
-        $this->classEditor = ClassEditor::newClass($model->class, $model->workingDir);
-
-        return new CreateModelAction($this->classEditor, $model);
+        return new CreateModelAction($modelBlueprint);
     }
 
     public function removeModel(string|Model $ini): RemoveModelAction
     {
-        $this->initialize($ini);
+        $model = $this->getModel($ini);
+        $modelBlueprint = $this->newModelBlueprintByModel($model);
 
-        $reflection = new \ReflectionClass($this->model);
-
-        $blueprint = new ModelBlueprint($reflection->getName());
-        $blueprint->namespace($reflection->getNamespaceName());
-        $blueprint->table($this->model->getTable());
-
-        return new RemoveModelAction($this->classEditor, $blueprint);
+        return new RemoveModelAction($modelBlueprint);
     }
 
     /**
@@ -63,11 +41,13 @@ class ModelBuilder extends Builder
      *
      * @throws Exception
      */
-    public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): CreateAttributeAction
+    public function createAttribute(string|Model $ini, AttributeBlueprint $attributeBlueprint): CreateAttributeAction
     {
-        $this->initialize($ini);
+        $model = $this->getModel($ini);
+        $modelBlueprint = $this->newModelBlueprintByModel($model);
+        $attributeBlueprint->model($modelBlueprint);
 
-        return new CreateAttributeAction($this->classEditor, $attribute);
+        return new CreateAttributeAction($attributeBlueprint);
     }
 
     /**
@@ -77,11 +57,13 @@ class ModelBuilder extends Builder
      */
     public function removeAttribute(string|Model $ini, string $attributeName): RemoveAttributeAction
     {
-        $this->initialize($ini);
+        $model = $this->getModel($ini);
+        $modelBlueprint = $this->newModelBlueprintByModel($model);
 
-        $attribute = $this->schemaRetriever->getAttributeBlueprint($this->table, $attributeName);
+        $attributeBlueprint = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $attributeName);
+        $attributeBlueprint->model($modelBlueprint);
 
-        return new RemoveAttributeAction($this->classEditor, $attribute);
+        return new RemoveAttributeAction($attributeBlueprint);
     }
 
     /**
@@ -91,16 +73,18 @@ class ModelBuilder extends Builder
      */
     public function renameAttribute(string|Model $ini, string $oldAttributeName, string $newAttributeName): RenameAttributeAction
     {
-        $this->initialize($ini);
+        $model = $this->getModel($ini);
+        $modelBlueprint = $this->newModelBlueprintByModel($model);
 
-        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($this->table, $oldAttributeName);
+        $oldAttributeBlueprint = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $oldAttributeName);
+        $oldAttributeBlueprint->model($modelBlueprint);
 
-        Attribute::callHooks('set', [$this->classEditor, $oldAttribute]);
+        // Attribute::callHooks('set', [$this->classEditor, $oldAttributeBlueprint]);
 
-        $newAttribute = clone $oldAttribute;
-        $newAttribute->name($newAttributeName);
+        $newAttributeBlueprint = clone $oldAttributeBlueprint;
+        $newAttributeBlueprint->name($newAttributeName);
 
-        return new RenameAttributeAction($this->classEditor, $oldAttribute, $newAttribute);
+        return new RenameAttributeAction($this->classEditor, $oldAttributeBlueprint, $newAttributeBlueprint);
     }
 
     /**
@@ -108,14 +92,16 @@ class ModelBuilder extends Builder
      *
      * @throws Exception
      */
-    public function updateAttribute(string|Model $ini, string $attributeName, AttributeBlueprint $newAttribute): UpdateAttributeAction
+    public function updateAttribute(string|Model $ini, string $attributeName, AttributeBlueprint $newAttributeBlueprint): UpdateAttributeAction
     {
-        $this->initialize($ini);
+        $model = $this->getModel($ini);
+        $modelBlueprint = $this->newModelBlueprintByModel($model);
 
-        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($this->table, $attributeName);
+        $oldAttributeBlueprint = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $attributeName);
+        $oldAttributeBlueprint->model($modelBlueprint);
 
-        Attribute::callHooks('set', [$this->classEditor, $oldAttribute]);
+        // Attribute::callHooks('set', [$this->classEditor, $oldAttributeBlueprint]);
 
-        return new UpdateAttributeAction($this->classEditor, $oldAttribute, $newAttribute);
+        return new UpdateAttributeAction($this->classEditor, $oldAttributeBlueprint, $newAttributeBlueprint);
     }
 }

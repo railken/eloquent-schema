@@ -17,6 +17,7 @@ abstract class TableAction extends MigrationAction
     public function __construct(ModelBlueprint $model)
     {
         $this->model = $model;
+
         parent::__construct($model->table);
     }
 

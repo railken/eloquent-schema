@@ -16,6 +16,8 @@ class AttributeBlueprint
 
     public mixed $default = null;
 
+    public ?ModelBlueprint $model = null;
+
     public function __construct(string $name)
     {
         $this->name($name);
@@ -30,6 +32,13 @@ class AttributeBlueprint
     public function name(string $name): AttributeBlueprint
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function model(ModelBlueprint $model): ModelBlueprint
+    {
+        $this->model = $model;
 
         return $this;
     }

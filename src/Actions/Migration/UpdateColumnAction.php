@@ -4,7 +4,6 @@ namespace Railken\EloquentSchema\Actions\Migration;
 
 use Railken\EloquentSchema\ActionCase;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
-use Railken\EloquentSchema\Editors\ClassEditor;
 
 class UpdateColumnAction extends Column
 {
@@ -14,12 +13,12 @@ class UpdateColumnAction extends Column
 
     protected AttributeBlueprint $newAttribute;
 
-    public function __construct(string $table, ClassEditor $classEditor, AttributeBlueprint $oldAttribute, AttributeBlueprint $newAttribute)
+    public function __construct(AttributeBlueprint $oldAttribute, AttributeBlueprint $newAttribute)
     {
         $this->oldAttribute = $oldAttribute;
         $this->newAttribute = $newAttribute;
 
-        parent::__construct($table, $classEditor);
+        parent::__construct($newAttribute->model->table);
     }
 
     public function getPrefix(): string

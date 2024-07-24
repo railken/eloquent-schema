@@ -17,28 +17,26 @@ class MigrationBuilder extends Builder
 {
     protected AttributeBlueprint $attribute;
 
-    public function createModel(ModelBlueprint $model): CreateTableAction
+    public function createModel(ModelBlueprint $modelBlueprint): CreateTableAction
     {
-        return new CreateTableAction($model);
+        return new CreateTableAction($modelBlueprint);
     }
 
     public function removeModel(string|Model $ini): RemoveTableAction
     {
-        $this->initialize($ini);
-        $reflection = new \ReflectionClass($this->model);
+        $model = $this->getModel($ini);
+        $modelBlueprint = $this->newModelBlueprintByModel($model);
 
-        $blueprint = new ModelBlueprint($reflection->getName());
-        $blueprint->namespace($reflection->getNamespaceName());
-        $blueprint->table($this->model->getTable());
-
-        return new RemoveTableAction($blueprint);
+        return new RemoveTableAction($modelBlueprint);
     }
 
     public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): CreateColumnAction
     {
-        $this->initialize($ini);
+        $model = $this->getModel($ini);
+        $modelBlueprint = $this->newModelBlueprintByModel($model);
+        $attribute->model($modelBlueprint);
 
-        return new CreateColumnAction($this->table, $this->classEditor, $attribute);
+        return new CreateColumnAction($attribute);
     }
 
     /**
@@ -46,11 +44,13 @@ class MigrationBuilder extends Builder
      */
     public function removeAttribute(string|Model $ini, string $attributeName): RemoveColumnAction
     {
-        $this->initialize($ini);
+        $model = $this->getModel($ini);
+        $modelBlueprint = $this->newModelBlueprintByModel($model);
 
-        $attribute = $this->schemaRetriever->getAttributeBlueprint($this->table, $attributeName);
+        $attribute = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $attributeName);
+        $attribute->model($modelBlueprint);
 
-        return new RemoveColumnAction($this->table, $this->classEditor, $attribute);
+        return new RemoveColumnAction($attribute);
     }
 
     /**
@@ -58,14 +58,16 @@ class MigrationBuilder extends Builder
      */
     public function renameAttribute(string|Model $ini, string $oldAttributeName, string $newAttributeName): RenameColumnAction
     {
-        $this->initialize($ini);
+        $model = $this->getModel($ini);
+        $modelBlueprint = $this->newModelBlueprintByModel($model);
 
-        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($this->table, $oldAttributeName);
+        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $oldAttributeName);
+        $oldAttribute->model($modelBlueprint);
 
         $newAttribute = clone $oldAttribute;
         $newAttribute->name($newAttributeName);
 
-        return new RenameColumnAction($this->table, $this->classEditor, $oldAttribute, $newAttribute);
+        return new RenameColumnAction($oldAttribute, $newAttribute);
     }
 
     /**
@@ -73,10 +75,13 @@ class MigrationBuilder extends Builder
      */
     public function updateAttribute(string|Model $ini, string $oldAttributeName, AttributeBlueprint $newAttribute): UpdateColumnAction
     {
-        $this->initialize($ini);
+        $model = $this->getModel($ini);
+        $modelBlueprint = $this->newModelBlueprintByModel($model);
 
-        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($this->table, $oldAttributeName);
+        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $oldAttributeName);
+        $oldAttribute->model($modelBlueprint);
+        $newAttribute->model($modelBlueprint);
 
-        return new UpdateColumnAction($this->table, $this->classEditor, $oldAttribute, $newAttribute);
+        return new UpdateColumnAction($oldAttribute, $newAttribute);
     }
 }

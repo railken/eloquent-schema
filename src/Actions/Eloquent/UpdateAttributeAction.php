@@ -4,6 +4,7 @@ namespace Railken\EloquentSchema\Actions\Eloquent;
 
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
+use Railken\EloquentSchema\Support;
 
 class UpdateAttributeAction extends Attribute
 {
@@ -16,7 +17,7 @@ class UpdateAttributeAction extends Attribute
         $this->oldAttribute = $oldAttribute;
         $this->newAttribute = $newAttribute;
 
-        parent::__construct($classEditor);
+        parent::__construct(new ClassEditor(Support::getPathByObject($newAttribute->model)));
     }
 
     public function run(): void

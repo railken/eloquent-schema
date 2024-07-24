@@ -5,21 +5,15 @@ namespace Railken\EloquentSchema\Actions\Migration;
 use Exception;
 use Railken\EloquentSchema\ActionCase;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
-use Railken\EloquentSchema\Editors\ClassEditor;
 
 abstract class Column extends MigrationAction
 {
     protected static string $VarTable = '$table';
 
-    protected ClassEditor $classEditor;
-
-    protected string $table;
-
     protected array $result = [];
 
-    public function __construct(string $table, ClassEditor $classEditor)
+    public function __construct(string $table)
     {
-        $this->classEditor = $classEditor;
         parent::__construct($table);
     }
 

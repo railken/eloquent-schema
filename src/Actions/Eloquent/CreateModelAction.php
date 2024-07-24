@@ -3,19 +3,9 @@
 namespace Railken\EloquentSchema\Actions\Eloquent;
 
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
-use Railken\EloquentSchema\Editors\ClassEditor;
 
 class CreateModelAction extends ModelAction
 {
-    protected ModelBlueprint $model;
-
-    public function __construct(ClassEditor $classEditor, ModelBlueprint $model)
-    {
-        $this->model = $model;
-
-        parent::__construct($classEditor);
-    }
-
     /**
      * @docs: https://github.com/nikic/PHP-Parser/blob/master/doc/component/AST_builders.markdown
      */
@@ -36,8 +26,12 @@ class CreateModelAction extends ModelAction
                 ->property('table')
                 ->makeProtected()
                 ->setDefault($this->model->table)
-            )->setDocComment('')
-            ->getNode();
+            )->setDocComment('');
+
+        $this->addIncrementing($class, $this->model);
+        $this->addPrimaryKey($class, $this->model);
+
+        $class = $class->getNode();
 
         if ($this->model->anonymous) {
             $nodes[] = new \PhpParser\Node\Stmt\Return_(
@@ -50,5 +44,33 @@ class CreateModelAction extends ModelAction
         }
 
         $this->result = $this->classEditor->saveFromNodes($nodes);
+    }
+
+    protected function addIncrementing($class, ModelBlueprint $model): void
+    {
+        $factory = $this->classEditor->getBuilder();
+
+        if (! $model->incrementing) {
+            $class->addStmt($factory
+                ->property('incrementing')
+                ->makeProtected()
+                ->setDefault($this->model->incrementing)
+                ->setDocComment('')
+            );
+        }
+    }
+
+    protected function addPrimaryKey($class, ModelBlueprint $model): void
+    {
+        $factory = $this->classEditor->getBuilder();
+
+        if (! $model->primaryKey[0] !== 'id') {
+            $class->addStmt($factory
+                ->property('primaryKey')
+                ->makeProtected()
+                ->setDefault($this->model->primaryKey)
+                ->setDocComment('')
+            );
+        }
     }
 }

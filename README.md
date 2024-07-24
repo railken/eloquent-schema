@@ -140,6 +140,87 @@ app('eloquent.schema')->setResolvers([
 ```
 
 
+### Generation code
+
+
+```php
+$helper = app('eloquent.schema');
+```
+#### Models
+
+Creating a new Model
+```php
+$helper->createModel(ModelBlueprint::make('duck')))->run();
+
+
+$helper->createModel(ModelBlueprint::make('duck')->attributes(
+    IntegerAttribute::make('name')
+        ->fillable(true),
+    IntegerAttribute::make('type')
+        ->fillable(true)
+        ->default(5)
+))->run();
+
+$helper->createModel(ModelBlueprint::make('duck')->attributes(
+    IntegerAttribute::make('name')
+        ->fillable(true),
+    IntegerAttribute::make('type')
+        ->fillable(true)
+        ->default(5)
+)->primary('name')->incrementing(false))->run();
+```
+
+Updating a model. Sending attributes on update model will overwrite the current one. So in this case
+name will be required, and type will be removed
+```php
+$helper->updateModel(Duck::class, ModelBlueprint::make('duck')->attributes([
+    IntegerAttribute::make('name')
+        ->fillable(true)
+        ->required(true)
+])->run();
+```
+
+#### Attributes
+Adding a new attribute
+```php
+$helper->createAttribute(
+    Duck::class,
+    IntegerAttribute::make('type')
+        ->fillable(true)
+        ->default(5)
+)->run();
+```
+
+Updating an attribute
+```php
+$helper->updateAttribute(
+    Duck::class,
+    'type',
+    IntegerAttribute::make('type')
+        ->fillable(true)
+        ->default(5)
+)->run();
+```
+
+Removing an attribute
+```php
+$helper->removeAttribute(
+    Duck::class,
+    'type'
+)->run();
+```
+
+Renaming an attribute
+```php
+$helper->renameAttribute(
+    Duck::class,
+    'type',
+    'newName'
+)->run();
+```
+
+
+
 ### Flow
 - User adds new tables, columns, indexes, relations from an API/Admin panel
 - New columns/tables/indexes are handled dinamically and data starts to populate. No need to update the code
