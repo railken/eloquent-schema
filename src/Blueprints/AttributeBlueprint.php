@@ -16,7 +16,7 @@ class AttributeBlueprint
 
     public ?bool $required = true;
 
-    public mixed $default;
+    public mixed $default = null;
 
     public ?ModelBlueprint $model = null;
 

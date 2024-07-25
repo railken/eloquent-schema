@@ -37,4 +37,20 @@ class CreateColumnAction extends Column
     {
         return $this->dropColumn($this->attribute);
     }
+
+    public function migrate(): string
+    {
+        $migration = Column::$VarTable;
+
+        $migration .= $this->migrateColumn($this->attribute);
+
+        if ($this->attribute->required === false) {
+            $migration .= $this->migrateNullable();
+        }
+        if ($this->attribute->default !== null) {
+            $migration .= $this->migrateDefault($this->attribute->default);
+        }
+
+        return $migration.';';
+    }
 }

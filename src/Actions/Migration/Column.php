@@ -3,7 +3,6 @@
 namespace Railken\EloquentSchema\Actions\Migration;
 
 use Exception;
-use Railken\EloquentSchema\ActionCase;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 
 abstract class Column extends MigrationAction
@@ -84,36 +83,6 @@ abstract class Column extends MigrationAction
         } else {
             return '->default(null)';
         }
-    }
-
-    public function migrate(AttributeBlueprint $attribute, ActionCase $action): string
-    {
-        $migration = Column::$VarTable;
-
-        if (in_array($action, [ActionCase::Create, ActionCase::Update])) {
-            $migration .= $this->migrateColumn($attribute);
-
-            if ($attribute->required === false) {
-                $migration .= $this->migrateNullable();
-            }
-        }
-        if (in_array($action, [ActionCase::Create])) {
-
-            if (isset($attribute->default)) {
-                $migration .= $this->migrateDefault($attribute->default);
-            }
-        }
-
-        if (in_array($action, [ActionCase::Update])) {
-
-            if (isset($attribute->default)) {
-                $migration .= $this->migrateDefault($attribute->default);
-            }
-
-            $migration .= $this->migrateChange();
-        }
-
-        return $migration.';';
     }
 
     public function migrateColumn(AttributeBlueprint $attribute): string

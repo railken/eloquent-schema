@@ -2,7 +2,6 @@
 
 namespace Railken\EloquentSchema\Actions\Migration;
 
-use Railken\EloquentSchema\ActionCase;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 
 class UpdateColumnAction extends Column
@@ -28,11 +27,30 @@ class UpdateColumnAction extends Column
 
     public function migrateUp(): string
     {
-        return $this->migrate($this->newAttribute, ActionCase::Update);
+        return $this->migrate($this->oldAttribute, $this->newAttribute);
     }
 
     public function migrateDown(): string
     {
-        return $this->migrate($this->oldAttribute, ActionCase::Update);
+        return $this->migrate($this->newAttribute, $this->oldAttribute);
+    }
+
+    public function migrate(AttributeBlueprint $oldAttribute, AttributeBlueprint $newAttribute): string
+    {
+        $migration = Column::$VarTable;
+
+        $migration .= $this->migrateColumn($newAttribute);
+
+        if ($oldAttribute->required !== $newAttribute->required && $newAttribute->required === false) {
+            $migration .= $this->migrateNullable();
+        }
+
+        if ($oldAttribute->default !== $newAttribute->default) {
+            $migration .= $this->migrateDefault($newAttribute->default);
+        }
+
+        $migration .= $this->migrateChange();
+
+        return $migration.';';
     }
 }
