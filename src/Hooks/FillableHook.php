@@ -10,7 +10,7 @@ class FillableHook
     public function add(ClassEditor $classEditor, AttributeBlueprint $attribute): void
     {
         if ($attribute->fillable) {
-            $classEditor->addProtectedProperty('fillable', $attribute->name);
+            $classEditor->addProtectedPropertyValue('fillable', $attribute->name);
         }
     }
 

@@ -4,14 +4,18 @@ namespace Railken\EloquentSchema\Builders;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Railken\EloquentSchema\Actions\Eloquent\Attribute;
 use Railken\EloquentSchema\Actions\Migration\CreateColumnAction;
 use Railken\EloquentSchema\Actions\Migration\CreateTableAction;
 use Railken\EloquentSchema\Actions\Migration\RemoveColumnAction;
 use Railken\EloquentSchema\Actions\Migration\RemoveTableAction;
 use Railken\EloquentSchema\Actions\Migration\RenameColumnAction;
 use Railken\EloquentSchema\Actions\Migration\UpdateColumnAction;
+use Railken\EloquentSchema\Actions\Migration\UpdateTableAction;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
+use Railken\EloquentSchema\Editors\ClassEditor;
+use Railken\EloquentSchema\Support;
 
 class MigrationBuilder extends Builder
 {
@@ -27,6 +31,23 @@ class MigrationBuilder extends Builder
         $modelBlueprint = $this->getBlueprint($ini);
 
         return new RemoveTableAction($modelBlueprint);
+    }
+
+    public function updateModel(string|Model $ini, ModelBlueprint $newModelBlueprint): UpdateTableAction
+    {
+        $model = $this->getModel($ini);
+        $oldModelBlueprint = $this->getBlueprint($ini);
+
+        $this->schemaRetriever->getAttributesBlueprint($oldModelBlueprint);
+        $classEditor = new ClassEditor(Support::getPathByObject($oldModelBlueprint->instance));
+        foreach ($oldModelBlueprint->attributes as $attribute) {
+            Attribute::callHooks('set', [$classEditor, $attribute]); // Refactor this hook
+        }
+
+        $newModelBlueprint->instance($model);
+        $oldModelBlueprint->instance($model);
+
+        return new UpdateTableAction($oldModelBlueprint, $newModelBlueprint);
     }
 
     public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): CreateColumnAction

@@ -131,7 +131,7 @@ class ClassEditor
         return $this;
     }
 
-    public function addProtectedProperty(string $name, mixed $value): ClassEditor
+    public function addProtectedPropertyValue(string $name, mixed $value): ClassEditor
     {
         $this->addPropertyValue($name, $value, Visibility::Protected);
 
@@ -163,6 +163,55 @@ class ClassEditor
 
             $this->file->protected()->property($name, $casts);
         }
+
+        return $this;
+    }
+
+    public function setPropertyValue(string $name, mixed $value, Visibility $visibility): ClassEditor
+    {
+        $builder = $this->file;
+
+        switch ($visibility) {
+            case Visibility::Public:
+                $builder = $builder->public();
+                break;
+            case Visibility::Protected:
+                $builder = $builder->protected();
+                break;
+            case Visibility::Private:
+                $builder = $builder->private();
+                break;
+        }
+
+        $builder->setProperty($name, $value);
+
+        return $this;
+    }
+
+    public function setPublicPropertyValue(string $name, mixed $value): ClassEditor
+    {
+        $this->setPropertyValue($name, $value, Visibility::Public);
+
+        return $this;
+    }
+
+    public function setProtectedPropertyValue(string $name, mixed $value): ClassEditor
+    {
+        $this->setPropertyValue($name, $value, Visibility::Protected);
+
+        return $this;
+    }
+
+    public function setPrivatePropertyValue(string $name, mixed $value): ClassEditor
+    {
+        $this->setPropertyValue($name, $value, Visibility::Private);
+
+        return $this;
+    }
+
+    public function removeProperty(string $name): ClassEditor
+    {
+        $this->file->remove()->property($name);
 
         return $this;
     }

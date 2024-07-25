@@ -107,6 +107,11 @@ class Helper
         return $this->callResolver('removeModel', $ini);
     }
 
+    public function updateModel(string|Model $ini, ModelBlueprint $model): ResultResolver
+    {
+        return $this->callResolver('updateModel', $ini, $model);
+    }
+
     public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): ResultResolver
     {
         return $this->callResolver('createAttribute', $ini, $attribute);

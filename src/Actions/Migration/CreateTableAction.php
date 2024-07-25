@@ -63,6 +63,11 @@ class CreateTableAction extends TableAction
         return implode(PHP_EOL, $columns);
     }
 
+    public function dropPrimary(): ?string
+    {
+        return Column::$VarTable.'->dropPrimary();';
+    }
+
     public function migratePrimary(array $keys): ?string
     {
         if ($keys[0] !== 'id' || count($keys) > 1) {

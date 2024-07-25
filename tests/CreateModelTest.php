@@ -18,7 +18,6 @@ class CreateModelTest extends \Tests\BaseCase
         <?php
         
         use Illuminate\Database\Eloquent\Model;
-        
         class Cat extends Model
         {
             protected $table = 'cat';
@@ -59,7 +58,6 @@ class CreateModelTest extends \Tests\BaseCase
         namespace App\Models;
         
         use Illuminate\Database\Eloquent\Model;
-        
         class Cat extends Model
         {
             protected $table = 'cat';
@@ -128,20 +126,23 @@ class CreateModelTest extends \Tests\BaseCase
         <?php
         
         use Illuminate\Database\Eloquent\Model;
-        
         class Duck extends Model
         {
+            protected $table = 'duck';
+            
+            protected $primaryKey = [
+                'name',
+                'color',
+            ];
+            
+            public $incrementing = false;
+            
+            public $timestamps = false;
+            
             protected $casts = [
                 'name' => 'string',
                 'color' => 'string',
             ];
-            protected $table = 'duck';
-            
-            protected $incrementing = false;
-            
-            protected $primaryKey = ['name', 'color'];
-            
-            public $timestamps = false;
         }
         EOD;
 

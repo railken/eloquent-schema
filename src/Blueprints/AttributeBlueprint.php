@@ -14,9 +14,9 @@ class AttributeBlueprint
 
     public ?bool $fillable = null;
 
-    public ?bool $required = null;
+    public ?bool $required = true;
 
-    public mixed $default = null;
+    public mixed $default;
 
     public ?ModelBlueprint $model = null;
 
@@ -78,5 +78,15 @@ class AttributeBlueprint
         $this->default = $default;
 
         return $this;
+    }
+
+    public function equalsTo(AttributeBlueprint $attributeBlueprint): bool
+    {
+        return $this->fillable == $attributeBlueprint->fillable &&
+            $this->required == $attributeBlueprint->required &&
+            (! isset($this->default) || $this->default == $attributeBlueprint->default) &&
+            $this->type == $attributeBlueprint->type &&
+            $this->cast == $attributeBlueprint->cast &&
+            $this->name == $attributeBlueprint->name;
     }
 }

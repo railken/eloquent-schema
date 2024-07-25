@@ -11,6 +11,7 @@ use Railken\EloquentSchema\Actions\Eloquent\RemoveAttributeAction;
 use Railken\EloquentSchema\Actions\Eloquent\RemoveModelAction;
 use Railken\EloquentSchema\Actions\Eloquent\RenameAttributeAction;
 use Railken\EloquentSchema\Actions\Eloquent\UpdateAttributeAction;
+use Railken\EloquentSchema\Actions\Eloquent\UpdateModelAction;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
@@ -20,11 +21,9 @@ class ModelBuilder extends Builder
 {
     public function createModel(ModelBlueprint $modelBlueprint): CreateModelAction
     {
-
         if (empty($modelBlueprint->workingDir)) {
             $modelBlueprint->workingDir = $this->schemaRetriever->getFolders()->first();
         }
-
         $modelBlueprint->updateNameSpaceToWorkingDir();
 
         return new CreateModelAction($modelBlueprint);
@@ -36,6 +35,22 @@ class ModelBuilder extends Builder
         $modelBlueprint = $this->newModelBlueprintByModel($model);
 
         return new RemoveModelAction($modelBlueprint);
+    }
+
+    public function updateModel(string|Model $ini, ModelBlueprint $newModelBlueprint): UpdateModelAction
+    {
+        $model = $this->getModel($ini);
+        $oldModelBlueprint = $this->getBlueprint($ini);
+        $this->schemaRetriever->getAttributesBlueprint($oldModelBlueprint);
+        $classEditor = new ClassEditor(Support::getPathByObject($oldModelBlueprint->instance));
+        foreach ($oldModelBlueprint->attributes as $attribute) {
+            Attribute::callHooks('set', [$classEditor, $attribute]); // Refactor this hook
+        }
+
+        $newModelBlueprint->instance($model);
+        $oldModelBlueprint->instance($model);
+
+        return new UpdateModelAction($oldModelBlueprint, $newModelBlueprint);
     }
 
     /**

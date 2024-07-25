@@ -18,6 +18,7 @@ use Railken\EloquentSchema\Blueprints\Attributes\IdAttribute;
 use Railken\EloquentSchema\Blueprints\Attributes\IntegerAttribute;
 use Railken\EloquentSchema\Blueprints\Attributes\StringAttribute;
 use Railken\EloquentSchema\Blueprints\Attributes\TextAttribute;
+use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 
 use function WyriHaximus\listInstantiatableClassesInDirectory;
 
@@ -101,6 +102,28 @@ class SchemaRetriever implements SchemaRetrieverInterface
         return $this->getMigrationGeneratorSchema()->getTable($table);
     }
 
+    public function getAttributesBlueprint(ModelBlueprint $modelBlueprint): array
+    {
+        $params = $this->getMigrationGeneratorSchema()->getTable($modelBlueprint->table);
+
+        $columns = [];
+        foreach ($params->getColumns() as $column) {
+            $columns[] = $this->newBlueprintByColumn($column, $params);
+        }
+
+        $modelBlueprint->attributes($columns);
+
+        $primaries = $params->getIndexes()->filter(function ($index) {
+            return $index->getType() == IndexType::PRIMARY;
+        })->first();
+
+        if (! empty($primaries)) {
+            $modelBlueprint->primaryKey($primaries->getColumns());
+        }
+
+        return $columns;
+    }
+
     public function getAttributeBlueprint(string $table, string $attributeName): AttributeBlueprint
     {
         $params = $this->getMigrationGeneratorSchema()->getTable($table);
@@ -113,18 +136,27 @@ class SchemaRetriever implements SchemaRetrieverInterface
             throw new Exception(sprintf("Couldn't find the attribute in the db %s", $attributeName));
         }
 
+        return $this->newBlueprintByColumn($column, $params);
+    }
+
+    public function newBlueprintByColumn($column, $params): AttributeBlueprint
+    {
+        /*
         $indexes = $params->getIndexes()->filter(function ($index) use ($attributeName) {
             return in_array($attributeName, $index->getColumns()) && count($index->getColumns()) > 1;
         });
 
         if (count($indexes) > 0) {
             throw new Exception('Please change your index before removing the attribute');
-        }
+        }*/
 
         $attribute = $this->guessType($column, $params);
+
         $attribute->required($column->isNotNull());
 
-        $attribute->default($column->getDefault());
+        if ($column->getDefault() !== null) {
+            $attribute->default($column->getDefault());
+        }
 
         return $attribute;
     }

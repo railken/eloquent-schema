@@ -5,11 +5,16 @@ namespace Tests;
 use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Railken\EloquentSchema\Actions\Eloquent\Attribute;
+use Railken\EloquentSchema\Actions\Eloquent\ModelAction;
 use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Builders\ModelBuilder;
 use Railken\EloquentSchema\Hooks\CastHook;
 use Railken\EloquentSchema\Hooks\FillableHook;
 use Railken\EloquentSchema\Hooks\GuardedHook;
+use Railken\EloquentSchema\Hooks\IncrementingHook;
+use Railken\EloquentSchema\Hooks\PrimaryKeyHook;
+use Railken\EloquentSchema\Hooks\TableHook;
+use Railken\EloquentSchema\Hooks\TimestampsHook;
 
 #[RunTestsInSeparateProcesses]
 abstract class BaseCase extends \Orchestra\Testbench\TestCase
@@ -27,9 +32,16 @@ abstract class BaseCase extends \Orchestra\Testbench\TestCase
         parent::setUp();
 
         Attribute::setHooks([
-            FillableHook::class,
             GuardedHook::class,
             CastHook::class,
+            FillableHook::class,
+        ]);
+
+        ModelAction::setHooks([
+            TimestampsHook::class,
+            IncrementingHook::class,
+            PrimaryKeyHook::class,
+            TableHook::class,
         ]);
 
         $this->getService()->setResolvers([

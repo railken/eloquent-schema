@@ -99,14 +99,16 @@ abstract class Column extends MigrationAction
         }
         if (in_array($action, [ActionCase::Create])) {
 
-            if ($attribute->default !== null) {
+            if (isset($attribute->default)) {
                 $migration .= $this->migrateDefault($attribute->default);
             }
         }
 
         if (in_array($action, [ActionCase::Update])) {
 
-            $migration .= $this->migrateDefault($attribute->default);
+            if (isset($attribute->default)) {
+                $migration .= $this->migrateDefault($attribute->default);
+            }
 
             $migration .= $this->migrateChange();
         }

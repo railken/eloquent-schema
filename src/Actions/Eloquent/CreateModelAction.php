@@ -4,9 +4,25 @@ namespace Railken\EloquentSchema\Actions\Eloquent;
 
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
+use Railken\EloquentSchema\Support;
 
 class CreateModelAction extends ModelAction
 {
+    protected ClassEditor $classEditor;
+
+    protected ModelBlueprint $model;
+
+    public function __construct(ModelBlueprint $model)
+    {
+        $this->model = $model;
+
+        if (isset($model->instance)) {
+            $this->classEditor = new ClassEditor(Support::getPathByObject($model->instance));
+        } else {
+            $this->classEditor = ClassEditor::newClass($model->class, $model->workingDir);
+        }
+    }
+
     /**
      * @docs: https://github.com/nikic/PHP-Parser/blob/master/doc/component/AST_builders.markdown
      */
@@ -21,19 +37,7 @@ class CreateModelAction extends ModelAction
 
         $nodes[] = $factory->use(\Illuminate\Database\Eloquent\Model::class)->getNode();
 
-        $class = $factory->class($this->model->class)
-            ->extend('Model')
-            ->addStmt($factory
-                ->property('table')
-                ->makeProtected()
-                ->setDefault($this->model->table)
-            )->setDocComment('');
-
-        $this->addIncrementing($class, $this->model);
-        $this->addPrimaryKey($class, $this->model);
-        $this->addTimestamps($class, $this->model);
-
-        $class = $class->getNode();
+        $class = $factory->class($this->model->class)->extend('Model')->getNode();
 
         if ($this->model->anonymous) {
             $nodes[] = new \PhpParser\Node\Stmt\Return_(
@@ -46,57 +50,19 @@ class CreateModelAction extends ModelAction
         }
 
         $this->result = $this->classEditor->saveFromNodes($nodes);
-
         $path = array_keys($this->result)[0];
-
         $this->classEditor = new ClassEditor($path);
 
+        $this->saveAttributes();
+        $this->set($this->model);
+
+        $this->result = $this->classEditor->save();
+    }
+
+    public function saveAttributes(): void
+    {
         foreach ($this->model->attributes as $attribute) {
             (new CreateAttributeAction($this->classEditor, $attribute))->run();
-        }
-
-        $this->result = [$path => file_get_contents($path)];
-    }
-
-    protected function addIncrementing($class, ModelBlueprint $model): void
-    {
-        $factory = $this->classEditor->getBuilder();
-
-        if (! $model->incrementing) {
-            $class->addStmt($factory
-                ->property('incrementing')
-                ->makeProtected()
-                ->setDefault($this->model->incrementing)
-                ->setDocComment('')
-            );
-        }
-    }
-
-    protected function addTimestamps($class, ModelBlueprint $model): void
-    {
-        $factory = $this->classEditor->getBuilder();
-
-        if (! $model->hasAttributes(['created_at', 'updated_at'])) {
-            $class->addStmt($factory
-                ->property('timestamps')
-                ->makePublic()
-                ->setDefault(false)
-                ->setDocComment('')
-            );
-        }
-    }
-
-    protected function addPrimaryKey($class, ModelBlueprint $model): void
-    {
-        $factory = $this->classEditor->getBuilder();
-
-        if ($model->primaryKey[0] !== 'id' || count($model->primaryKey) > 1) {
-            $class->addStmt($factory
-                ->property('primaryKey')
-                ->makeProtected()
-                ->setDefault(count($this->model->primaryKey) == 1 ? $this->model->primaryKey[0] : $this->model->primaryKey)
-                ->setDocComment('')
-            );
         }
     }
 }

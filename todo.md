@@ -41,7 +41,7 @@
 - [ ] add datetime
 - [ ] add array/json https://laravel.com/docs/11.x/eloquent-mutators#array-and-json-casting
 - [ ] add number that will manage double, float, integer, decimal and others
-- [ ] add timestamp
+- [x] add timestamp
 - [ ] add enum https://laravel.com/docs/11.x/eloquent-mutators#enum-casting
 
 
@@ -64,9 +64,15 @@
 - [ ] Create a version with the older name e.g. NewName extends OldName
 
 -----
-
+- [ ] Sort methods/attributes. Lint. Rules: https://cs.symfony.com/doc/rules/attribute_notation/ordered_attributes.html
 - [ ] Generate records of all models from code
 - [ ] Get attributes from fillable/guarded, etc for Eloquent (maybe read migration code), get them from schema for Amethyst
 - [ ] Add new record with source: user instead of code
 - [ ] Automatic generation based on difference
 - [ ] Handle relationships
+
+
+--------
+Rename Hook: MutableProperty or something
+Refactor ModelActionCreate/Update too bad
+Manage changes with model attributes instead of create/update
