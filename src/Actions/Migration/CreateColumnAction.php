@@ -7,15 +7,15 @@ use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 
 class CreateColumnAction extends Column
 {
-    protected AttributeBlueprint $attribute;
+    protected AttributeBlueprint $newAttribute;
 
     protected array $result = [];
 
-    public function __construct(AttributeBlueprint $attribute)
+    public function __construct(AttributeBlueprint $newAttribute)
     {
-        $this->attribute = $attribute;
+        $this->newAttribute = $newAttribute;
 
-        parent::__construct($attribute->model->table);
+        parent::__construct($newAttribute->model->table);
     }
 
     public function run(): void
@@ -30,25 +30,25 @@ class CreateColumnAction extends Column
 
     public function migrateUp(): string
     {
-        return $this->migrate($this->attribute, ActionCase::Create);
+        return $this->migrate($this->newAttribute, ActionCase::Create);
     }
 
     public function migrateDown(): string
     {
-        return $this->dropColumn($this->attribute);
+        return $this->dropColumn($this->newAttribute);
     }
 
     public function migrate(): string
     {
         $migration = Column::$VarTable;
 
-        $migration .= $this->migrateColumn($this->attribute);
+        $migration .= $this->migrateColumn($this->newAttribute);
 
-        if ($this->attribute->required === false) {
+        if ($this->newAttribute->required === false) {
             $migration .= $this->migrateNullable();
         }
-        if ($this->attribute->default !== null) {
-            $migration .= $this->migrateDefault($this->attribute->default);
+        if ($this->newAttribute->default !== null) {
+            $migration .= $this->migrateDefault($this->newAttribute->default);
         }
 
         return $migration.';';

@@ -10,17 +10,21 @@ use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 
 class CreateTableAction extends TableAction
 {
-    public function __construct(ModelBlueprint $model)
+    protected ModelBlueprint $newModel;
+
+    public function __construct(ModelBlueprint $newModel)
     {
-        if (count($model->attributes) == 0) {
-            $model->attributes([
+        $this->newModel = $newModel;
+
+        if (count($newModel->attributes) == 0) {
+            $newModel->attributes([
                 IdAttribute::make(),
                 CreatedAtAttribute::make(),
                 UpdatedAtAttribute::make(),
             ]);
         }
 
-        parent::__construct($model);
+        parent::__construct($newModel->table);
     }
 
     public function renderUp(): string
@@ -48,13 +52,13 @@ class CreateTableAction extends TableAction
     {
         $columns = [];
 
-        foreach ($this->model->attributes as $attribute) {
+        foreach ($this->newModel->attributes as $attribute) {
             $columns[] = $prefix.(new CreateColumnAction(
                 $attribute
             ))->migrate($attribute, ActionCase::Create);
         }
 
-        $primary = $this->migratePrimary($this->model->primaryKey);
+        $primary = $this->migratePrimary($this->newModel->primaryKey);
 
         if (! empty($primary)) {
             $columns[] = $prefix.$primary;

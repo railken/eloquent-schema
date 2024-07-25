@@ -8,12 +8,9 @@ class UpdateModelAction extends CreateModelAction
 {
     protected ModelBlueprint $oldModel;
 
-    protected ModelBlueprint $newModel;
-
     public function __construct(ModelBlueprint $oldModel, ModelBlueprint $newModel)
     {
         $this->oldModel = $oldModel;
-        $this->newModel = $newModel;
 
         parent::__construct($newModel);
     }

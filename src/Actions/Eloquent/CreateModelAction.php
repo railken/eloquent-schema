@@ -10,16 +10,16 @@ class CreateModelAction extends ModelAction
 {
     protected ClassEditor $classEditor;
 
-    protected ModelBlueprint $model;
+    protected ModelBlueprint $newModel;
 
-    public function __construct(ModelBlueprint $model)
+    public function __construct(ModelBlueprint $newModel)
     {
-        $this->model = $model;
+        $this->newModel = $newModel;
 
-        if (isset($model->instance)) {
-            $this->classEditor = new ClassEditor(Support::getPathByObject($model->instance));
+        if (isset($newModel->instance)) {
+            $this->classEditor = new ClassEditor(Support::getPathByObject($newModel->instance));
         } else {
-            $this->classEditor = ClassEditor::newClass($model->class, $model->workingDir);
+            $this->classEditor = ClassEditor::newClass($newModel->class, $newModel->workingDir);
         }
     }
 
@@ -31,19 +31,19 @@ class CreateModelAction extends ModelAction
         $factory = $this->classEditor->getBuilder();
         $nodes = [];
 
-        if (! empty($this->model->namespace)) {
-            $nodes[] = $factory->namespace($this->model->namespace)->getNode();
+        if (! empty($this->newModel->namespace)) {
+            $nodes[] = $factory->namespace($this->newModel->namespace)->getNode();
         }
 
         $nodes[] = $factory->use(\Illuminate\Database\Eloquent\Model::class)->getNode();
 
         $class = $factory
-            ->class($this->model->class)
+            ->class($this->newModel->class)
             ->extend('Model')
             ->setDocComment('')
             ->getNode();
 
-        if ($this->model->anonymous) {
+        if ($this->newModel->anonymous) {
             $nodes[] = new \PhpParser\Node\Stmt\Return_(
                 new \PhpParser\Node\Expr\New_(
                     $class
@@ -58,13 +58,13 @@ class CreateModelAction extends ModelAction
         $this->classEditor = new ClassEditor($path);
 
         $this->saveAttributes();
-        $this->set($this->model);
+        $this->set($this->newModel);
         $this->save();
     }
 
     public function saveAttributes(): void
     {
-        foreach ($this->model->attributes as $attribute) {
+        foreach ($this->newModel->attributes as $attribute) {
             (new CreateAttributeAction($this->classEditor, $attribute))->run();
         }
     }

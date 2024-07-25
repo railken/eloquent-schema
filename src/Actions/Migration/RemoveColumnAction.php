@@ -13,11 +13,11 @@ class RemoveColumnAction extends CreateColumnAction
 
     public function migrateUp(): string
     {
-        return $this->dropColumn($this->attribute);
+        return $this->dropColumn($this->newAttribute);
     }
 
     public function migrateDown(): string
     {
-        return $this->migrate($this->attribute, ActionCase::Create);
+        return $this->migrate($this->newAttribute, ActionCase::Create);
     }
 }

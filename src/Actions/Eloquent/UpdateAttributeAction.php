@@ -5,18 +5,15 @@ namespace Railken\EloquentSchema\Actions\Eloquent;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 
-class UpdateAttributeAction extends Attribute
+class UpdateAttributeAction extends CreateAttributeAction
 {
     protected AttributeBlueprint $oldAttribute;
 
-    protected AttributeBlueprint $newAttribute;
-
-    public function __construct(ClassEditor $classEditor, AttributeBlueprint $oldAttribute, AttributeBlueprint $newAttribute)
+    public function __construct(ClassEditor $classEditor, AttributeBlueprint $oldNewAttribute, AttributeBlueprint $newAttribute)
     {
-        $this->oldAttribute = $oldAttribute;
-        $this->newAttribute = $newAttribute;
+        $this->oldAttribute = $oldNewAttribute;
 
-        parent::__construct($classEditor);
+        parent::__construct($classEditor, $newAttribute);
     }
 
     public function run(): void

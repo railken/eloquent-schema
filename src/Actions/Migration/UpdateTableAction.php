@@ -2,19 +2,15 @@
 
 namespace Railken\EloquentSchema\Actions\Migration;
 
-use Railken\EloquentSchema\ActionCase;
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 
 class UpdateTableAction extends CreateTableAction
 {
     protected ModelBlueprint $oldModel;
 
-    protected ModelBlueprint $newModel;
-
-    public function __construct(ModelBlueprint $oldModel, ModelBlueprint $newModel)
+    public function __construct(ModelBlueprint $oldNewModel, ModelBlueprint $newModel)
     {
-        $this->oldModel = $oldModel;
-        $this->newModel = $newModel;
+        $this->oldModel = $oldNewModel;
 
         parent::__construct($newModel);
     }
@@ -47,7 +43,7 @@ class UpdateTableAction extends CreateTableAction
         $columns = [];
 
         foreach ($newModel->diffAttributes($oldModel) as $attribute) {
-            $columns[] = $prefix.(new CreateColumnAction($attribute))->migrate($attribute, ActionCase::Create);
+            $columns[] = $prefix.(new CreateColumnAction($attribute))->migrate();
         }
 
         foreach ($oldModel->diffAttributes($newModel) as $attribute) {
@@ -57,7 +53,7 @@ class UpdateTableAction extends CreateTableAction
         foreach ($oldModel->sameAttributes($newModel) as $diff) {
             if (! $diff->oldAttribute->equalsTo($diff->newAttribute)) {
                 $columns[] = $prefix.(new UpdateColumnAction($diff->oldAttribute, $diff->newAttribute))
-                    ->migrate($diff->newAttribute, ActionCase::Update);
+                    ->migrate($diff->oldAttribute, $diff->newAttribute);
             }
         }
         if ($oldModel->primaryKey !== $newModel->primaryKey) {

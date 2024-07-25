@@ -7,18 +7,18 @@ use Railken\EloquentSchema\Editors\ClassEditor;
 
 class CreateAttributeAction extends Attribute
 {
-    protected AttributeBlueprint $attribute;
+    protected AttributeBlueprint $newAttribute;
 
-    public function __construct(ClassEditor $classEditor, AttributeBlueprint $attribute)
+    public function __construct(ClassEditor $classEditor, AttributeBlueprint $newAttribute)
     {
-        $this->attribute = $attribute;
+        $this->newAttribute = $newAttribute;
 
         parent::__construct($classEditor);
     }
 
     public function run(): void
     {
-        $this->addToModel($this->attribute);
+        $this->addToModel($this->newAttribute);
         $this->save();
     }
 }

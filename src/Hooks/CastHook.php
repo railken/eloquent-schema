@@ -21,6 +21,6 @@ class CastHook
 
     public function set(ClassEditor $classEditor, AttributeBlueprint $attribute)
     {
-        // Type is already defined in the database, no need to redefine it
+        // Type is already defined in the database, no need to redefine it from the Model
     }
 }
