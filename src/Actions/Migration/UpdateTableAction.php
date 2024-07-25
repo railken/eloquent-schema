@@ -42,55 +42,27 @@ class UpdateTableAction extends CreateTableAction
         EOD;
     }
 
-    public function migrateUp(?string $prefix = null): string
+    public function migrateFromTo(?string $prefix, ModelBlueprint $oldModel, ModelBlueprint $newModel): string
     {
         $columns = [];
 
-        $attributesToAdd = array_diff(
-            array_keys($this->newModel->attributes),
-            array_keys($this->oldModel->attributes)
-        );
-
-        foreach ($attributesToAdd as $attributeName) {
-            $columns[] = $prefix.(new CreateColumnAction(
-                $this->newModel->getAttributeByName($attributeName)
-            ))->migrate($this->newModel->getAttributeByName($attributeName), ActionCase::Create);
+        foreach ($newModel->diffAttributes($oldModel) as $attribute) {
+            $columns[] = $prefix.(new CreateColumnAction($attribute))->migrate($attribute, ActionCase::Create);
         }
 
-        $attributesToRemove = array_diff(
-            array_keys($this->oldModel->attributes),
-            array_keys($this->newModel->attributes)
-        );
-
-        foreach ($attributesToRemove as $attributeName) {
-            $columns[] = $prefix.(new RemoveColumnAction(
-                $this->oldModel->getAttributeByName($attributeName)
-            ))->dropColumn($this->oldModel->getAttributeByName($attributeName));
+        foreach ($oldModel->diffAttributes($newModel) as $attribute) {
+            $columns[] = $prefix.(new RemoveColumnAction($attribute))->dropColumn($attribute);
         }
 
-        $attributesToUpdate = array_intersect(
-            array_keys($this->newModel->attributes),
-            array_keys($this->oldModel->attributes)
-        );
-
-        foreach ($attributesToUpdate as $attributeName) {
-
-            $oldAttribute = $this->oldModel->getAttributeByName($attributeName);
-            $newAttribute = $this->newModel->getAttributeByName($attributeName);
-
-            if (! $oldAttribute->equalsTo($newAttribute)) {
-                $columns[] = $prefix.(new UpdateColumnAction(
-                    $oldAttribute,
-                    $newAttribute
-                ))->migrate($newAttribute, ActionCase::Update);
+        foreach ($oldModel->sameAttributes($newModel) as $diff) {
+            if (! $diff->oldAttribute->equalsTo($diff->newAttribute)) {
+                $columns[] = $prefix.(new UpdateColumnAction($diff->oldAttribute, $diff->newAttribute))
+                    ->migrate($diff->newAttribute, ActionCase::Update);
             }
         }
-
-        // Check diffs with primaries
-
-        if ($this->oldModel->primaryKey !== $this->newModel->primaryKey) {
+        if ($oldModel->primaryKey !== $newModel->primaryKey) {
             $columns[] = $prefix.$this->dropPrimary();
-            $primary = $this->migratePrimary($this->newModel->primaryKey);
+            $primary = $this->migratePrimary($newModel->primaryKey);
 
             if (! empty($primary)) {
                 $columns[] = $prefix.$primary;
@@ -100,61 +72,13 @@ class UpdateTableAction extends CreateTableAction
         return implode(PHP_EOL, $columns);
     }
 
-    public function migrateDown(string $prefix)
+    public function migrateUp(?string $prefix = null): string
     {
-        $columns = [];
+        return $this->migrateFromTo($prefix, $this->oldModel, $this->newModel);
+    }
 
-        $attributesToAdd = array_diff(
-            array_keys($this->oldModel->attributes),
-            array_keys($this->newModel->attributes)
-        );
-
-        foreach ($attributesToAdd as $attributeName) {
-            $columns[] = $prefix.(new CreateColumnAction(
-                $this->oldModel->getAttributeByName($attributeName)
-            ))->migrate($this->oldModel->getAttributeByName($attributeName), ActionCase::Create);
-        }
-
-        $attributesToRemove = array_diff(
-            array_keys($this->newModel->attributes),
-            array_keys($this->oldModel->attributes)
-        );
-
-        foreach ($attributesToRemove as $attributeName) {
-            $columns[] = $prefix.(new RemoveColumnAction(
-                $this->newModel->getAttributeByName($attributeName)
-            ))->dropColumn($this->newModel->getAttributeByName($attributeName));
-        }
-
-        $attributesToUpdate = array_intersect(
-            array_keys($this->newModel->attributes),
-            array_keys($this->oldModel->attributes)
-        );
-
-        foreach ($attributesToUpdate as $attributeName) {
-
-            $oldAttribute = $this->oldModel->getAttributeByName($attributeName);
-            $newAttribute = $this->newModel->getAttributeByName($attributeName);
-
-            if (! $oldAttribute->equalsTo($newAttribute)) {
-                $columns[] = $prefix.(new UpdateColumnAction(
-                    $newAttribute,
-                    $oldAttribute
-                ))->migrate($newAttribute, ActionCase::Update);
-            }
-        }
-
-        // Check diffs with primaries
-
-        if ($this->oldModel->primaryKey !== $this->newModel->primaryKey) {
-            $columns[] = $prefix.$this->dropPrimary();
-            $primary = $this->migratePrimary($this->oldModel->primaryKey);
-
-            if (! empty($primary)) {
-                $columns[] = $prefix.$primary;
-            }
-        }
-
-        return implode(PHP_EOL, $columns);
+    public function migrateDown(?string $prefix): string
+    {
+        return $this->migrateFromTo($prefix, $this->newModel, $this->oldModel);
     }
 }
