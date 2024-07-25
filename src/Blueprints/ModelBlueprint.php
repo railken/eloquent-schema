@@ -3,6 +3,7 @@
 namespace Railken\EloquentSchema\Blueprints;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Railken\EloquentSchema\Exceptions\AttributeNotFoundException;
 
@@ -114,13 +115,20 @@ class ModelBlueprint
 
     public function getAttributeByName(string $name): ?AttributeBlueprint
     {
+        return $this->getAttributesByName([$name])->first();
+    }
+
+    public function getAttributesByName(array $names): Collection
+    {
+        $attributes = new Collection();
+
         foreach ($this->attributes as $attribute) {
-            if ($attribute->name == $name) {
-                return $attribute;
+            if (in_array($attribute->name, $names)) {
+                $attributes->push($attribute);
             }
         }
 
-        return null;
+        return $attributes;
     }
 
     /**
@@ -151,5 +159,27 @@ class ModelBlueprint
     public function hasAttributes(array $needle): bool
     {
         return count(array_intersect(array_keys($this->attributes), $needle)) == count($needle);
+    }
+
+    public function diffAttributes(ModelBlueprint $model): Collection
+    {
+        $names = array_diff(
+            array_keys($this->attributes),
+            array_keys($model->attributes)
+        );
+
+        return $this->getAttributesByName($names);
+    }
+
+    public function sameAttributes(ModelBlueprint $model): Collection
+    {
+        $names = array_intersect(
+            array_keys($this->attributes),
+            array_keys($model->attributes)
+        );
+
+        return $this->getAttributesByName($names)->map(function ($attribute) use ($model) {
+            return new AttributeDiffBlueprint($attribute, $model->getAttributeByName($attribute->name));
+        });
     }
 }

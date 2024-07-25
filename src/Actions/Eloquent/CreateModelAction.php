@@ -37,7 +37,11 @@ class CreateModelAction extends ModelAction
 
         $nodes[] = $factory->use(\Illuminate\Database\Eloquent\Model::class)->getNode();
 
-        $class = $factory->class($this->model->class)->extend('Model')->getNode();
+        $class = $factory
+            ->class($this->model->class)
+            ->extend('Model')
+            ->setDocComment('')
+            ->getNode();
 
         if ($this->model->anonymous) {
             $nodes[] = new \PhpParser\Node\Stmt\Return_(
@@ -55,8 +59,7 @@ class CreateModelAction extends ModelAction
 
         $this->saveAttributes();
         $this->set($this->model);
-
-        $this->result = $this->classEditor->save();
+        $this->save();
     }
 
     public function saveAttributes(): void

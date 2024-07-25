@@ -25,47 +25,21 @@ class UpdateModelAction extends CreateModelAction
     {
         $this->saveAttributes();
         $this->set($this->newModel);
-        $this->result = $this->classEditor->save();
+        $this->save();
     }
 
     public function saveAttributes(): void
     {
-        $attributesToAdd = array_diff(
-            array_keys($this->newModel->attributes),
-            array_keys($this->oldModel->attributes)
-        );
-
-        foreach ($attributesToAdd as $attributeName) {
-            (new CreateAttributeAction(
-                $this->classEditor,
-                $this->newModel->getAttributeByName($attributeName)
-            ))->run();
+        foreach ($this->newModel->diffAttributes($this->oldModel) as $attribute) {
+            (new CreateAttributeAction($this->classEditor, $attribute))->run();
         }
 
-        $attributesToRemove = array_diff(
-            array_keys($this->oldModel->attributes),
-            array_keys($this->newModel->attributes)
-        );
-
-        foreach ($attributesToRemove as $attributeName) {
-            (new RemoveAttributeAction(
-                $this->classEditor,
-                $this->oldModel->getAttributeByName($attributeName)
-            ))->run();
+        foreach ($this->oldModel->diffAttributes($this->newModel) as $attribute) {
+            (new RemoveAttributeAction($this->classEditor, $attribute))->run();
         }
 
-        $attributesToUpdate = array_intersect(
-            array_keys($this->newModel->attributes),
-            array_keys($this->oldModel->attributes)
-        );
-
-        foreach ($attributesToUpdate as $attributeName) {
-
-            (new UpdateAttributeAction(
-                $this->classEditor,
-                $this->oldModel->getAttributeByName($attributeName),
-                $this->newModel->getAttributeByName($attributeName)
-            ))->run();
+        foreach ($this->oldModel->sameAttributes($this->newModel) as $diff) {
+            (new UpdateAttributeAction($this->classEditor, $diff->oldAttribute, $diff->newAttribute))->run();
         }
     }
 }
