@@ -120,7 +120,7 @@ class ModelBlueprint
 
     public function getAttributesByName(array $names): Collection
     {
-        $attributes = new Collection();
+        $attributes = new Collection;
 
         foreach ($this->attributes as $attribute) {
             if (in_array($attribute->name, $names)) {
