@@ -3,6 +3,7 @@
 namespace Railken\EloquentSchema\Builders;
 
 use Exception;
+use Railken\EloquentSchema\Actions\Migration\ColumnAction;
 use Railken\EloquentSchema\Actions\Migration\CreateColumnAction;
 use Railken\EloquentSchema\Actions\Migration\CreateTableAction;
 use Railken\EloquentSchema\Actions\Migration\RemoveColumnAction;
@@ -27,7 +28,16 @@ class MigrationBuilder extends Builder
         return new RemoveTableAction($modelBlueprint);
     }
 
-    public function fillBlueprintFromCurrentStatus(ModelBlueprint $modelBlueprint) {}
+    public function fillBlueprintFromCurrentStatus(ModelBlueprint $modelBlueprint)
+    {
+        $params = $this->schemaRetriever->getMigrationGeneratorSchema()->getTable($modelBlueprint->table);
+
+        foreach ($params->getColumns() as $column) {
+            $attributeBlueprint = $modelBlueprint->getAttributeByName($column->getName());
+            ColumnAction::callHooks('updateBlueprintFromDatabase', [$attributeBlueprint, $column, $params]);
+        }
+
+    }
 
     public function updateModel(ModelBlueprint $oldModelBlueprint, ModelBlueprint $newModelBlueprint): UpdateTableAction
     {

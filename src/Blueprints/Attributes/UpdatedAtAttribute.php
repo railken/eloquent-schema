@@ -9,6 +9,11 @@ class UpdatedAtAttribute extends TimestampAttribute
     public function __construct(?string $name = null)
     {
         parent::__construct('updated_at');
-        $this->nullable(true);
+        $this->required(false);
+    }
+
+    public static function isMe($column, $params): bool
+    {
+        return $column->getName() == 'updated_at';
     }
 }

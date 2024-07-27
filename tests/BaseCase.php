@@ -7,6 +7,13 @@ use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Railken\EloquentSchema\Actions\Eloquent\AttributeAction;
 use Railken\EloquentSchema\Actions\Eloquent\ModelAction;
 use Railken\EloquentSchema\Actions\Migration\ColumnAction;
+use Railken\EloquentSchema\Blueprints\Attributes\CreatedAtAttribute;
+use Railken\EloquentSchema\Blueprints\Attributes\IdAttribute;
+use Railken\EloquentSchema\Blueprints\Attributes\IntegerAttribute;
+use Railken\EloquentSchema\Blueprints\Attributes\StringAttribute;
+use Railken\EloquentSchema\Blueprints\Attributes\TextAttribute;
+use Railken\EloquentSchema\Blueprints\Attributes\TimestampAttribute;
+use Railken\EloquentSchema\Blueprints\Attributes\UpdatedAtAttribute;
 use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Builders\ModelBuilder;
 use Railken\EloquentSchema\Hooks\CastHook;
@@ -18,6 +25,7 @@ use Railken\EloquentSchema\Hooks\PrimaryKeyHook;
 use Railken\EloquentSchema\Hooks\RequiredHook;
 use Railken\EloquentSchema\Hooks\TableHook;
 use Railken\EloquentSchema\Hooks\TimestampsHook;
+use Railken\EloquentSchema\Schema\SchemaRetriever;
 
 #[RunTestsInSeparateProcesses]
 abstract class BaseCase extends \Orchestra\Testbench\TestCase
@@ -33,6 +41,16 @@ abstract class BaseCase extends \Orchestra\Testbench\TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        SchemaRetriever::addAttributes([
+            StringAttribute::class,
+            TextAttribute::class,
+            IntegerAttribute::class,
+            TimestampAttribute::class,
+            IdAttribute::class,
+            CreatedAtAttribute::class,
+            UpdatedAtAttribute::class,
+        ]);
 
         ColumnAction::setHooks([
             DefaultHook::class,

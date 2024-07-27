@@ -6,5 +6,5 @@ class TimestampAttribute extends BaseAttribute
 {
     public string $type = 'date';
 
-    public string $db = 'timestamp';
+    public static string $migration = 'timestamp';
 }

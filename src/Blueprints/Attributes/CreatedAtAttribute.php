@@ -9,6 +9,11 @@ class CreatedAtAttribute extends TimestampAttribute
     public function __construct(?string $name = null)
     {
         parent::__construct('created_at');
-        $this->nullable(true);
+        $this->required(false);
+    }
+
+    public static function isMe($column, $params): bool
+    {
+        return $column->getName() == 'created_at';
     }
 }

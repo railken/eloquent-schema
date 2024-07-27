@@ -121,7 +121,11 @@ class Helper
     {
         $model = $this->getModel($ini);
 
-        return $this->newModelBlueprintByModel($model);
+        $modelBlueprint = $this->newModelBlueprintByModel($model);
+
+        $this->callResolver('fillBlueprintFromCurrentStatus', $modelBlueprint);
+
+        return $modelBlueprint;
     }
 
     public function newModelBlueprintByModel(Model $model): ModelBlueprint
@@ -136,16 +140,16 @@ class Helper
         return $blueprint;
     }
 
-    public function createModel(ModelBlueprint $model): ResultResolver
+    public function createModel(ModelBlueprint $modelBlueprint): ResultResolver
     {
-        return $this->callResolver('createModel', $model);
+        return $this->callResolver('createModel', $modelBlueprint);
     }
 
     public function removeModel(string|Model $ini): ResultResolver
     {
-        $model = $this->getModelBlueprint($ini);
+        $modelBlueprint = $this->getModelBlueprint($ini);
 
-        return $this->callResolver('removeModel', $model);
+        return $this->callResolver('removeModel', $modelBlueprint);
     }
 
     public function updateModel(string|Model $ini, ModelBlueprint $newModelBlueprint): ResultResolver
@@ -161,7 +165,6 @@ class Helper
     {
         $modelBlueprint = $this->getModelBlueprint($ini);
         $attribute->model($modelBlueprint);
-        $this->callResolver('fillBlueprintFromCurrentStatus', $modelBlueprint);
 
         return $this->callResolver('createAttribute', $modelBlueprint, $attribute);
     }
@@ -169,7 +172,6 @@ class Helper
     public function removeAttribute(string|Model $ini, string $attributeName): ResultResolver
     {
         $modelBlueprint = $this->getModelBlueprint($ini);
-        $this->callResolver('fillBlueprintFromCurrentStatus', $modelBlueprint);
 
         $attributeBlueprint = $modelBlueprint->getAttributeByName($attributeName);
 
@@ -179,7 +181,6 @@ class Helper
     public function renameAttribute(string|Model $ini, string $oldAttributeName, string $newAttributeName): ResultResolver
     {
         $modelBlueprint = $this->getModelBlueprint($ini);
-        $this->callResolver('fillBlueprintFromCurrentStatus', $modelBlueprint);
 
         $oldAttributeBlueprint = $modelBlueprint->getAttributeByName($oldAttributeName);
         $newAttributeBlueprint = clone $oldAttributeBlueprint;
@@ -191,7 +192,6 @@ class Helper
     public function updateAttribute(string|Model $ini, string $oldAttributeName, AttributeBlueprint $newAttributeBlueprint): ResultResolver
     {
         $modelBlueprint = $this->getModelBlueprint($ini);
-        $this->callResolver('fillBlueprintFromCurrentStatus', $modelBlueprint);
 
         $oldAttributeBlueprint = $modelBlueprint->getAttributeByName($oldAttributeName);
         $newAttributeBlueprint->model($modelBlueprint);

@@ -8,5 +8,5 @@ class TextAttribute extends StringAttribute
 
     public ?string $cast = 'string';
 
-    public string $db = 'text';
+    public static string $migration = 'text';
 }

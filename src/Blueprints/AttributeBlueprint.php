@@ -8,15 +8,7 @@ class AttributeBlueprint
 
     public string $type;
 
-    public ?string $cast = null;
-
-    public string $db;
-
-    public ?bool $fillable = null;
-
-    public ?bool $required = true;
-
-    public mixed $default = null;
+    public static string $migration;
 
     public ?ModelBlueprint $model = null;
 
@@ -38,13 +30,6 @@ class AttributeBlueprint
         return $this;
     }
 
-    public function cast(string $cast): AttributeBlueprint
-    {
-        $this->cast = $cast;
-
-        return $this;
-    }
-
     public function model(ModelBlueprint $model): AttributeBlueprint
     {
         $this->model = $model;
@@ -52,41 +37,16 @@ class AttributeBlueprint
         return $this;
     }
 
-    public function fillable(?bool $fillable = true): AttributeBlueprint
+    public function __call($name, $arguments): AttributeBlueprint
     {
-        $this->fillable = $fillable;
+        $this->$name = $arguments[0];
 
         return $this;
     }
 
-    public function required(?bool $required = true): AttributeBlueprint
+    public function __get($name)
     {
-        $this->required = $required;
-
-        return $this;
-    }
-
-    public function nullable(?bool $nullable = true): AttributeBlueprint
-    {
-        $this->required(! $nullable);
-
-        return $this;
-    }
-
-    public function default(mixed $default): AttributeBlueprint
-    {
-        $this->default = $default;
-
-        return $this;
-    }
-
-    public function equalsTo(AttributeBlueprint $attributeBlueprint): bool
-    {
-        return $this->fillable == $attributeBlueprint->fillable &&
-            $this->required == $attributeBlueprint->required &&
-            $this->default == $attributeBlueprint->default &&
-            $this->type == $attributeBlueprint->type &&
-            $this->cast == $attributeBlueprint->cast &&
-            $this->name == $attributeBlueprint->name;
+        /** @noinspection PhpExpressionAlwaysNullInspection */
+        return $this->$name ?? null;
     }
 }

@@ -71,7 +71,7 @@ abstract class ColumnAction extends MigrationAction
 
     public function migrateColumn(AttributeBlueprint $attribute): string
     {
-        return '->'.$attribute->db.($attribute->dbNeedsName ? "('{$attribute->name}')" : '()');
+        return '->'.$attribute::$migration.($attribute->dbNeedsName ? "('{$attribute->name}')" : '()');
     }
 
     public function dropColumn(AttributeBlueprint $attribute): string

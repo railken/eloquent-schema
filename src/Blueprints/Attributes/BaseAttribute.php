@@ -10,7 +10,12 @@ class BaseAttribute extends AttributeBlueprint
 
     public ?string $cast = 'string';
 
-    public string $db = 'string';
+    public static string $migration = 'string';
 
     public bool $dbNeedsName = true;
+
+    public static function isMe($column, $params): bool
+    {
+        return $column->getType()->value == static::$migration;
+    }
 }
