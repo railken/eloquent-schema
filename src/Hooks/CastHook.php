@@ -2,10 +2,11 @@
 
 namespace Railken\EloquentSchema\Hooks;
 
+use Railken\EloquentSchema\Actions\Eloquent\AttributeActionHookContract;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 
-class CastHook
+class CastHook implements AttributeActionHookContract
 {
     public function add(ClassEditor $classEditor, AttributeBlueprint $attribute): void
     {
@@ -19,13 +20,8 @@ class CastHook
         $classEditor->removeAttributeValueByIndex('casts', $attribute->name);
     }
 
-    public function set(ClassEditor $classEditor, AttributeBlueprint $attribute)
+    public function set(ClassEditor $classEditor, AttributeBlueprint $attribute): void
     {
-        // Type is already defined in the database, no need to redefine it from the Model
-    }
-
-    public function updateBlueprintFromDatabase(AttributeBlueprint $attributeBlueprint, $column, $params)
-    {
-        // ..
+        $attribute->cast($classEditor->getValueInAttribute('casts', $attribute->name));
     }
 }

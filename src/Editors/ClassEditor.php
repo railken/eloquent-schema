@@ -124,6 +124,11 @@ class ClassEditor
         return in_array($value, $this->getAttribute($name));
     }
 
+    public function getValueInAttribute(string $name, mixed $value): mixed
+    {
+        return $this->getAttribute($name)[$value] ?? null;
+    }
+
     public function addPublicAttribute(string $name, mixed $value): ClassEditor
     {
         $this->addPropertyValue($name, $value, Visibility::Public);

@@ -2,10 +2,11 @@
 
 namespace Railken\EloquentSchema\Hooks;
 
+use Railken\EloquentSchema\Actions\Eloquent\AttributeActionHookContract;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 
-class GuardedHook
+class GuardedHook implements AttributeActionHookContract
 {
     public function add(ClassEditor $classEditor, AttributeBlueprint $attribute): void
     {
@@ -22,10 +23,5 @@ class GuardedHook
     public function set(ClassEditor $classEditor, AttributeBlueprint $attribute): void
     {
         // FillableHook will take care of filling the value of fillable
-    }
-
-    public function updateBlueprintFromDatabase(AttributeBlueprint $attributeBlueprint, $column, $params)
-    {
-        // ..
     }
 }

@@ -2,10 +2,11 @@
 
 namespace Railken\EloquentSchema\Hooks;
 
+use Railken\EloquentSchema\Actions\Eloquent\ModelActionHookContract;
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 
-class IncrementingHook
+class IncrementingHook implements ModelActionHookContract
 {
     public function mutate(ClassEditor $classEditor, ModelBlueprint $modelBlueprint): void
     {
@@ -16,7 +17,7 @@ class IncrementingHook
         }
     }
 
-    public function updateBlueprintFromDatabase(ModelBlueprint $modelBlueprint, $params)
+    public function updateBlueprintFromDatabase(ModelBlueprint $modelBlueprint, $params): void
     {
         // ...
     }

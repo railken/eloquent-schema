@@ -3,10 +3,11 @@
 namespace Railken\EloquentSchema\Hooks;
 
 use KitLoong\MigrationsGenerator\Enum\Migrations\Method\IndexType;
+use Railken\EloquentSchema\Actions\Eloquent\ModelActionHookContract;
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 
-class PrimaryKeyHook
+class PrimaryKeyHook implements ModelActionHookContract
 {
     public function isPrimaryId(ModelBlueprint $modelBlueprint): bool
     {
@@ -27,7 +28,7 @@ class PrimaryKeyHook
         }
     }
 
-    public function updateBlueprintFromDatabase(ModelBlueprint $modelBlueprint, $params)
+    public function updateBlueprintFromDatabase(ModelBlueprint $modelBlueprint, $params): void
     {
         $primaries = $params->getIndexes()->filter(function ($index) {
             return $index->getType() == IndexType::PRIMARY;

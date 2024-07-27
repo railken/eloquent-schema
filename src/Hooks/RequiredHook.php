@@ -12,14 +12,14 @@ class RequiredHook
         return '->nullable()';
     }
 
-    public function migrate(Collection $changes, ?AttributeBlueprint $oldAttribute, AttributeBlueprint $newAttribute)
+    public function migrate(Collection $changes, ?AttributeBlueprint $oldAttribute, AttributeBlueprint $newAttribute): void
     {
         if (($oldAttribute == null || $oldAttribute->required !== $newAttribute->required) && $newAttribute->required === false) {
             $changes->push($this->migrateNullable());
         }
     }
 
-    public function updateBlueprintFromDatabase(AttributeBlueprint $attributeBlueprint, $column, $params)
+    public function updateBlueprintFromDatabase(AttributeBlueprint $attributeBlueprint, $column, $params): void
     {
         $attributeBlueprint->required($column->isNotNull());
     }

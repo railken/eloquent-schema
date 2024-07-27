@@ -2,10 +2,11 @@
 
 namespace Railken\EloquentSchema\Hooks;
 
+use Railken\EloquentSchema\Actions\Eloquent\AttributeActionHookContract;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 
-class FillableHook
+class FillableHook implements AttributeActionHookContract
 {
     public function add(ClassEditor $classEditor, AttributeBlueprint $attribute): void
     {
@@ -22,10 +23,5 @@ class FillableHook
     public function set(ClassEditor $classEditor, AttributeBlueprint $attribute): void
     {
         $attribute->fillable($classEditor->isValueInAttribute('fillable', $attribute->name));
-    }
-
-    public function updateBlueprintFromDatabase(AttributeBlueprint $attributeBlueprint, $column, $params)
-    {
-        // ..
     }
 }
