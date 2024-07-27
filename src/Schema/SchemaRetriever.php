@@ -111,7 +111,7 @@ class SchemaRetriever implements SchemaRetrieverInterface
 
     public function guessType($column, $params): AttributeBlueprint
     {
-        $guesses = new Collection();
+        $guesses = new Collection;
 
         foreach (self::$attributes as $type) {
             if ($type::isMe($column, $params)) {
