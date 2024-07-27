@@ -4,11 +4,9 @@ namespace Railken\EloquentSchema\Actions\Migration;
 
 use Exception;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
-use Railken\EloquentSchema\Hooks\HookManager;
 
 abstract class ColumnAction extends MigrationAction
 {
-
     public static string $VarTable = '$table';
 
     protected array $result = [];
