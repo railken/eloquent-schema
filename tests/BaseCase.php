@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Railken\EloquentSchema\Actions\Eloquent\AttributeAction;
 use Railken\EloquentSchema\Actions\Eloquent\ModelAction;
+use Railken\EloquentSchema\Actions\Migration\ColumnAction;
 use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Builders\ModelBuilder;
 use Railken\EloquentSchema\Hooks\CastHook;
@@ -33,12 +34,15 @@ abstract class BaseCase extends \Orchestra\Testbench\TestCase
     {
         parent::setUp();
 
+        ColumnAction::setHooks([
+            DefaultHook::class,
+            RequiredHook::class,
+        ]);
+
         AttributeAction::setHooks([
             GuardedHook::class,
             CastHook::class,
             FillableHook::class,
-            DefaultHook::class,
-            RequiredHook::class,
         ]);
 
         ModelAction::setHooks([

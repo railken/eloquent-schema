@@ -4,9 +4,12 @@ namespace Railken\EloquentSchema\Actions\Migration;
 
 use Exception;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
+use Railken\EloquentSchema\Hooks\HookManager;
 
 abstract class ColumnAction extends MigrationAction
 {
+    use HookManager;
+
     public static string $VarTable = '$table';
 
     protected array $result = [];
@@ -64,20 +67,6 @@ abstract class ColumnAction extends MigrationAction
     public function migrateChange(): string
     {
         return '->change()';
-    }
-
-    public function migrateNullable(): string
-    {
-        return '->nullable()';
-    }
-
-    public function migrateDefault($value): string
-    {
-        if (is_scalar($value)) {
-            return "->default('{$value}')";
-        } else {
-            return '->default(null)';
-        }
     }
 
     public function migrateColumn(AttributeBlueprint $attribute): string

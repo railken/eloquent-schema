@@ -2,6 +2,7 @@
 
 namespace Railken\EloquentSchema\Actions\Migration;
 
+use Illuminate\Support\Collection;
 use Railken\EloquentSchema\ActionCase;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 
@@ -40,16 +41,13 @@ class CreateColumnAction extends ColumnAction
 
     public function migrate(): string
     {
-        $migration = ColumnAction::$VarTable;
+        $migration = ColumnAction::$VarTable.$this->migrateColumn($this->newAttribute);
 
-        $migration .= $this->migrateColumn($this->newAttribute);
+        $changes = new Collection;
 
-        if ($this->newAttribute->required === false) {
-            $migration .= $this->migrateNullable();
-        }
-        if ($this->newAttribute->default !== null) {
-            $migration .= $this->migrateDefault($this->newAttribute->default);
-        }
+        self::callHooks('migrate', [$changes, null, $this->newAttribute]);
+
+        $migration .= $changes->implode('');
 
         return $migration.';';
     }

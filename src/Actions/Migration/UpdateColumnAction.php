@@ -2,7 +2,9 @@
 
 namespace Railken\EloquentSchema\Actions\Migration;
 
+use Illuminate\Support\Collection;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
+use Railken\EloquentSchema\Exceptions\ColumnActionNoChangesFoundException;
 
 class UpdateColumnAction extends ColumnAction
 {
@@ -35,19 +37,19 @@ class UpdateColumnAction extends ColumnAction
         return $this->migrate($this->newAttribute, $this->oldAttribute);
     }
 
-    public function migrate(AttributeBlueprint $oldAttribute, AttributeBlueprint $newAttribute): string
+    public function migrate(AttributeBlueprint $oldAttribute, AttributeBlueprint $newAttribute): ?string
     {
-        $migration = ColumnAction::$VarTable;
+        $migration = ColumnAction::$VarTable.$this->migrateColumn($newAttribute);
 
-        $migration .= $this->migrateColumn($newAttribute);
+        $changes = new Collection;
 
-        if ($oldAttribute->required !== $newAttribute->required && $newAttribute->required === false) {
-            $migration .= $this->migrateNullable();
+        self::callHooks('migrate', [$changes, $oldAttribute, $newAttribute]);
+
+        if ($changes->isEmpty()) {
+            throw new ColumnActionNoChangesFoundException($newAttribute->name, $newAttribute->model->table);
         }
 
-        if ($oldAttribute->default !== $newAttribute->default) {
-            $migration .= $this->migrateDefault($newAttribute->default);
-        }
+        $migration .= $changes->implode('');
 
         $migration .= $this->migrateChange();
 

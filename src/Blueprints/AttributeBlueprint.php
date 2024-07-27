@@ -84,7 +84,7 @@ class AttributeBlueprint
     {
         return $this->fillable == $attributeBlueprint->fillable &&
             $this->required == $attributeBlueprint->required &&
-            (! isset($this->default) || $this->default == $attributeBlueprint->default) &&
+            $this->default == $attributeBlueprint->default &&
             $this->type == $attributeBlueprint->type &&
             $this->cast == $attributeBlueprint->cast &&
             $this->name == $attributeBlueprint->name;

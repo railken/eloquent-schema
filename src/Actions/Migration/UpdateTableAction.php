@@ -3,6 +3,7 @@
 namespace Railken\EloquentSchema\Actions\Migration;
 
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
+use Railken\EloquentSchema\Exceptions\ColumnActionNoChangesFoundException;
 
 class UpdateTableAction extends CreateTableAction
 {
@@ -51,9 +52,12 @@ class UpdateTableAction extends CreateTableAction
         }
 
         foreach ($oldModel->sameAttributes($newModel) as $diff) {
-            if (! $diff->oldAttribute->equalsTo($diff->newAttribute)) {
+
+            try {
                 $columns[] = $prefix.(new UpdateColumnAction($diff->oldAttribute, $diff->newAttribute))
                     ->migrate($diff->oldAttribute, $diff->newAttribute);
+            } catch (ColumnActionNoChangesFoundException $e) {
+
             }
         }
         if ($oldModel->primaryKey !== $newModel->primaryKey) {

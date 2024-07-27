@@ -2,24 +2,21 @@
 
 namespace Railken\EloquentSchema\Hooks;
 
+use Illuminate\Support\Collection;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
-use Railken\EloquentSchema\Editors\ClassEditor;
 
 class RequiredHook
 {
-    public function add(ClassEditor $classEditor, AttributeBlueprint $attribute): void
+    public function migrateNullable(): string
     {
-        // ...
+        return '->nullable()';
     }
 
-    public function remove(ClassEditor $classEditor, AttributeBlueprint $attribute): void
+    public function migrate(Collection $changes, ?AttributeBlueprint $oldAttribute, AttributeBlueprint $newAttribute)
     {
-        // ...
-    }
-
-    public function set(ClassEditor $classEditor, AttributeBlueprint $attribute)
-    {
-        // Type is already defined in the database, no need to redefine it from the Model
+        if (($oldAttribute == null || $oldAttribute->required !== $newAttribute->required) && $newAttribute->required === false) {
+            $changes->push($this->migrateNullable());
+        }
     }
 
     public function updateBlueprintFromDatabase(AttributeBlueprint $attributeBlueprint, $column, $params)

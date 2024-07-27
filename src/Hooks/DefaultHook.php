@@ -2,24 +2,25 @@
 
 namespace Railken\EloquentSchema\Hooks;
 
+use Illuminate\Support\Collection;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
-use Railken\EloquentSchema\Editors\ClassEditor;
 
 class DefaultHook
 {
-    public function add(ClassEditor $classEditor, AttributeBlueprint $attribute): void
+    public function migrateDefault($value): string
     {
-        // ...
+        if (is_scalar($value)) {
+            return "->default('{$value}')";
+        } else {
+            return '->default(null)';
+        }
     }
 
-    public function remove(ClassEditor $classEditor, AttributeBlueprint $attribute): void
+    public function migrate(Collection $changes, ?AttributeBlueprint $oldAttribute, AttributeBlueprint $newAttribute)
     {
-        // ...
-    }
-
-    public function set(ClassEditor $classEditor, AttributeBlueprint $attribute)
-    {
-        // ...
+        if (($oldAttribute == null && $newAttribute->default !== null) || ($oldAttribute !== null && $oldAttribute->default !== $newAttribute->default)) {
+            $changes->push($this->migrateDefault($newAttribute->default));
+        }
     }
 
     public function updateBlueprintFromDatabase(AttributeBlueprint $attributeBlueprint, $column, $params)
