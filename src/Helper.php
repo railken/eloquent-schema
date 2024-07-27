@@ -182,17 +182,20 @@ class Helper
         $this->callResolver('fillBlueprintFromCurrentStatus', $modelBlueprint);
 
         $oldAttributeBlueprint = $modelBlueprint->getAttributeByName($oldAttributeName);
+        $newAttributeBlueprint = clone $oldAttributeBlueprint;
+        $newAttributeBlueprint->name($newAttributeName);
 
-        return $this->callResolver('renameAttribute', $modelBlueprint, $oldAttributeBlueprint, $newAttributeName);
+        return $this->callResolver('renameAttribute', $modelBlueprint, $oldAttributeBlueprint, $newAttributeBlueprint);
     }
 
-    public function updateAttribute(string|Model $ini, string $oldAttributeName, AttributeBlueprint $newAttribute): ResultResolver
+    public function updateAttribute(string|Model $ini, string $oldAttributeName, AttributeBlueprint $newAttributeBlueprint): ResultResolver
     {
         $modelBlueprint = $this->getModelBlueprint($ini);
         $this->callResolver('fillBlueprintFromCurrentStatus', $modelBlueprint);
 
         $oldAttributeBlueprint = $modelBlueprint->getAttributeByName($oldAttributeName);
+        $newAttributeBlueprint->model($modelBlueprint);
 
-        return $this->callResolver('updateAttribute', $modelBlueprint, $oldAttributeBlueprint, $newAttribute);
+        return $this->callResolver('updateAttribute', $modelBlueprint, $oldAttributeBlueprint, $newAttributeBlueprint);
     }
 }

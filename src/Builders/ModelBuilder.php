@@ -89,12 +89,9 @@ class ModelBuilder extends Builder
      *
      * @throws Exception
      */
-    public function renameAttribute(ModelBlueprint $modelBlueprint, AttributeBlueprint $oldAttributeBlueprint, string $newAttributeName): RenameAttributeAction
+    public function renameAttribute(ModelBlueprint $modelBlueprint, AttributeBlueprint $oldAttributeBlueprint, AttributeBlueprint $newAttributeBlueprint): RenameAttributeAction
     {
         $classEditor = new ClassEditor(Support::getPathByObject($modelBlueprint->instance));
-
-        $newAttributeBlueprint = clone $oldAttributeBlueprint;
-        $newAttributeBlueprint->name($newAttributeName);
 
         return new RenameAttributeAction($classEditor, $oldAttributeBlueprint, $newAttributeBlueprint);
     }
@@ -107,9 +104,6 @@ class ModelBuilder extends Builder
     public function updateAttribute(ModelBlueprint $modelBlueprint, AttributeBlueprint $oldAttributeBlueprint, AttributeBlueprint $newAttributeBlueprint): UpdateAttributeAction
     {
         $classEditor = new ClassEditor(Support::getPathByObject($modelBlueprint->instance));
-
-        $oldAttributeBlueprint->model($modelBlueprint);
-        $newAttributeBlueprint->model($modelBlueprint);
 
         return new UpdateAttributeAction($classEditor, $oldAttributeBlueprint, $newAttributeBlueprint);
     }

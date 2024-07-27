@@ -34,9 +34,9 @@ class MigrationBuilder extends Builder
         return new UpdateTableAction($oldModelBlueprint, $newModelBlueprint);
     }
 
-    public function createAttribute(ModelBlueprint $modelBlueprint, AttributeBlueprint $attribute): CreateColumnAction
+    public function createAttribute(ModelBlueprint $modelBlueprint, AttributeBlueprint $attributeBlueprint): CreateColumnAction
     {
-        return new CreateColumnAction($attribute);
+        return new CreateColumnAction($attributeBlueprint);
     }
 
     /**
@@ -50,11 +50,8 @@ class MigrationBuilder extends Builder
     /**
      * @throws Exception
      */
-    public function renameAttribute(ModelBlueprint $modelBlueprint, AttributeBlueprint $oldAttributeBlueprint, string $newAttributeName): RenameColumnAction
+    public function renameAttribute(ModelBlueprint $modelBlueprint, AttributeBlueprint $oldAttributeBlueprint, AttributeBlueprint $newAttributeBlueprint): RenameColumnAction
     {
-        $newAttributeBlueprint = clone $oldAttributeBlueprint;
-        $newAttributeBlueprint->name($newAttributeName);
-
         return new RenameColumnAction($oldAttributeBlueprint, $newAttributeBlueprint);
     }
 
@@ -63,8 +60,6 @@ class MigrationBuilder extends Builder
      */
     public function updateAttribute(ModelBlueprint $modelBlueprint, AttributeBlueprint $oldAttributeBlueprint, AttributeBlueprint $newAttributeBlueprint): UpdateColumnAction
     {
-        $newAttributeBlueprint->model($modelBlueprint);
-
         return new UpdateColumnAction($oldAttributeBlueprint, $newAttributeBlueprint);
     }
 }

@@ -73,7 +73,7 @@ abstract class Builder
 
     abstract public function createAttribute(
         ModelBlueprint $modelBlueprint,
-        AttributeBlueprint $attribute
+        AttributeBlueprint $attributeBlueprint
     ): Action;
 
     abstract public function removeAttribute(
@@ -84,12 +84,12 @@ abstract class Builder
     abstract public function renameAttribute(
         ModelBlueprint $modelBlueprint,
         AttributeBlueprint $oldAttributeBlueprint,
-        string $newAttributeName
+        AttributeBlueprint $newAttributeBlueprint
     ): Action;
 
     abstract public function updateAttribute(
         ModelBlueprint $modelBlueprint,
         AttributeBlueprint $oldAttributeBlueprint,
-        AttributeBlueprint $newAttribute
+        AttributeBlueprint $newAttributeBlueprint
     ): Action;
 }
