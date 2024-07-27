@@ -58,7 +58,7 @@ class AttributeDefaultTest extends BaseCase
 
         $this->assertEquals(null, $this->newModel()->create([])->weight); // default updates only db
         $this->assertEquals(5, $this->newModel()->where('id', 1)->first()->weight);
-
+        $this->assertEquals(5, $this->newModelBlueprint()->getAttributeByName('weight')->default);
     }
 
     public function test_default_migrations()
@@ -83,6 +83,7 @@ class AttributeDefaultTest extends BaseCase
         $this->assertEquals($up, $result->get(MigrationBuilder::class)->first()->get('up'));
         $this->assertEquals($down, $result->get(MigrationBuilder::class)->first()->get('down'));
         $this->artisan('migrate');
+        $this->assertEquals(5, $this->newModelBlueprint()->getAttributeByName('weight')->default);
 
         $result = $this->getService()->updateAttribute(
             $this->newModel(),
@@ -105,6 +106,7 @@ class AttributeDefaultTest extends BaseCase
         $this->assertEquals($up, $result->get(MigrationBuilder::class)->first()->get('up'));
         $this->assertEquals($down, $result->get(MigrationBuilder::class)->first()->get('down'));
         $this->artisan('migrate');
+        $this->assertEquals(3, $this->newModelBlueprint()->getAttributeByName('weight')->default);
 
     }
 }

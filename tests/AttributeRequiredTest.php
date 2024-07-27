@@ -8,15 +8,15 @@ use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Builders\ModelBuilder;
 
 #[RunTestsInSeparateProcesses]
-class AttributeFillableTest extends BaseCase
+class AttributeRequiredTest extends BaseCase
 {
-    public function test_fillable()
+    public function test_required()
     {
         $model = $this->newModel();
 
         $result = $this->getService()->createAttribute(
             $model,
-            StringAttribute::make('fillable')->fillable(true)
+            StringAttribute::make('code')->required(true)
         )->run();
 
         $final = <<<'EOD'
@@ -30,12 +30,11 @@ class AttributeFillableTest extends BaseCase
         
             protected $fillable = [
                 'name',
-                'fillable',
             ];
         
             protected $casts = [
                 'name' => 'string',
-                'fillable' => 'string',
+                'code' => 'string',
             ];
         };
         
@@ -45,25 +44,29 @@ class AttributeFillableTest extends BaseCase
 
         $final = <<<'EOD'
         Schema::table('parrots', function (Blueprint $table) {
-            $table->string('fillable');
+            $table->string('code');
         });
         EOD;
         $this->assertEquals($final, $result->get(MigrationBuilder::class)->first()->get('up'));
 
         $final = <<<'EOD'
         Schema::table('parrots', function (Blueprint $table) {
-            $table->dropColumn('fillable');
+            $table->dropColumn('code');
         });
         EOD;
         $this->assertEquals($final, $result->get(MigrationBuilder::class)->first()->get('down'));
 
         $this->artisan('migrate');
 
-        $this->assertEquals('chip', $this->newModel()->create([
-            'fillable' => 'chip',
-        ])->fillable);
+        $model = $this->newModel();
+        $model = $model->fill([
+            'name' => 'test',
+        ]);
+        $model->code = '123';
+        $model->save();
 
-        $this->assertEquals(true, $this->getService()->getModelBlueprint($this->newModel())->getAttributeByName('fillable')->fillable);
+        $this->assertEquals('123', $this->newModel()->where('id', 1)->first()->code);
+        $this->assertEquals(true, $this->getService()->getModelBlueprint($this->newModel())->getAttributeByName('code')->required);
     }
 
     public function test_not_fillable()
@@ -72,7 +75,7 @@ class AttributeFillableTest extends BaseCase
 
         $result = $this->getService()->createAttribute(
             $model,
-            StringAttribute::make('not_fillable')->fillable(false)
+            StringAttribute::make('code')->required(false)
         )->run();
 
         $final = <<<'EOD'
@@ -82,9 +85,6 @@ class AttributeFillableTest extends BaseCase
         
         return new class extends Model
         {
-            protected $guarded = [
-                'not_fillable',
-            ];
             protected $table = 'parrots';
         
             protected $fillable = [
@@ -93,7 +93,7 @@ class AttributeFillableTest extends BaseCase
         
             protected $casts = [
                 'name' => 'string',
-                'not_fillable' => 'string',
+                'code' => 'string',
             ];
         };
         
@@ -103,37 +103,29 @@ class AttributeFillableTest extends BaseCase
 
         $final = <<<'EOD'
         Schema::table('parrots', function (Blueprint $table) {
-            $table->string('not_fillable');
+            $table->string('code')->nullable();
         });
         EOD;
         $this->assertEquals($final, $result->get(MigrationBuilder::class)->first()->get('up'));
 
         $final = <<<'EOD'
         Schema::table('parrots', function (Blueprint $table) {
-            $table->dropColumn('not_fillable');
+            $table->dropColumn('code');
         });
         EOD;
         $this->assertEquals($final, $result->get(MigrationBuilder::class)->first()->get('down'));
 
-        $model = $this->newModel();
-
         $this->artisan('migrate');
 
-        try {
-            $this->assertEquals('silent', $this->newModel()->create([
-                'not_fillable' => 'chop',
-            ])->not_fillable);
-        } catch (\Exception $e) {
-            $this->assertEquals(\Illuminate\Database\QueryException::class, get_class($e));
-        }
-
         $model = $this->newModel();
-        $model->not_fillable = 'chop';
+        $model = $model->fill([
+            'name' => 'test',
+        ]);
+        $model->code = '123';
         $model->save();
 
-        $this->assertEquals('chop', $model->not_fillable);
-
-        $this->assertFalse($this->newModelBlueprint()->getAttributeByName('not_fillable')->fillable);
+        $this->assertEquals('123', $this->newModel()->where('id', 1)->first()->code);
+        $this->assertEquals(false, $this->getService()->getModelBlueprint($this->newModel())->getAttributeByName('code')->required);
 
     }
 }

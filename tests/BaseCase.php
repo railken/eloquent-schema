@@ -96,6 +96,11 @@ abstract class BaseCase extends \Orchestra\Testbench\TestCase
         return require __DIR__."/Generated/$name.php";
     }
 
+    public function newModelBlueprint($name = 'Parrot')
+    {
+        return $this->getService()->getModelBlueprint($this->newModel($name));
+    }
+
     protected function getPackageProviders($app)
     {
         return [
