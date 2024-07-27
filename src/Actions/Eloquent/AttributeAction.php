@@ -7,7 +7,7 @@ use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 use Railken\EloquentSchema\Hooks\HookManager;
 
-abstract class Attribute extends Action
+abstract class AttributeAction extends Action
 {
     use HookManager;
 

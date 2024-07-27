@@ -3,8 +3,6 @@
 namespace Railken\EloquentSchema\Builders;
 
 use Exception;
-use Illuminate\Database\Eloquent\Model;
-use Railken\EloquentSchema\Actions\Eloquent\Attribute;
 use Railken\EloquentSchema\Actions\Migration\CreateColumnAction;
 use Railken\EloquentSchema\Actions\Migration\CreateTableAction;
 use Railken\EloquentSchema\Actions\Migration\RemoveColumnAction;
@@ -14,8 +12,6 @@ use Railken\EloquentSchema\Actions\Migration\UpdateColumnAction;
 use Railken\EloquentSchema\Actions\Migration\UpdateTableAction;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
-use Railken\EloquentSchema\Editors\ClassEditor;
-use Railken\EloquentSchema\Support;
 
 class MigrationBuilder extends Builder
 {
@@ -26,79 +22,49 @@ class MigrationBuilder extends Builder
         return new CreateTableAction($modelBlueprint);
     }
 
-    public function removeModel(string|Model $ini): RemoveTableAction
+    public function removeModel(ModelBlueprint $modelBlueprint): RemoveTableAction
     {
-        $modelBlueprint = $this->getBlueprint($ini);
-
         return new RemoveTableAction($modelBlueprint);
     }
 
-    public function updateModel(string|Model $ini, ModelBlueprint $newModelBlueprint): UpdateTableAction
+    public function fillBlueprintFromCurrentStatus(ModelBlueprint $modelBlueprint) {}
+
+    public function updateModel(ModelBlueprint $oldModelBlueprint, ModelBlueprint $newModelBlueprint): UpdateTableAction
     {
-        $model = $this->getModel($ini);
-        $oldModelBlueprint = $this->getBlueprint($ini);
-
-        $this->schemaRetriever->getAttributesBlueprint($oldModelBlueprint);
-        $classEditor = new ClassEditor(Support::getPathByObject($oldModelBlueprint->instance));
-        foreach ($oldModelBlueprint->attributes as $attribute) {
-            Attribute::callHooks('set', [$classEditor, $attribute]); // Refactor this hook
-        }
-
-        $newModelBlueprint->instance($model);
-        $oldModelBlueprint->instance($model);
-
         return new UpdateTableAction($oldModelBlueprint, $newModelBlueprint);
     }
 
-    public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): CreateColumnAction
+    public function createAttribute(ModelBlueprint $modelBlueprint, AttributeBlueprint $attribute): CreateColumnAction
     {
-        $modelBlueprint = $this->getBlueprint($ini);
-
-        $attribute->model($modelBlueprint);
-
         return new CreateColumnAction($attribute);
     }
 
     /**
      * @throws Exception
      */
-    public function removeAttribute(string|Model $ini, string $attributeName): RemoveColumnAction
+    public function removeAttribute(ModelBlueprint $modelBlueprint, AttributeBlueprint $attributeBlueprint): RemoveColumnAction
     {
-        $modelBlueprint = $this->getBlueprint($ini);
-
-        $attribute = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $attributeName);
-        $attribute->model($modelBlueprint);
-
-        return new RemoveColumnAction($attribute);
+        return new RemoveColumnAction($attributeBlueprint);
     }
 
     /**
      * @throws Exception
      */
-    public function renameAttribute(string|Model $ini, string $oldAttributeName, string $newAttributeName): RenameColumnAction
+    public function renameAttribute(ModelBlueprint $modelBlueprint, AttributeBlueprint $oldAttributeBlueprint, string $newAttributeName): RenameColumnAction
     {
-        $modelBlueprint = $this->getBlueprint($ini);
+        $newAttributeBlueprint = clone $oldAttributeBlueprint;
+        $newAttributeBlueprint->name($newAttributeName);
 
-        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $oldAttributeName);
-        $oldAttribute->model($modelBlueprint);
-
-        $newAttribute = clone $oldAttribute;
-        $newAttribute->name($newAttributeName);
-
-        return new RenameColumnAction($oldAttribute, $newAttribute);
+        return new RenameColumnAction($oldAttributeBlueprint, $newAttributeBlueprint);
     }
 
     /**
      * @throws Exception
      */
-    public function updateAttribute(string|Model $ini, string $oldAttributeName, AttributeBlueprint $newAttribute): UpdateColumnAction
+    public function updateAttribute(ModelBlueprint $modelBlueprint, AttributeBlueprint $oldAttributeBlueprint, AttributeBlueprint $newAttributeBlueprint): UpdateColumnAction
     {
-        $modelBlueprint = $this->getBlueprint($ini);
+        $newAttributeBlueprint->model($modelBlueprint);
 
-        $oldAttribute = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $oldAttributeName);
-        $oldAttribute->model($modelBlueprint);
-        $newAttribute->model($modelBlueprint);
-
-        return new UpdateColumnAction($oldAttribute, $newAttribute);
+        return new UpdateColumnAction($oldAttributeBlueprint, $newAttributeBlueprint);
     }
 }

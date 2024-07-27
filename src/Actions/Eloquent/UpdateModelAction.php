@@ -15,13 +15,10 @@ class UpdateModelAction extends CreateModelAction
         parent::__construct($newModel);
     }
 
-    /**
-     * @docs: https://github.com/nikic/PHP-Parser/blob/master/doc/component/AST_builders.markdown
-     */
     public function run(): void
     {
         $this->saveAttributes();
-        $this->set($this->newModel);
+        $this->mutate($this->newModel);
         $this->save();
     }
 

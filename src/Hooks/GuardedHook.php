@@ -23,4 +23,9 @@ class GuardedHook
     {
         // FillableHook will take care of filling the value of fillable
     }
+
+    public function updateBlueprintFromDatabase(AttributeBlueprint $attributeBlueprint, $column, $params)
+    {
+        // ..
+    }
 }

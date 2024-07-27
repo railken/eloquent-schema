@@ -4,7 +4,7 @@ namespace Railken\EloquentSchema\Actions\Migration;
 
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 
-class UpdateColumnAction extends Column
+class UpdateColumnAction extends ColumnAction
 {
     protected string $table;
 
@@ -37,7 +37,7 @@ class UpdateColumnAction extends Column
 
     public function migrate(AttributeBlueprint $oldAttribute, AttributeBlueprint $newAttribute): string
     {
-        $migration = Column::$VarTable;
+        $migration = ColumnAction::$VarTable;
 
         $migration .= $this->migrateColumn($newAttribute);
 

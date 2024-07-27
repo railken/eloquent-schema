@@ -4,17 +4,14 @@ namespace Railken\EloquentSchema\Actions\Migration;
 
 use Exception;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
+use Railken\EloquentSchema\Hooks\HookManager;
 
-abstract class Column extends MigrationAction
+abstract class ColumnAction extends MigrationAction
 {
+
     public static string $VarTable = '$table';
 
     protected array $result = [];
-
-    public function __construct(string $table)
-    {
-        parent::__construct($table);
-    }
 
     /**
      * Populate the place-holders in the migration stub.
@@ -92,11 +89,11 @@ abstract class Column extends MigrationAction
 
     public function dropColumn(AttributeBlueprint $attribute): string
     {
-        return Column::$VarTable."->dropColumn('{$attribute->name}');";
+        return ColumnAction::$VarTable."->dropColumn('{$attribute->name}');";
     }
 
     public function renameColumn(AttributeBlueprint $oldAttribute, AttributeBlueprint $newAttribute): string
     {
-        return Column::$VarTable."->renameColumn('{$oldAttribute->name}', '{$newAttribute->name}');";
+        return ColumnAction::$VarTable."->renameColumn('{$oldAttribute->name}', '{$newAttribute->name}');";
     }
 }

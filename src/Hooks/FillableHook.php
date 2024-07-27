@@ -23,4 +23,9 @@ class FillableHook
     {
         $attribute->fillable($classEditor->isValueInAttribute('fillable', $attribute->name));
     }
+
+    public function updateBlueprintFromDatabase(AttributeBlueprint $attributeBlueprint, $column, $params)
+    {
+        // ..
+    }
 }

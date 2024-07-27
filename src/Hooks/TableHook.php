@@ -7,8 +7,13 @@ use Railken\EloquentSchema\Editors\ClassEditor;
 
 class TableHook
 {
-    public function set(ClassEditor $classEditor, ModelBlueprint $modelBlueprint): void
+    public function mutate(ClassEditor $classEditor, ModelBlueprint $modelBlueprint): void
     {
         $classEditor->setProtectedPropertyValue('table', $modelBlueprint->table);
+    }
+
+    public function updateBlueprintFromDatabase(ModelBlueprint $modelBlueprint, $params)
+    {
+        // table already defined inside the model
     }
 }

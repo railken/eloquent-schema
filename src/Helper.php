@@ -97,6 +97,45 @@ class Helper
         return $result;
     }
 
+    public function newModelInstanceByTable(string $table)
+    {
+        $class = $this->schemaRetriever->getModels()->get($table);
+
+        return new $class;
+    }
+
+    protected function getModel(string|Model $ini): Model
+    {
+        if ($ini instanceof Model) {
+            return $ini;
+        }
+
+        if (is_subclass_of($ini, Model::class)) {
+            return new $ini;
+        }
+
+        return $this->newModelInstanceByTable($ini);
+    }
+
+    public function getModelBlueprint($ini): ModelBlueprint
+    {
+        $model = $this->getModel($ini);
+
+        return $this->newModelBlueprintByModel($model);
+    }
+
+    public function newModelBlueprintByModel(Model $model): ModelBlueprint
+    {
+        $reflection = new \ReflectionClass($model);
+
+        $blueprint = new ModelBlueprint($reflection->getName());
+        $blueprint->namespace($reflection->getNamespaceName());
+        $blueprint->table($model->getTable());
+        $blueprint->instance($model);
+
+        return $blueprint;
+    }
+
     public function createModel(ModelBlueprint $model): ResultResolver
     {
         return $this->callResolver('createModel', $model);
@@ -104,31 +143,56 @@ class Helper
 
     public function removeModel(string|Model $ini): ResultResolver
     {
-        return $this->callResolver('removeModel', $ini);
+        $model = $this->getModelBlueprint($ini);
+
+        return $this->callResolver('removeModel', $model);
     }
 
-    public function updateModel(string|Model $ini, ModelBlueprint $model): ResultResolver
+    public function updateModel(string|Model $ini, ModelBlueprint $newModelBlueprint): ResultResolver
     {
-        return $this->callResolver('updateModel', $ini, $model);
+        $oldModelBlueprint = $this->getModelBlueprint($ini);
+        $this->callResolver('fillBlueprintFromCurrentStatus', $oldModelBlueprint);
+        $newModelBlueprint->instance($oldModelBlueprint->instance);
+
+        return $this->callResolver('updateModel', $oldModelBlueprint, $newModelBlueprint);
     }
 
     public function createAttribute(string|Model $ini, AttributeBlueprint $attribute): ResultResolver
     {
-        return $this->callResolver('createAttribute', $ini, $attribute);
+        $modelBlueprint = $this->getModelBlueprint($ini);
+        $attribute->model($modelBlueprint);
+        $this->callResolver('fillBlueprintFromCurrentStatus', $modelBlueprint);
+
+        return $this->callResolver('createAttribute', $modelBlueprint, $attribute);
     }
 
     public function removeAttribute(string|Model $ini, string $attributeName): ResultResolver
     {
-        return $this->callResolver('removeAttribute', $ini, $attributeName);
+        $modelBlueprint = $this->getModelBlueprint($ini);
+        $this->callResolver('fillBlueprintFromCurrentStatus', $modelBlueprint);
+
+        $attributeBlueprint = $modelBlueprint->getAttributeByName($attributeName);
+
+        return $this->callResolver('removeAttribute', $modelBlueprint, $attributeBlueprint);
     }
 
     public function renameAttribute(string|Model $ini, string $oldAttributeName, string $newAttributeName): ResultResolver
     {
-        return $this->callResolver('renameAttribute', $ini, $oldAttributeName, $newAttributeName);
+        $modelBlueprint = $this->getModelBlueprint($ini);
+        $this->callResolver('fillBlueprintFromCurrentStatus', $modelBlueprint);
+
+        $oldAttributeBlueprint = $modelBlueprint->getAttributeByName($oldAttributeName);
+
+        return $this->callResolver('renameAttribute', $modelBlueprint, $oldAttributeBlueprint, $newAttributeName);
     }
 
     public function updateAttribute(string|Model $ini, string $oldAttributeName, AttributeBlueprint $newAttribute): ResultResolver
     {
-        return $this->callResolver('updateAttribute', $ini, $oldAttributeName, $newAttribute);
+        $modelBlueprint = $this->getModelBlueprint($ini);
+        $this->callResolver('fillBlueprintFromCurrentStatus', $modelBlueprint);
+
+        $oldAttributeBlueprint = $modelBlueprint->getAttributeByName($oldAttributeName);
+
+        return $this->callResolver('updateAttribute', $modelBlueprint, $oldAttributeBlueprint, $newAttribute);
     }
 }

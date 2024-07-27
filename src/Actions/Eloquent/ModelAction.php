@@ -22,8 +22,8 @@ abstract class ModelAction extends Action
         $this->result = $this->classEditor->save();
     }
 
-    public function set(ModelBlueprint $model): void
+    public function mutate(ModelBlueprint $model): void
     {
-        self::callHooks('set', [$this->classEditor, $model]);
+        self::callHooks('mutate', [$this->classEditor, $model]);
     }
 }

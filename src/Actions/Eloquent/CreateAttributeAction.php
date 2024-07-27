@@ -5,7 +5,7 @@ namespace Railken\EloquentSchema\Actions\Eloquent;
 use Railken\EloquentSchema\Blueprints\AttributeBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 
-class CreateAttributeAction extends Attribute
+class CreateAttributeAction extends AttributeAction
 {
     protected AttributeBlueprint $newAttribute;
 

@@ -2,6 +2,7 @@
 
 namespace Railken\EloquentSchema\Hooks;
 
+use KitLoong\MigrationsGenerator\Enum\Migrations\Method\IndexType;
 use Railken\EloquentSchema\Blueprints\ModelBlueprint;
 use Railken\EloquentSchema\Editors\ClassEditor;
 
@@ -17,12 +18,23 @@ class PrimaryKeyHook
         return count($modelBlueprint->primaryKey) == 1 ? $modelBlueprint->primaryKey[0] : $modelBlueprint->primaryKey;
     }
 
-    public function set(ClassEditor $classEditor, ModelBlueprint $modelBlueprint): void
+    public function mutate(ClassEditor $classEditor, ModelBlueprint $modelBlueprint): void
     {
         if (! $this->isPrimaryId($modelBlueprint)) {
             $classEditor->setProtectedPropertyValue('primaryKey', $this->serialize($modelBlueprint));
         } else {
             $classEditor->removeProperty('primaryKey');
+        }
+    }
+
+    public function updateBlueprintFromDatabase(ModelBlueprint $modelBlueprint, $params)
+    {
+        $primaries = $params->getIndexes()->filter(function ($index) {
+            return $index->getType() == IndexType::PRIMARY;
+        })->first();
+
+        if (! empty($primaries)) {
+            $modelBlueprint->primaryKey($primaries->getColumns());
         }
     }
 }

@@ -102,7 +102,7 @@ class SchemaRetriever implements SchemaRetrieverInterface
         return $this->getMigrationGeneratorSchema()->getTable($table);
     }
 
-    public function getAttributesBlueprint(ModelBlueprint $modelBlueprint): array
+    public function setAttributesBlueprint(ModelBlueprint $modelBlueprint)
     {
         $params = $this->getMigrationGeneratorSchema()->getTable($modelBlueprint->table);
 
@@ -112,16 +112,6 @@ class SchemaRetriever implements SchemaRetrieverInterface
         }
 
         $modelBlueprint->attributes($columns);
-
-        $primaries = $params->getIndexes()->filter(function ($index) {
-            return $index->getType() == IndexType::PRIMARY;
-        })->first();
-
-        if (! empty($primaries)) {
-            $modelBlueprint->primaryKey($primaries->getColumns());
-        }
-
-        return $columns;
     }
 
     public function getAttributeBlueprint(string $table, string $attributeName): AttributeBlueprint

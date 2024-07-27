@@ -4,9 +4,10 @@ namespace Railken\EloquentSchema\Builders;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
-use Railken\EloquentSchema\Actions\Eloquent\Attribute;
+use Railken\EloquentSchema\Actions\Eloquent\AttributeAction;
 use Railken\EloquentSchema\Actions\Eloquent\CreateAttributeAction;
 use Railken\EloquentSchema\Actions\Eloquent\CreateModelAction;
+use Railken\EloquentSchema\Actions\Eloquent\ModelAction;
 use Railken\EloquentSchema\Actions\Eloquent\RemoveAttributeAction;
 use Railken\EloquentSchema\Actions\Eloquent\RemoveModelAction;
 use Railken\EloquentSchema\Actions\Eloquent\RenameAttributeAction;
@@ -29,27 +30,33 @@ class ModelBuilder extends Builder
         return new CreateModelAction($modelBlueprint);
     }
 
-    public function removeModel(string|Model $ini): RemoveModelAction
+    public function removeModel(ModelBlueprint $modelBlueprint): RemoveModelAction
     {
-        $model = $this->getModel($ini);
-        $modelBlueprint = $this->newModelBlueprintByModel($model);
-
         return new RemoveModelAction($modelBlueprint);
     }
 
-    public function updateModel(string|Model $ini, ModelBlueprint $newModelBlueprint): UpdateModelAction
+    public function fillBlueprintFromCurrentStatus(ModelBlueprint $modelBlueprint)
     {
-        $model = $this->getModel($ini);
-        $oldModelBlueprint = $this->getBlueprint($ini);
-        $this->schemaRetriever->getAttributesBlueprint($oldModelBlueprint);
-        $classEditor = new ClassEditor(Support::getPathByObject($oldModelBlueprint->instance));
-        foreach ($oldModelBlueprint->attributes as $attribute) {
-            Attribute::callHooks('set', [$classEditor, $attribute]); // Refactor this hook
+        $classEditor = new ClassEditor(Support::getPathByObject($modelBlueprint->instance));
+
+        $params = $this->schemaRetriever->getMigrationGeneratorSchema()->getTable($modelBlueprint->table);
+
+        $attributes = [];
+
+        foreach ($params->getColumns() as $column) {
+            $attribute = $this->schemaRetriever->newBlueprintByColumn($column, $params);
+            AttributeAction::callHooks('set', [$classEditor, $attribute]); // Refactor this hook
+
+            $attributes[] = $attribute;
         }
 
-        $newModelBlueprint->instance($model);
-        $oldModelBlueprint->instance($model);
+        $modelBlueprint->attributes($attributes);
 
+        ModelAction::callHooks('updateBlueprintFromDatabase', [$modelBlueprint, $params]);
+    }
+
+    public function updateModel(ModelBlueprint $oldModelBlueprint, ModelBlueprint $newModelBlueprint): UpdateModelAction
+    {
         return new UpdateModelAction($oldModelBlueprint, $newModelBlueprint);
     }
 
@@ -58,11 +65,8 @@ class ModelBuilder extends Builder
      *
      * @throws Exception
      */
-    public function createAttribute(string|Model $ini, AttributeBlueprint $attributeBlueprint): CreateAttributeAction
+    public function createAttribute(ModelBlueprint $modelBlueprint, AttributeBlueprint $attributeBlueprint): CreateAttributeAction
     {
-        $modelBlueprint = $this->getBlueprint($ini);
-        $attributeBlueprint->model($modelBlueprint);
-
         $classEditor = new ClassEditor(Support::getPathByObject($attributeBlueprint->model->instance));
 
         return new CreateAttributeAction($classEditor, $attributeBlueprint);
@@ -73,13 +77,8 @@ class ModelBuilder extends Builder
      *
      * @throws Exception
      */
-    public function removeAttribute(string|Model $ini, string $attributeName): RemoveAttributeAction
+    public function removeAttribute(ModelBlueprint $modelBlueprint, AttributeBlueprint $attributeBlueprint): RemoveAttributeAction
     {
-        $modelBlueprint = $this->getBlueprint($ini);
-
-        $attributeBlueprint = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $attributeName);
-        $attributeBlueprint->model($modelBlueprint);
-
         $classEditor = new ClassEditor(Support::getPathByObject($attributeBlueprint->model->instance));
 
         return new RemoveAttributeAction($classEditor, $attributeBlueprint);
@@ -90,15 +89,9 @@ class ModelBuilder extends Builder
      *
      * @throws Exception
      */
-    public function renameAttribute(string|Model $ini, string $oldAttributeName, string $newAttributeName): RenameAttributeAction
+    public function renameAttribute(ModelBlueprint $modelBlueprint, AttributeBlueprint $oldAttributeBlueprint, string $newAttributeName): RenameAttributeAction
     {
-        $modelBlueprint = $this->getBlueprint($ini);
-
-        $oldAttributeBlueprint = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $oldAttributeName);
-        $oldAttributeBlueprint->model($modelBlueprint);
-
         $classEditor = new ClassEditor(Support::getPathByObject($modelBlueprint->instance));
-        Attribute::callHooks('set', [$classEditor, $oldAttributeBlueprint]); // Refactor this hook
 
         $newAttributeBlueprint = clone $oldAttributeBlueprint;
         $newAttributeBlueprint->name($newAttributeName);
@@ -111,14 +104,9 @@ class ModelBuilder extends Builder
      *
      * @throws Exception
      */
-    public function updateAttribute(string|Model $ini, string $attributeName, AttributeBlueprint $newAttributeBlueprint): UpdateAttributeAction
+    public function updateAttribute(ModelBlueprint $modelBlueprint, AttributeBlueprint $oldAttributeBlueprint, AttributeBlueprint $newAttributeBlueprint): UpdateAttributeAction
     {
-        $modelBlueprint = $this->getBlueprint($ini);
-
-        $oldAttributeBlueprint = $this->schemaRetriever->getAttributeBlueprint($modelBlueprint->table, $attributeName);
-
         $classEditor = new ClassEditor(Support::getPathByObject($modelBlueprint->instance));
-        Attribute::callHooks('set', [$classEditor, $oldAttributeBlueprint]); // Refactor this hook
 
         $oldAttributeBlueprint->model($modelBlueprint);
         $newAttributeBlueprint->model($modelBlueprint);

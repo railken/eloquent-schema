@@ -69,7 +69,7 @@ class CreateTableAction extends TableAction
 
     public function dropPrimary(): ?string
     {
-        return Column::$VarTable.'->dropPrimary();';
+        return ColumnAction::$VarTable.'->dropPrimary();';
     }
 
     public function migratePrimary(array $keys): ?string
@@ -79,7 +79,7 @@ class CreateTableAction extends TableAction
                 ? "'$keys[0]'"
                 : str_replace('"', '\'', json_encode($keys));
 
-            return Column::$VarTable."->primary($primary);";
+            return ColumnAction::$VarTable."->primary($primary);";
         }
 
         return null;

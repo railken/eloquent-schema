@@ -68,28 +68,28 @@ abstract class Builder
     ): Action;
 
     abstract public function removeModel(
-        string $ini
+        ModelBlueprint $modelBlueprint
     ): Action;
 
     abstract public function createAttribute(
-        string|Model $ini,
+        ModelBlueprint $modelBlueprint,
         AttributeBlueprint $attribute
     ): Action;
 
     abstract public function removeAttribute(
-        string|Model $ini,
-        string $attributeName
+        ModelBlueprint $modelBlueprint,
+        AttributeBlueprint $attributeBlueprint
     ): Action;
 
     abstract public function renameAttribute(
-        string|Model $ini,
-        string $oldAttributeName,
+        ModelBlueprint $modelBlueprint,
+        AttributeBlueprint $oldAttributeBlueprint,
         string $newAttributeName
     ): Action;
 
     abstract public function updateAttribute(
-        string|Model $ini,
-        string $oldAttributeName,
+        ModelBlueprint $modelBlueprint,
+        AttributeBlueprint $oldAttributeBlueprint,
         AttributeBlueprint $newAttribute
     ): Action;
 }

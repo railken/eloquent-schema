@@ -4,15 +4,17 @@ namespace Tests;
 
 use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
-use Railken\EloquentSchema\Actions\Eloquent\Attribute;
+use Railken\EloquentSchema\Actions\Eloquent\AttributeAction;
 use Railken\EloquentSchema\Actions\Eloquent\ModelAction;
 use Railken\EloquentSchema\Builders\MigrationBuilder;
 use Railken\EloquentSchema\Builders\ModelBuilder;
 use Railken\EloquentSchema\Hooks\CastHook;
+use Railken\EloquentSchema\Hooks\DefaultHook;
 use Railken\EloquentSchema\Hooks\FillableHook;
 use Railken\EloquentSchema\Hooks\GuardedHook;
 use Railken\EloquentSchema\Hooks\IncrementingHook;
 use Railken\EloquentSchema\Hooks\PrimaryKeyHook;
+use Railken\EloquentSchema\Hooks\RequiredHook;
 use Railken\EloquentSchema\Hooks\TableHook;
 use Railken\EloquentSchema\Hooks\TimestampsHook;
 
@@ -31,10 +33,12 @@ abstract class BaseCase extends \Orchestra\Testbench\TestCase
     {
         parent::setUp();
 
-        Attribute::setHooks([
+        AttributeAction::setHooks([
             GuardedHook::class,
             CastHook::class,
             FillableHook::class,
+            DefaultHook::class,
+            RequiredHook::class,
         ]);
 
         ModelAction::setHooks([

@@ -28,6 +28,19 @@ class CreateModelAction extends ModelAction
      */
     public function run(): void
     {
+        $nodes = $this->createNewClass();
+
+        $this->result = $this->classEditor->saveFromNodes($nodes);
+        $path = array_keys($this->result)[0];
+        $this->classEditor = new ClassEditor($path);
+
+        $this->saveAttributes();
+        $this->mutate($this->newModel);
+        $this->save();
+    }
+
+    public function createNewClass(): array
+    {
         $factory = $this->classEditor->getBuilder();
         $nodes = [];
 
@@ -53,13 +66,7 @@ class CreateModelAction extends ModelAction
             $nodes[] = $class;
         }
 
-        $this->result = $this->classEditor->saveFromNodes($nodes);
-        $path = array_keys($this->result)[0];
-        $this->classEditor = new ClassEditor($path);
-
-        $this->saveAttributes();
-        $this->set($this->newModel);
-        $this->save();
+        return $nodes;
     }
 
     public function saveAttributes(): void

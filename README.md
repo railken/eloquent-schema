@@ -117,17 +117,17 @@ Now, of course each project is different and has different needs. For each attri
 WIP
 
 ```php
-use Railken\EloquentSchema\Actions\Eloquent\Attribute;
-use Railken\EloquentSchema\Actions\Migration\Column;
+use Railken\EloquentSchema\Actions\Eloquent\AttributeAction;
+use Railken\EloquentSchema\Actions\Migration\ColumnAction;
 
-Attribute::setHooks([
+AttributeAction::setHooks([
     FillableHook::class,
     GuardedHook::class,
     CastHook::class,
 ]);
 
 ??
-Column::setHooks([
+ColumnAction::setHooks([
     DefaultHook::class,
     NullableHook::class,
 ]);
