@@ -62,6 +62,8 @@ class AttributeFillableTest extends BaseCase
         $this->assertEquals('chip', $this->newModel()->create([
             'fillable' => 'chip',
         ])->fillable);
+
+        $this->assertEquals(true, $this->getService()->getModelBlueprint($this->newModel())->getAttributeByName('fillable')->fillable);
     }
 
     public function test_not_fillable()
@@ -130,5 +132,8 @@ class AttributeFillableTest extends BaseCase
         $model->save();
 
         $this->assertEquals('chop', $model->not_fillable);
+
+        $this->assertEquals(false, $this->getService()->getModelBlueprint($this->newModel())->getAttributeByName('not_fillable')->fillable);
+
     }
 }
